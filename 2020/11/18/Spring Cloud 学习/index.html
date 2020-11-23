@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.3k 字
+      4.9k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      42
+      65
        分钟
     </span>
   
@@ -598,6 +598,331 @@
 
 <h3 id="6、Eureka自我保护"><a href="#6、Eureka自我保护" class="headerlink" title="6、Eureka自我保护"></a>6、Eureka自我保护</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121223452.png" srcset="/img/loading.gif" alt="eureka提示"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121224343.png" srcset="/img/loading.gif" alt="保护概念"></p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123140710.png" srcset="/img/loading.gif" alt="心跳包" style="zoom:67%;" />
+
+<h3 id="7、Eureka自我保护关闭"><a href="#7、Eureka自我保护关闭" class="headerlink" title="7、Eureka自我保护关闭"></a>7、Eureka自我保护关闭</h3><blockquote>
+<p>一般生产环境中不会禁止自我保护</p>
+</blockquote>
+<pre><code class="hljs yaml"><span class="hljs-comment"># 服务端配置</span>
+<span class="hljs-attr">eureka:</span> 
+  <span class="hljs-attr">server:</span>
+    <span class="hljs-comment"># 关闭自我保护 </span>
+    <span class="hljs-attr">enable-self-preservation:</span> <span class="hljs-literal">false</span>
+    <span class="hljs-comment"># 接受心跳包时间间隔</span>
+    <span class="hljs-attr">eviction-interval-timer-in-ms:</span> <span class="hljs-number">2000</span></code></pre>
+
+<pre><code class="hljs yaml"><span class="hljs-comment"># 客户端配置</span>
+<span class="hljs-comment"># 心跳检测和续约时间</span>
+<span class="hljs-attr">instance:</span>
+  <span class="hljs-comment"># Eureka客户端向服务端发送心跳的时间间隔, 单位为秒(默认30s)</span>
+  <span class="hljs-attr">lease-renewal-interval-in-seconds:</span> <span class="hljs-number">30</span>
+  <span class="hljs-comment"># Eureka服务端收到最后一次心跳等待服务时间上限, 默认90s, 超时则剔除服务</span>
+  <span class="hljs-attr">lease-expiration-duration-in-seconds:</span> <span class="hljs-number">90</span></code></pre>
+
+<h3 id="8、Eureka停更"><a href="#8、Eureka停更" class="headerlink" title="8、Eureka停更"></a>8、Eureka停更</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/Netflix/eureka/wiki">官网</a></p>
+</blockquote>
+<h2 id="Zookeeper-替换Eureka-服务注册与发现"><a href="#Zookeeper-替换Eureka-服务注册与发现" class="headerlink" title="Zookeeper(替换Eureka) 服务注册与发现"></a>Zookeeper(替换Eureka) 服务注册与发现</h2><blockquote>
+<p>zookeeper是一个分布式协调工具，可以实现注册中心功能</p>
+</blockquote>
+<h3 id="1、-安装zookeeper-cloud-provider-payment8004入驻"><a href="#1、-安装zookeeper-cloud-provider-payment8004入驻" class="headerlink" title="1、 安装zookeeper(cloud-provider-payment8004入驻)"></a>1、 安装zookeeper(cloud-provider-payment8004入驻)</h3><h4 id="a、在aliyun服务器安装zookeeper并关闭防火墙（aliyun开了kafka-2181被kafka自己的zookeeper占用-改用自己mac开启zookeeper）"><a href="#a、在aliyun服务器安装zookeeper并关闭防火墙（aliyun开了kafka-2181被kafka自己的zookeeper占用-改用自己mac开启zookeeper）" class="headerlink" title="a、在aliyun服务器安装zookeeper并关闭防火墙（aliyun开了kafka 2181被kafka自己的zookeeper占用 改用自己mac开启zookeeper）"></a>a、在aliyun服务器安装zookeeper并关闭防火墙（aliyun开了kafka 2181被kafka自己的zookeeper占用 改用自己mac开启zookeeper）</h4><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123143814.png" srcset="/img/loading.gif" alt="服务器" style="zoom:50%;" />
+
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123152949.png" srcset="/img/loading.gif" alt="mymac" style="zoom:50%;" />
+
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123153358.png" srcset="/img/loading.gif" alt="进入zkCli" style="zoom:50%;" />
+
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123153134.png" srcset="/img/loading.gif" alt="防火墙关闭" style="zoom:50%;" />
+
+<blockquote>
+<p>ifconfig | grep “inet “ | grep -v 127.0.0.1 mac查看自己ip </p>
+</blockquote>
+<h4 id="b、构建cloud-provider-payment8004工程"><a href="#b、构建cloud-provider-payment8004工程" class="headerlink" title="b、构建cloud-provider-payment8004工程"></a>b、构建cloud-provider-payment8004工程</h4><p>POM.xml:</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-zookeeper-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+
+<p>yaml:</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">8004</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">application:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">cloud-payment-service</span>
+  <span class="hljs-attr">cloud:</span>
+    <span class="hljs-attr">zookeeper:</span>
+      <span class="hljs-attr">connect-string:</span> <span class="hljs-number">101.37</span><span class="hljs-number">.162</span><span class="hljs-number">.1</span><span class="hljs-string">:2181</span></code></pre>
+
+<p>主启动类:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
+<span class="hljs-meta">@EnableDiscoveryClient</span> <span class="hljs-comment">// 该注解用于向consul或者zookeeper作为注册中心时注册服务</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentMain8004</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        SpringApplication.run(PaymentMain8004.class, args);
+    &#125;
+&#125;</code></pre>
+
+<p>Controller:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-meta">@Slf4j</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentController</span> </span>&#123;
+    <span class="hljs-meta">@Value(&quot;$&#123;server.port&#125;&quot;)</span>
+    <span class="hljs-keyword">private</span> String serverPort;
+
+    <span class="hljs-meta">@RequestMapping(value = &quot;/payment/zk&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">zk</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;zookeeper:&quot;</span> + serverPort + UUID.randomUUID().toString();
+    &#125;
+&#125;</code></pre>
+
+<p>修改pom:</p>
+<blockquote>
+<p>解决jar包不一致问题</p>
+</blockquote>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--SpringBoot整合Zookeeper客户端--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-zookeeper-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">exclusions</span>&gt;</span>
+        <span class="hljs-comment">&lt;!--先排除自带的zookeeper3.5.3--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.zookeeper<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>zookeeper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">exclusions</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+<span class="hljs-comment">&lt;!--添加zookeeper3.4.14版本--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.zookeeper<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>zookeeper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.4.14<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span></code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123153935.png" srcset="/img/loading.gif" alt="测试结果"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123154156.png" srcset="/img/loading.gif" alt="zookeeper前后变化"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123154124.png" srcset="/img/loading.gif" alt="客户端访问结果"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123154249.png" srcset="/img/loading.gif" alt="结果"></p>
+<h3 id="2、思考"><a href="#2、思考" class="headerlink" title="2、思考"></a>2、思考</h3><p>我们把Zookeeper ls到底并get</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123154610.png" srcset="/img/loading.gif" alt="疑问"></p>
+<p>得到一份json字符串并解析:</p>
+<pre><code class="hljs json">&#123;
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;cloud-payment-service&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;ccf0aff6-d8d8-4730-acca-b035c7b424a4&quot;</span>,
+  <span class="hljs-attr">&quot;address&quot;</span>: <span class="hljs-string">&quot;10.240.8.173&quot;</span>,
+  <span class="hljs-attr">&quot;port&quot;</span>: <span class="hljs-number">8004</span>,
+  <span class="hljs-attr">&quot;sslPort&quot;</span>: <span class="hljs-literal">null</span>,
+  <span class="hljs-attr">&quot;payload&quot;</span>: &#123;
+    <span class="hljs-attr">&quot;@class&quot;</span>: <span class="hljs-string">&quot;org.springframework.cloud.zookeeper.discovery.ZookeeperInstance&quot;</span>,
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;application-1&quot;</span>,
+    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;cloud-payment-service&quot;</span>,
+    <span class="hljs-attr">&quot;metadata&quot;</span>: &#123;&#125;
+  &#125;,
+  <span class="hljs-attr">&quot;registrationTimeUTC&quot;</span>: <span class="hljs-number">1606116992809</span>,
+  <span class="hljs-attr">&quot;serviceType&quot;</span>: <span class="hljs-string">&quot;DYNAMIC&quot;</span>,
+  <span class="hljs-attr">&quot;uriSpec&quot;</span>: &#123;
+    <span class="hljs-attr">&quot;parts&quot;</span>: [
+      &#123;
+        <span class="hljs-attr">&quot;value&quot;</span>: <span class="hljs-string">&quot;scheme&quot;</span>,
+        <span class="hljs-attr">&quot;variable&quot;</span>: <span class="hljs-literal">true</span>
+      &#125;,
+      &#123;
+        <span class="hljs-attr">&quot;value&quot;</span>: <span class="hljs-string">&quot;://&quot;</span>,
+        <span class="hljs-attr">&quot;variable&quot;</span>: <span class="hljs-literal">false</span>
+      &#125;,
+      &#123;
+        <span class="hljs-attr">&quot;value&quot;</span>: <span class="hljs-string">&quot;address&quot;</span>,
+        <span class="hljs-attr">&quot;variable&quot;</span>: <span class="hljs-literal">true</span>
+      &#125;,
+      &#123;
+        <span class="hljs-attr">&quot;value&quot;</span>: <span class="hljs-string">&quot;:&quot;</span>,
+        <span class="hljs-attr">&quot;variable&quot;</span>: <span class="hljs-literal">false</span>
+      &#125;,
+      &#123;
+        <span class="hljs-attr">&quot;value&quot;</span>: <span class="hljs-string">&quot;port&quot;</span>,
+        <span class="hljs-attr">&quot;variable&quot;</span>: <span class="hljs-literal">true</span>
+      &#125;
+    ]
+  &#125;
+&#125;</code></pre>
+
+<h4 id="a、是临时节点还是持久节点"><a href="#a、是临时节点还是持久节点" class="headerlink" title="a、是临时节点还是持久节点?"></a>a、是临时节点还是持久节点?</h4><blockquote>
+<p>我们在zk上注册的node是临时节点, 当我们的服务一定时间内没有发送心跳, 那么zk就会将这个服务的node删除(只需停掉8004 再查看zk结点)</p>
+</blockquote>
+<h3 id="3、cloud-consumerzk-order80-入驻-zookeeper"><a href="#3、cloud-consumerzk-order80-入驻-zookeeper" class="headerlink" title="3、cloud-consumerzk-order80 入驻 zookeeper"></a>3、cloud-consumerzk-order80 入驻 zookeeper</h3><h4 id="a、构建cloud-consumerzk-order80工程"><a href="#a、构建cloud-consumerzk-order80工程" class="headerlink" title="a、构建cloud-consumerzk-order80工程"></a>a、构建cloud-consumerzk-order80工程</h4><p>POM.xml:如cloud-provider-payment8004一致</p>
+<p>yaml:</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">80</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">application:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">cloud-orderzk-service</span>
+  <span class="hljs-attr">cloud:</span>
+    <span class="hljs-attr">zookeeper:</span>
+      <span class="hljs-attr">connect-string:</span> <span class="hljs-number">10.240</span><span class="hljs-number">.8</span><span class="hljs-number">.173</span><span class="hljs-string">:2181</span></code></pre>
+
+<p>controller:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderController</span> </span>&#123;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PAYMENT_URL = <span class="hljs-string">&quot;http://cloud-payment-service&quot;</span>;
+    <span class="hljs-meta">@Resource</span>
+    <span class="hljs-keyword">private</span> RestTemplate restTemplate;
+
+    <span class="hljs-meta">@GetMapping(&quot;/consumer/payment/zk&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">zk</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> restTemplate.getForObject(PAYMENT_URL + <span class="hljs-string">&quot;/payment/zk&quot;</span>, String.class);
+    &#125;
+&#125;</code></pre>
+
+<h4 id="b、测试"><a href="#b、测试" class="headerlink" title="b、测试"></a>b、测试</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123161555.png" srcset="/img/loading.gif" alt="成功"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123161638.png" srcset="/img/loading.gif" alt="zk"></p>
+<h2 id="Consul"><a href="#Consul" class="headerlink" title="Consul"></a>Consul</h2><blockquote>
+<p>Go语言开发 <a target="_blank" rel="noopener" href="https://www.consul.io/intro/index.html">官网</a></p>
+</blockquote>
+<h3 id="1、Consul简介"><a href="#1、Consul简介" class="headerlink" title="1、Consul简介:"></a>1、Consul简介:</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123162351.png" srcset="/img/loading.gif" alt="简介"></p>
+<blockquote>
+<p>Consul能干嘛? <a target="_blank" rel="noopener" href="https://www.consul.io/downloads.html">去哪下</a> <a target="_blank" rel="noopener" href="https://www.springcloud.cc/spring-cloud-consul.html">怎么玩</a></p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123162747.png" srcset="/img/loading.gif" alt="用途"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123162632.png" srcset="/img/loading.gif" alt="用途"></p>
+<h3 id="2、安装运行"><a href="#2、安装运行" class="headerlink" title="2、安装运行"></a>2、安装运行</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123171136.png" srcset="/img/loading.gif" alt="consul"></p>
+<p>把consul文件复制到/usr/local/bin目录下.</p>
+<blockquote>
+<p>consul agent -dev启用 / Ctrl-C（中断信号）正常停止代理</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123171658.png" srcset="/img/loading.gif" alt="8500端口"></p>
+<h3 id="3、新建Module支付服务cloud-providerconsul-payment8006"><a href="#3、新建Module支付服务cloud-providerconsul-payment8006" class="headerlink" title="3、新建Module支付服务cloud-providerconsul-payment8006"></a>3、新建Module支付服务cloud-providerconsul-payment8006</h3><p>Pom.xml:</p>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--SpringCloud consul-server--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-consul-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+
+<p>yaml:</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">8006</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">application:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">cloud-payment-service</span>
+  <span class="hljs-attr">cloud:</span>
+    <span class="hljs-attr">consul:</span>
+      <span class="hljs-attr">host:</span> <span class="hljs-string">localhost</span>
+      <span class="hljs-attr">port:</span> <span class="hljs-number">8500</span>
+      <span class="hljs-attr">discovery:</span>
+        <span class="hljs-comment">#hostname: 127.0.0.1</span>
+        <span class="hljs-attr">service-name:</span> <span class="hljs-string">$&#123;spring.application.name&#125;</span></code></pre>
+
+<p>Controller:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-meta">@Slf4j</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentController</span> </span>&#123;
+    <span class="hljs-meta">@Value(&quot;$&#123;server.port&#125;&quot;)</span>
+    <span class="hljs-keyword">private</span> String serverPort;
+
+    <span class="hljs-meta">@RequestMapping(value = &quot;/payment/consul&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">consul</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;consul:&quot;</span> + serverPort + UUID.randomUUID().toString();
+    &#125;
+&#125;</code></pre>
+
+<p>测试:</p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123191757.png" srcset="/img/loading.gif" alt="测试" style="zoom:50%;" />
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123192023.png" srcset="/img/loading.gif" alt="test"></p>
+<h3 id="4、新建Module消费服务cloud-consumerconsul-order80"><a href="#4、新建Module消费服务cloud-consumerconsul-order80" class="headerlink" title="4、新建Module消费服务cloud-consumerconsul-order80"></a>4、新建Module消费服务cloud-consumerconsul-order80</h3><p>​   pom与8006一致</p>
+<p>​   yml:</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">80</span>
+
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">application:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">cloud-order-service</span>
+  <span class="hljs-attr">cloud:</span>
+    <span class="hljs-attr">consul:</span>
+      <span class="hljs-attr">host:</span> <span class="hljs-string">localhost</span>
+      <span class="hljs-attr">port:</span> <span class="hljs-number">8500</span>
+      <span class="hljs-attr">discovery:</span>
+        <span class="hljs-comment">#hostname: 127.0.0.1</span>
+        <span class="hljs-attr">service-name:</span> <span class="hljs-string">$&#123;spring.application.name&#125;</span></code></pre>
+
+<p>Controller:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderController</span> </span>&#123;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PAYMENT_URL = <span class="hljs-string">&quot;http://cloud-payment-service&quot;</span>;
+    <span class="hljs-meta">@Resource</span>
+    <span class="hljs-keyword">private</span> RestTemplate restTemplate;
+
+    <span class="hljs-meta">@GetMapping(&quot;/consumer/payment/consul&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">consul</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> restTemplate.getForObject(PAYMENT_URL + <span class="hljs-string">&quot;/payment/consul&quot;</span>, String.class);
+    &#125;
+&#125;</code></pre>
+
+<p>测试:</p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123192730.png" srcset="/img/loading.gif" alt="test" style="zoom: 50%;" />
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123192817.png" srcset="/img/loading.gif" alt="consul test"></p>
+<h2 id="三个注册中心异同点"><a href="#三个注册中心异同点" class="headerlink" title="三个注册中心异同点"></a>三个注册中心异同点</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123193015.png" srcset="/img/loading.gif" alt="异同点"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123193225.png" srcset="/img/loading.gif" alt="CAP"></p>
+<blockquote>
+<p>AP:</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123194018.png" srcset="/img/loading.gif" alt="AP"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123194054.png" srcset="/img/loading.gif" alt="CP"></p>
+<h1 id="服务调用"><a href="#服务调用" class="headerlink" title="服务调用"></a>服务调用</h1><h2 id="Ribbon-负载均衡"><a href="#Ribbon-负载均衡" class="headerlink" title="Ribbon 负载均衡"></a>Ribbon 负载均衡</h2><blockquote>
+<p>ribbon是什么？<a target="_blank" rel="noopener" href="https://github.com/Netflix/ribbon/wiki/Getting-Started">官网</a></p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123195235.png" srcset="/img/loading.gif" alt="ribbon概述"></p>
+<blockquote>
+<p>Ribbon也已经进入维护, 几乎不更新了, 但Spring推出的LoadBalance暂未能替代ribbon</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123195707.png" srcset="/img/loading.gif" alt="负载均衡?"></p>
+<h3 id="1、LB（负载均衡）区别"><a href="#1、LB（负载均衡）区别" class="headerlink" title="1、LB（负载均衡）区别"></a>1、LB（负载均衡）区别</h3><h4 id="a、集中式LB"><a href="#a、集中式LB" class="headerlink" title="a、集中式LB"></a>a、集中式LB</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123195916.png" srcset="/img/loading.gif" alt="集中式LB"></p>
+<h4 id="、进程内LB"><a href="#、进程内LB" class="headerlink" title="、进程内LB"></a>、进程内LB</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123195958.png" srcset="/img/loading.gif" alt="进程内LB"></p>
+<blockquote>
+<p>前面我们使用了80通过轮询负载访问8001/8002, 一句话:负载均衡+RestTemplate调用</p>
+</blockquote>
+<h3 id="2、调用演示"><a href="#2、调用演示" class="headerlink" title="2、调用演示"></a>2、调用演示</h3><blockquote>
+<p>Ribbon其实就是一个软负载均衡的客户端组件，他可以和其他所需请求的客户端结合使用，和eureka结合只是其中的一个实例。</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123201157.png" srcset="/img/loading.gif" alt="ribbon工作"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123201226.png" srcset="/img/loading.gif" alt="策略"></p>
+<h4 id="a、Eureka自动引入"><a href="#a、Eureka自动引入" class="headerlink" title="a、Eureka自动引入"></a>a、Eureka自动引入</h4><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+
+<p><strong>Eureka新版本继承了Ribbon</strong></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123201540.png" srcset="/img/loading.gif" alt="pom依赖"></p>
+<h4 id="b、手动加入"><a href="#b、手动加入" class="headerlink" title="b、手动加入"></a>b、手动加入</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123201718.png" srcset="/img/loading.gif" alt="手动"></p>
+<h4 id="c、二说RestTemplate的使用"><a href="#c、二说RestTemplate的使用" class="headerlink" title="c、二说RestTemplate的使用"></a>c、二说RestTemplate的使用</h4><blockquote>
+<p>ForObject与ForEntity区别     <a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/5.2.2.RELEASE/javadoc-api/org/springframework/web/client/RestTemplate.html">官网</a> </p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-meta">@GetMapping(&quot;/consumer/payment/get/&#123;id&#125;&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> CommonResult&lt;Payment&gt; <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id)</span></span>&#123;
+    <span class="hljs-comment">// 返回对象为响应体中数据转化成的对象，基本上可以理解为Json</span>
+    <span class="hljs-keyword">return</span> restTemplate.getForObject(PAYMENT_URL + <span class="hljs-string">&quot;/payment/get/&quot;</span> + id, CommonResult.class);
+&#125;
+
+<span class="hljs-meta">@GetMapping(&quot;/consumer/payment/getForEntity/&#123;id&#125;&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> CommonResult&lt;Payment&gt; <span class="hljs-title">getForEntity</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id)</span></span>&#123;
+    <span class="hljs-comment">// 返回对象为ResponseEntity对象，包含了响应中的一些重要信息，比如响应头、状态码、响应体等</span>
+    ResponseEntity&lt;CommonResult&gt; entity = restTemplate.getForEntity(PAYMENT_URL + <span class="hljs-string">&quot;/payment/get/&quot;</span> + id, CommonResult.class);
+    <span class="hljs-keyword">if</span> (entity.getStatusCode().is2xxSuccessful())&#123;
+        <span class="hljs-keyword">return</span> entity.getBody();
+    &#125;<span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> CommonResult&lt;&gt;(<span class="hljs-number">444</span>, <span class="hljs-string">&quot;失败&quot;</span>);
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs java">RestTemplate的:
+        xxxForObject()方法,返回的是响应体中的数据
+    xxxForEntity()方法.返回的是entity对象,这个对象不仅仅包含响应体数据,还包含响应体信息(状态码等)</code></pre>
+
+<h3 id="3、Ribbon核心组件IRule"><a href="#3、Ribbon核心组件IRule" class="headerlink" title="3、Ribbon核心组件IRule"></a>3、Ribbon核心组件IRule</h3><blockquote>
+<p>IRule:根据特定算法从服务列表中选取一个要访问的服务</p>
+</blockquote>
+<h4 id="a、IRule接口关系"><a href="#a、IRule接口关系" class="headerlink" title="a、IRule接口关系"></a>a、IRule接口关系</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123203451.png" srcset="/img/loading.gif" alt="接口"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123203612.png" srcset="/img/loading.gif" alt="各个算法"></p>
+<h4 id="b、如何替换？"><a href="#b、如何替换？" class="headerlink" title="b、如何替换？"></a>b、如何替换？</h4><p>修改cloud-consumer-order80:</p>
 
             </div>
             <hr>
