@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      4.9k 字
+      5.9k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      65
+      80
        分钟
     </span>
   
@@ -922,6 +922,246 @@
 <h4 id="a、IRule接口关系"><a href="#a、IRule接口关系" class="headerlink" title="a、IRule接口关系"></a>a、IRule接口关系</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123203451.png" srcset="/img/loading.gif" alt="接口"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123203612.png" srcset="/img/loading.gif" alt="各个算法"></p>
 <h4 id="b、如何替换？"><a href="#b、如何替换？" class="headerlink" title="b、如何替换？"></a>b、如何替换？</h4><p>修改cloud-consumer-order80:</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125101402.png" srcset="/img/loading.gif" alt="说明"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125101630.png" srcset="/img/loading.gif" alt="说明"></p>
+<p>在myrule下添加MySelfRule类</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MySelfRule</span> </span>&#123;
+    
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> IRule <span class="hljs-title">myRule</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RandomRule();
+    &#125;
+&#125;</code></pre>
+
+<p>主启动类添加:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RibbonClient</span></code></pre>
+
+<pre><code class="hljs java"><span class="hljs-meta">@RibbonClient(name = &quot;CLOUD-PAYMENT-SERVICE&quot;, configuration = MySelfRule.class)</span></code></pre>
+
+
+
+<h3 id="4、负载均衡算法"><a href="#4、负载均衡算法" class="headerlink" title="4、负载均衡算法"></a>4、负载均衡算法</h3><h4 id="a、轮询原理"><a href="#a、轮询原理" class="headerlink" title="a、轮询原理"></a>a、轮询原理</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125103222.png" srcset="/img/loading.gif" alt="原理"></p>
+<h4 id="b、轮询源码分析"><a href="#b、轮询源码分析" class="headerlink" title="b、轮询源码分析"></a>b、轮询源码分析</h4><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RoundRobinRule</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractLoadBalancerRule</span> </span>&#123;
+    <span class="hljs-comment">// ... 省略</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RoundRobinRule</span><span class="hljs-params">()</span> </span>&#123;
+        nextServerCyclicCounter = <span class="hljs-keyword">new</span> AtomicInteger(<span class="hljs-number">0</span>);
+    &#125;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Server <span class="hljs-title">choose</span><span class="hljs-params">(ILoadBalancer lb, Object key)</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (lb == <span class="hljs-keyword">null</span>) &#123;
+            log.warn(<span class="hljs-string">&quot;no load balancer&quot;</span>);
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+        &#125;
+
+        Server server = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">while</span> (server == <span class="hljs-keyword">null</span> &amp;&amp; count++ &lt; <span class="hljs-number">10</span>) &#123;
+            <span class="hljs-comment">// Reachable, 获得状态为UP的Server</span>
+            List&lt;Server&gt; reachableServers = lb.getReachableServers();
+            List&lt;Server&gt; allServers = lb.getAllServers();
+            <span class="hljs-keyword">int</span> upCount = reachableServers.size();
+            <span class="hljs-comment">// 获取Server数</span>
+            <span class="hljs-keyword">int</span> serverCount = allServers.size();
+
+            <span class="hljs-keyword">if</span> ((upCount == <span class="hljs-number">0</span>) || (serverCount == <span class="hljs-number">0</span>)) &#123;
+                log.warn(<span class="hljs-string">&quot;No up servers available from load balancer: &quot;</span> + lb);
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+            &#125;
+
+            <span class="hljs-keyword">int</span> nextServerIndex = incrementAndGetModulo(serverCount);
+            server = allServers.get(nextServerIndex);
+
+            <span class="hljs-keyword">if</span> (server == <span class="hljs-keyword">null</span>) &#123;
+                <span class="hljs-comment">/* Transient. */</span>
+                Thread.yield();
+                <span class="hljs-keyword">continue</span>;
+            &#125;
+
+            <span class="hljs-keyword">if</span> (server.isAlive() &amp;&amp; (server.isReadyToServe())) &#123;
+                <span class="hljs-keyword">return</span> (server);
+            &#125;
+
+            <span class="hljs-comment">// Next.</span>
+            server = <span class="hljs-keyword">null</span>;
+        &#125;
+
+        <span class="hljs-keyword">if</span> (count &gt;= <span class="hljs-number">10</span>) &#123;
+            log.warn(<span class="hljs-string">&quot;No available alive servers after 10 tries from load balancer: &quot;</span>
+                    + lb);
+        &#125;
+        <span class="hljs-keyword">return</span> server;
+    &#125;
+    
+    <span class="hljs-comment">// 自旋锁 </span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> <span class="hljs-title">incrementAndGetModulo</span><span class="hljs-params">(<span class="hljs-keyword">int</span> modulo)</span> </span>&#123;
+        <span class="hljs-keyword">for</span> (;;) &#123;
+            <span class="hljs-keyword">int</span> current = nextServerCyclicCounter.get();
+            <span class="hljs-comment">// 开始 0 + 1</span>
+            <span class="hljs-keyword">int</span> next = (current + <span class="hljs-number">1</span>) % modulo;
+            <span class="hljs-comment">// CAS 比较并交换</span>
+            <span class="hljs-keyword">if</span> (nextServerCyclicCounter.compareAndSet(current, next))
+                <span class="hljs-keyword">return</span> next;
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<h4 id="d、手写轮询算法"><a href="#d、手写轮询算法" class="headerlink" title="d、手写轮询算法"></a>d、手写轮询算法</h4><blockquote>
+<p>学完JUC再续…</p>
+</blockquote>
+<p>// TODO</p>
+<h2 id="OpenFeign服务接口调用"><a href="#OpenFeign服务接口调用" class="headerlink" title="OpenFeign服务接口调用"></a>OpenFeign服务接口调用</h2><h3 id="1、概念"><a href="#1、概念" class="headerlink" title="1、概念"></a>1、概念</h3><blockquote>
+<p>Feign是一个声明式的web服务客户端，让编写web服务客户端变得非常容易，只需创建一个接口并在接口上添加注解即可 <a target="_blank" rel="noopener" href="https://github.com/spring-cloud/spring-cloud-openfeign">官网</a></p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125111325.png" srcset="/img/loading.gif" alt="概念"></p>
+<blockquote>
+<p>能干什么？</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125111350.png" srcset="/img/loading.gif" alt="用途"></p>
+<blockquote>
+<p>就是A要调用B,Feign就是在A中创建一个一模一样的B对外提供服务的的接口,我们调用这个接口,就可以服务到B</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125112301.png" srcset="/img/loading.gif" alt="区别"></p>
+<h3 id="2、使用"><a href="#2、使用" class="headerlink" title="2、使用"></a>2、使用</h3><blockquote>
+<p>之前的服务间调用, 我们使用的是ribbon+RestTemplate, 现在改为使用Feign, 继承了Ribbon, 默认仍是轮询</p>
+</blockquote>
+<h4 id="a、创建cloud-consumer-feign-order80工程"><a href="#a、创建cloud-consumer-feign-order80工程" class="headerlink" title="a、创建cloud-consumer-feign-order80工程"></a>a、创建cloud-consumer-feign-order80工程</h4><p>Pom:</p>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- openfeign --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-openfeign<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+
+<p>yaml:</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">80</span>
+<span class="hljs-attr">eureka:</span>
+  <span class="hljs-attr">client:</span>
+    <span class="hljs-attr">register-with-eureka:</span> <span class="hljs-literal">false</span>
+    <span class="hljs-attr">service-url:</span>
+      <span class="hljs-comment">#defaultZone: http://localhost:7001/eureka</span>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka</span></code></pre>
+
+<p>主启动类:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@EnableFeignClients</span> <span class="hljs-comment">// 使用Feign, 激活并开启</span></code></pre>
+
+<h4 id="b、新建PaymentFeignService接口并新增注解-FeignClient"><a href="#b、新建PaymentFeignService接口并新增注解-FeignClient" class="headerlink" title="b、新建PaymentFeignService接口并新增注解@FeignClient:"></a>b、新建PaymentFeignService接口并新增注解@FeignClient:</h4><pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<span class="hljs-meta">@FeignClient(name = &quot;CLOUD-PAYMENT-SERVICE&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">PaymentFeignService</span> </span>&#123;
+    
+    <span class="hljs-meta">@GetMapping(&quot;/payment/get/&#123;id&#125;&quot;)</span>
+    <span class="hljs-function">CommonResult&lt;Payment&gt; <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(value = &quot;id&quot;)</span> Long id)</span></span>;
+    
+&#125;</code></pre>
+
+
+
+<h4 id="c、写controller"><a href="#c、写controller" class="headerlink" title="c、写controller"></a>c、写controller</h4><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-meta">@Slf4j</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderController</span> </span>&#123;
+    
+    <span class="hljs-meta">@Resource</span>
+    <span class="hljs-keyword">private</span> PaymentFeignService paymentFeignService;
+    
+    <span class="hljs-meta">@GetMapping(&quot;/consumer/payment/get/&#123;id&#125;&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> CommonResult&lt;Payment&gt; <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(value = &quot;id&quot;)</span> Long id)</span></span>&#123;
+        <span class="hljs-keyword">return</span> paymentFeignService.get(id);
+    &#125;
+&#125;</code></pre>
+
+<blockquote>
+<p>注: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/huhuixin/p/7797850.html">Feign PathVariable annotation was empty on param 0.</a>报错, 需要在@PathVariable中添加Value = “”</p>
+</blockquote>
+<blockquote>
+<pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">application:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">CLOUD-PAYMENT-SERVICE</span>
+<span class="hljs-comment"># name与用到的地方务必统一大小写 c + shift + u</span></code></pre>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125140748.png" srcset="/img/loading.gif" alt="总览"></p>
+<h3 id="3、OpenFeign超时控制"><a href="#3、OpenFeign超时控制" class="headerlink" title="3、OpenFeign超时控制"></a>3、OpenFeign超时控制</h3><blockquote>
+<p>消费调用服务, 一定会存在一种<strong>超时现象</strong>, OpenFeign默认等待一秒钟, 超过后报错</p>
+</blockquote>
+<h4 id="a、在PaymentController中添加timeout接口"><a href="#a、在PaymentController中添加timeout接口" class="headerlink" title="a、在PaymentController中添加timeout接口"></a>a、在PaymentController中添加timeout接口</h4><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-meta">@Slf4j</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentController</span> </span>&#123;
+    <span class="hljs-meta">@GetMapping(&quot;/payment/timeout&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">timeout</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">try</span> &#123;
+            TimeUnit.SECONDS.sleep(<span class="hljs-number">3</span>);
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+        <span class="hljs-keyword">return</span> serverPort;
+    &#125;
+&#125;</code></pre>
+
+<h4 id="b、在PaymentFeignService添加"><a href="#b、在PaymentFeignService添加" class="headerlink" title="b、在PaymentFeignService添加"></a>b、在PaymentFeignService添加</h4><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<span class="hljs-meta">@FeignClient(value = &quot;cloud-payment-service&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">PaymentFeignService</span> </span>&#123;
+    <span class="hljs-meta">@GetMapping(&quot;/payment/timeout&quot;)</span>
+    <span class="hljs-function">String <span class="hljs-title">timeout</span><span class="hljs-params">()</span></span>;
+&#125;</code></pre>
+
+<h4 id="c、OrderController中添加"><a href="#c、OrderController中添加" class="headerlink" title="c、OrderController中添加"></a>c、OrderController中添加</h4><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-meta">@Slf4j</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderController</span> </span>&#123;
+    <span class="hljs-meta">@GetMapping(&quot;/consumer/payment/timeout&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">timeout</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> paymentFeignService.timeout();
+    &#125;
+&#125;</code></pre>
+
+<p>​           <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125142929.png" srcset="/img/loading.gif" alt="测试结果"></p>
+<h4 id="d、超时控制"><a href="#d、超时控制" class="headerlink" title="d、超时控制"></a>d、超时控制</h4><pre><code class="hljs yaml"><span class="hljs-attr">ribbon:</span>
+  <span class="hljs-comment"># 建立连接时间</span>
+  <span class="hljs-attr">ReadTimeout:</span> <span class="hljs-number">5000</span>
+  <span class="hljs-comment"># 连接后从服务器读取到可用资源时间</span>
+  <span class="hljs-attr">ConnectTimeout:</span> <span class="hljs-number">5000</span></code></pre>
+
+<p>​       <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125143321.png" srcset="/img/loading.gif" alt="测试结果"></p>
+<h3 id="4、日志增强"><a href="#4、日志增强" class="headerlink" title="4、日志增强"></a>4、日志增强</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125143432.png" srcset="/img/loading.gif" alt="openfeign日志"></p>
+<p>写config:</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FeignConfig</span> </span>&#123;
+    
+    <span class="hljs-meta">@Bean</span>
+    Logger.<span class="hljs-function">Level <span class="hljs-title">feignLoggerLevel</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> Logger.Level.FULL;
+    &#125;
+&#125;</code></pre>
+
+<p>yaml开启:</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">logging:</span>
+  <span class="hljs-attr">level:</span> 
+    <span class="hljs-attr">com.qiuke.springcloud.service.PaymentFeignService:</span> <span class="hljs-string">debug</span></code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125144229.png" srcset="/img/loading.gif" alt="日志"></p>
+<h1 id="服务降级"><a href="#服务降级" class="headerlink" title="服务降级"></a>服务降级</h1><h2 id="Hystrix-断路器"><a href="#Hystrix-断路器" class="headerlink" title="Hystrix 断路器"></a>Hystrix 断路器</h2><h3 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h3><h4 id="a、分布式面临的问题"><a href="#a、分布式面临的问题" class="headerlink" title="a、分布式面临的问题"></a>a、分布式面临的问题</h4><blockquote>
+<p>复杂分布式体系结构中的应用程序有数十个依赖关系, 每个依赖关系在某个时候将不可避免的失败</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125144953.png" srcset="/img/loading.gif" alt="问题"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125145028.png" srcset="/img/loading.gif" alt="服务雪崩"></p>
+<h4 id="b、Hystrix是什么？"><a href="#b、Hystrix是什么？" class="headerlink" title="b、Hystrix是什么？"></a>b、Hystrix是什么？</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125145348.png" srcset="/img/loading.gif" alt="概念"></p>
+<blockquote>
+<p>功能: 服务降级、服务熔断、接近实时的监控   <a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki/How-To-Use">官网</a>   <a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix">停更进维</a></p>
+</blockquote>
+<h4 id="c、名词概念"><a href="#c、名词概念" class="headerlink" title="c、名词概念"></a>c、名词概念</h4><blockquote>
+<p>服务降级 (fallback)</p>
+</blockquote>
+<p><strong>服务器忙，请稍候再试，不让客户端等待并立刻返回一个友好提示，fallback</strong></p>
+<p>哪些情况会触发降级？</p>
+<ul>
+<li>程序运行异常</li>
+<li>超时</li>
+<li>服务熔断触发服务降级</li>
+<li>线程池/信号量打满也会导致服务降级</li>
+</ul>
+<blockquote>
+<p>服务熔断 (break)</p>
+</blockquote>
+<blockquote>
+<p>服务限流 (flowlimit)</p>
+</blockquote>
 
             </div>
             <hr>
