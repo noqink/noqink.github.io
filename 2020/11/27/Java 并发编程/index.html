@@ -265,8 +265,8 @@
 <h3 id="1-2-并行与并发"><a href="#1-2-并行与并发" class="headerlink" title="1.2 并行与并发"></a>1.2 并行与并发</h3><blockquote>
 <p>并发</p>
 </blockquote>
-<p>单核 cpu 下，线程实际还是 <strong><em>串行执行</em></strong> 的。操作系统中有一个组件叫做*<strong>任务调度器***，将 cpu 的时间片(windows 下时间片最小约为 15 毫秒)分给不同的程序使用，只是由于 cpu 在线程间(时间片很短)的切换非常快，人类感 觉是 同时运行的 。总结为一句话就是:  *</strong>微观串行，宏观并行*** ，</p>
-<p>一般会将这种 <strong><em>线程轮流使用 CPU</em></strong> 的做法称为**<em>并发**</em>， concurrent</p>
+<p>单核 cpu 下，线程实际还是 <strong><em>串行执行</em></strong> 的。操作系统中有一个组件叫做 <strong><em>任务调度器</em></strong>，将 cpu 的时间片(windows 下时间片最小约为 15 毫秒)分给不同的程序使用，只是由于 cpu 在线程间(时间片很短)的切换非常快，人类感 觉是 同时运行的 。总结为一句话就是: <strong><em>微观串行，宏观并行</em></strong> ，</p>
+<p>一般会将这种 <strong><em>线程轮流使用 CPU</em></strong> 的做法称为 <strong><em>并发</em></strong>， concurrent</p>
 <table>
 <thead>
 <tr>
@@ -322,7 +322,7 @@
 <ul>
 <li><p><strong>并发(concurrent)是同一时间应对(dealing with)多件事情的能力</strong></p>
 </li>
-<li><p>**并行(parallel)是同一时间动手做(doing)多件事情的能力 **</p>
+<li><p><strong>并行(parallel)是同一时间动手做(doing)多件事情的能力</strong></p>
 </li>
 </ul>
 <blockquote>
@@ -459,11 +459,11 @@
 </li>
 <li><p>多核 cpu 可以并行跑多个线程，但能否提高程序运行效率还是要分情况的</p>
 <ul>
-<li>有些任务，经过精心设计，将任务拆分，并行执行，当然可以提高程序的运行效率。但不是所有计算任<br> 务都能拆分(参考后文的**<em>【阿姆达尔定律】**</em>)</li>
+<li>有些任务，经过精心设计，将任务拆分，并行执行，当然可以提高程序的运行效率。但不是所有计算任<br> 务都能拆分(参考后文的 <strong><em>【阿姆达尔定律】</em></strong>)</li>
 <li> 也不是所有任务都需要拆分，任务的目的如果不同，谈拆分和效率没啥意义</li>
 </ul>
 </li>
-<li><p>IO 操作不占用 cpu，只是我们一般拷贝文件使用的是*<strong>【阻塞 IO】**<em>，这时相当于线程虽然不用 cpu，但需要一 直等待 IO 结束，没能充分利用线程。所以才有后面的</em></strong>【非阻塞 IO】*<strong>和**<em>【异步 IO】</em></strong>优化</p>
+<li><p>IO 操作不占用 cpu，只是我们一般拷贝文件使用的是 <strong><em>【阻塞 IO】</em></strong>，这时相当于线程虽然不用 cpu，但需要一 直等待 IO 结束，没能充分利用线程。所以才有后面的 <strong><em>【非阻塞 IO】</em></strong>和 <strong><em>【异步 IO】</em></strong>优化</p>
 </li>
 </ul>
 <h2 id="2、Java-线程"><a href="#2、Java-线程" class="headerlink" title="2、Java 线程"></a>2、Java 线程</h2><h3 id="2-1、创建和运行线程"><a href="#2-1、创建和运行线程" class="headerlink" title="2.1、创建和运行线程"></a>2.1、创建和运行线程</h3><h4 id="方法一-直接使用Thread"><a href="#方法一-直接使用Thread" class="headerlink" title="方法一, 直接使用Thread"></a>方法一, 直接使用Thread</h4><pre><code class="hljs java"><span class="hljs-comment">// 创建线程对象</span>
@@ -686,7 +686,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201127175648.png" srcset="/img/loading.gif" alt="参数存放于局部变量表中"></p>
 <blockquote>
-<p>这些参数都存在于**<em>局部变量表**</em>中</p>
+<p>这些参数都存在于 <strong><em>局部变量表</em></strong>中</p>
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201127175800.png" srcset="/img/loading.gif" alt="栈结构很明显"></p>
 <h4 id="栈帧图解"><a href="#栈帧图解" class="headerlink" title="栈帧图解"></a>栈帧图解</h4><blockquote>
@@ -721,9 +721,9 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 <li> 有更高优先级的线程需要运行</li>
 <li> 线程自己调用了 sleep、yield、wait、join、park、synchronized、lock 等方法</li>
 </ul>
-<p>当 Context Switch 发生时，需要由操作系统保存当前线程的状态（<strong>比如执行到第n行代码时间片结束，要记录n，否则下次再次轮到该线程，cpu不知道该从哪执行</strong>），并恢复另一个线程的状态，Java 中对应的概念 就是*<strong>程序计数器(Program Counter Register)**<em>，它的作用是记住</em></strong>下一条 jvm 指令的执行地址*<strong>，是线程**<em>私有</em></strong>的</p>
+<p>当 Context Switch 发生时，需要由操作系统保存当前线程的状态（ <strong>比如执行到第n行代码时间片结束，要记录n，否则下次再次轮到该线程，cpu不知道该从哪执行</strong>），并恢复另一个线程的状态，Java 中对应的概念 就是 <strong><em>程序计数器(Program Counter Register)</em></strong>，它的作用是记住 <strong><em>下一条 jvm 指令的执行地址</em></strong>，是线程 <strong><em>私有</em></strong>的</p>
 <ul>
-<li><p>状态包括*<strong>程序计数器**<em>、</em></strong>虚拟机栈中每个栈帧的信息*<strong>，如**<em>局部变量</em></strong>、*<strong>操作数栈**<em>、</em></strong>返回地址***等 </p>
+<li><p>状态包括 <strong><em>程序计数器</em></strong>、 <strong><em>虚拟机栈中每个栈帧的信息</em></strong>，如 <strong><em>局部变量</em></strong>、 <strong><em>操作数栈</em></strong>、 <strong><em>返回地址</em></strong>等 </p>
 </li>
 <li><p>Context Switch 频繁发生会影响性能</p>
 <blockquote>
