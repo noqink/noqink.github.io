@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      7.1k 字
+      9.8k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      100
+      139
        分钟
     </span>
   
@@ -1208,6 +1208,313 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 <blockquote>
 <p>哈希表在使用时，增删改查时间复杂度都是O(1)<br>有序表在使用时，比哈希表功能多，时间复杂度都是O(logN)</p>
 </blockquote>
+<h1 id="归并排序与随机快排"><a href="#归并排序与随机快排" class="headerlink" title="归并排序与随机快排"></a>归并排序与随机快排</h1><h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><blockquote>
+<p>1）整体是递归，左边排好序+右边排好序+merge让整体有序</p>
+</blockquote>
+<p>例子: [3, 1, 2, 4]</p>
+<p>主函数: f(0, 3) </p>
+<p>运行后process(0,1) 再 process(2, 3) 再merge</p>
+<p>而运行process(0,1) 需要process(0,0)再process(1,1)再merge</p>
+<p>运行process(2, 3)需要process(2, 2)再process(3, 3)再merge</p>
+<h3 id="递归实现"><a href="#递归实现" class="headerlink" title="递归实现"></a>递归实现</h3><pre><code class="hljs java"><span class="hljs-comment">// 递归方法实现</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mergeSort1</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span></span>&#123;
+    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
+        <span class="hljs-keyword">return</span>;
+    &#125;
+
+    process(arr, <span class="hljs-number">0</span>, arr.length - <span class="hljs-number">1</span>);
+&#125;
+<span class="hljs-comment">// 让arr L - R范围变成有序</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">process</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> R)</span></span>&#123;
+    <span class="hljs-keyword">if</span> (L == R)&#123; <span class="hljs-comment">// base case</span>
+        <span class="hljs-keyword">return</span>;
+    &#125;
+    <span class="hljs-keyword">int</span> mid = L + (( R - L ) &gt;&gt; <span class="hljs-number">2</span>);
+    process(arr, L, mid);
+    process(arr, mid + <span class="hljs-number">1</span>, R);
+    merge(arr, L, mid, R);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span>  <span class="hljs-title">merge</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> M, <span class="hljs-keyword">int</span> R)</span></span>&#123;
+    <span class="hljs-keyword">int</span>[] help = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[R - L + <span class="hljs-number">1</span>];
+    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; <span class="hljs-comment">// help数组的指针</span>
+    <span class="hljs-keyword">int</span> p1 = L; <span class="hljs-comment">// 左部分指针</span>
+    <span class="hljs-keyword">int</span> p2 = M + <span class="hljs-number">1</span>; <span class="hljs-comment">// 又部分指针</span>
+
+    <span class="hljs-keyword">while</span> (p1 &lt;= M &amp;&amp; p2 &lt;= R)&#123;
+        help[i++] = arr[p1] &lt;= arr[p2] ? arr[p1++] : arr[p2++];
+    &#125;
+    <span class="hljs-comment">// 要么p1越界, 要么p2越界</span>
+    <span class="hljs-keyword">while</span> (p1 &lt;= M)&#123;
+        help[i++] = arr[p1++];
+    &#125;
+    <span class="hljs-keyword">while</span> (p2 &lt;= R)&#123;
+        help[i++] = arr[p2++];
+    &#125;
+
+    <span class="hljs-comment">// 把help的值赋值回去</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; help.length ; j++) &#123;
+        arr[L + i] = help[i];
+    &#125;
+&#125;</code></pre>
+
+<h3 id="非递归实现"><a href="#非递归实现" class="headerlink" title="非递归实现"></a>非递归实现</h3><p>例子[2, 3, 1, 4, 5, 6]</p>
+<p>初始k = 1, 每个最小原子单元, 即每个数自我有序,</p>
+<p>K &lt;&lt; 2, 每两个一组进行merge, 变成[2, 3, 1, 4, 5, 6]</p>
+<p>K &lt;&lt; 2, 每四个一组进行merge, 不够则凑一组[1, 2, 3, 4, 5, 6]</p>
+<p>直到k &gt;= N</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 非递归方法实现</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mergeSort2</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   <span class="hljs-keyword">int</span> N = arr.length;
+   <span class="hljs-keyword">int</span> mergeSize = <span class="hljs-number">1</span>;<span class="hljs-comment">// 一组是两倍的mergeSize, 当前有序的左组长度</span>
+   <span class="hljs-keyword">while</span> (mergeSize &lt; N) &#123;
+      <span class="hljs-keyword">int</span> L = <span class="hljs-number">0</span>;
+      <span class="hljs-keyword">while</span> (L &lt; N) &#123;
+         <span class="hljs-comment">// L...M 左组(mergeSize大小)</span>
+         <span class="hljs-comment">// 求中间</span>
+         <span class="hljs-keyword">int</span> M = L + mergeSize - <span class="hljs-number">1</span>;
+         <span class="hljs-keyword">if</span> (M &gt;= N) &#123;
+            <span class="hljs-keyword">break</span>;
+         &#125;
+         <span class="hljs-comment">// L...M   M+1...R</span>
+         <span class="hljs-comment">// 右组可能凑不齐mergeSize个</span>
+         <span class="hljs-comment">// 求右边</span>
+         <span class="hljs-keyword">int</span> R = Math.min(M + mergeSize, N - <span class="hljs-number">1</span>);
+         merge(arr, L, M, R);
+         <span class="hljs-comment">// 算下一次左边</span>
+         L = R + <span class="hljs-number">1</span>;
+      &#125;
+      
+      <span class="hljs-comment">// 防止溢出</span>
+      <span class="hljs-keyword">if</span> (mergeSize &gt; N / <span class="hljs-number">2</span>) &#123;
+         <span class="hljs-keyword">break</span>;
+      &#125;
+      mergeSize &lt;&lt;= <span class="hljs-number">1</span>;
+   &#125;
+&#125;</code></pre>
+
+<h3 id="利用master公式来求解时间复杂度"><a href="#利用master公式来求解时间复杂度" class="headerlink" title="利用master公式来求解时间复杂度"></a>利用master公式来求解时间复杂度</h3><pre><code class="hljs mathematica"><span class="hljs-variable">T</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">=</span> <span class="hljs-number">2</span><span class="hljs-operator">*</span><span class="hljs-variable">T</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">/</span><span class="hljs-number">2</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">+</span> <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">1</span><span class="hljs-punctuation">)</span>
+
+根据<span class="hljs-variable">master</span>可知时间复杂度为<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span>
+<span class="hljs-punctuation">(</span>非递归分析<span class="hljs-operator">:</span>每次<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span><span class="hljs-operator">,</span> <span class="hljs-number">2</span><span class="hljs-operator">,</span> <span class="hljs-number">4</span><span class="hljs-operator">,</span> <span class="hljs-number">8</span><span class="hljs-operator">,</span> <span class="hljs-number">16</span> <span class="hljs-operator">....</span> <span class="hljs-built_in">N</span> <span class="hljs-operator">,</span> <span class="hljs-built_in">Log</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span>次<span class="hljs-operator">,</span> 所以<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">)</span>
+<span class="hljs-variable">merge</span>过程需要辅助数组，所以额外空间复杂度为<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span>
+
+归并排序的实质是把比较行为变成了有序信息并传递，比<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">2</span><span class="hljs-punctuation">)</span>的排序快
+
+<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">2</span><span class="hljs-punctuation">)</span>在无限浪费比较行为<span class="hljs-operator">,</span> 例如选择排序<span class="hljs-operator">,</span> 每次都与后面比较大小</code></pre>
+
+
+
+<h3 id="用常见面试题再深入理解一下归并排序的精髓"><a href="#用常见面试题再深入理解一下归并排序的精髓" class="headerlink" title="用常见面试题再深入理解一下归并排序的精髓"></a>用常见面试题再深入理解一下归并排序的精髓</h3><blockquote>
+<p> 在一个数组中，一个数左边比它小的数的总和，叫数的小和，所有数的小和累加起来，叫数组小和。求数组小和。</p>
+</blockquote>
+<p>例子： [1,3,4,2,5]<br>1左边比1小的数：没有<br>3左边比3小的数：1<br>4左边比4小的数：1、3<br>2左边比2小的数：1<br>5左边比5小的数：1、3、4、 2<br>所以数组的小和为1+1+3+1+1+3+4+2=16 </p>
+<p>每次merge时, 两个指针对应的数比较大小, 如果小, 则计算另外一个指针包括当前位置以后的有多少个比对方大的数字.</p>
+<pre><code class="hljs css">例子:
+<span class="hljs-selector-attr">[1,3,4,2,5]</span> 分为<span class="hljs-selector-attr">[1,3]</span>和<span class="hljs-selector-attr">[4,2,5]</span>
+<span class="hljs-selector-attr">[1]</span> <span class="hljs-selector-attr">[3]</span><span class="hljs-selector-tag">merge</span>时, 1比3小, 1个1
+<span class="hljs-selector-attr">[4,2,5]</span>分为<span class="hljs-selector-attr">[4]</span>,<span class="hljs-selector-attr">[2, 5]</span>
+<span class="hljs-selector-attr">[4]</span><span class="hljs-selector-tag">merge</span>, <span class="hljs-selector-tag">return</span> 0
+<span class="hljs-selector-attr">[2, 5]</span><span class="hljs-selector-tag">merge</span>时候, 2比5小, 1个2
+<span class="hljs-selector-attr">[4]</span>与<span class="hljs-selector-attr">[2,5]</span><span class="hljs-selector-tag">merge</span>时候, 左指针初始4, 右指针初始2, 4 &gt; 2, <span class="hljs-selector-tag">help</span>数组放入2, 右指针右移
+4 &lt; 5, 1个4,<span class="hljs-selector-tag">help</span>数组放入4,越界,放入5
+<span class="hljs-selector-attr">[1,3]</span>和<span class="hljs-selector-attr">[2,4,5]</span><span class="hljs-selector-tag">merge</span>, 1&lt;2, 3个1, 3&lt;4, 2个3
+结束4个1, 1个2, 2个3, 1个4,</code></pre>
+
+<blockquote>
+<p>其实就是在左指针与右指针对比时, 加上右指针开始个大于左指针数(利用右边有序)的左指针当前数</p>
+<p>result += arr[p1] &lt; arr[p2] ? arr[p1] * (R - p2 + 1) : 0;</p>
+<p>也可以解决降序对的问题</p>
+<p>只要纠结右边有多少个数比左边大这类的问题，都可以用归并</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">smallNum</span><span class="hljs-params">(<span class="hljs-keyword">int</span> arr[])</span></span>&#123;
+    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>)&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    &#125;
+
+    <span class="hljs-keyword">return</span> process(arr, <span class="hljs-number">0</span>, arr.length - <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">process</span><span class="hljs-params">(<span class="hljs-keyword">int</span> arr[], <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> R)</span></span>&#123;
+    <span class="hljs-keyword">if</span> (L == R)&#123;
+        <span class="hljs-comment">// 只有一个数, 右组都没有</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    &#125;
+
+    <span class="hljs-keyword">int</span> mid = L + ((R - L) &gt;&gt; <span class="hljs-number">2</span>);
+    <span class="hljs-keyword">return</span> process(arr, L, mid) + process(arr, mid + <span class="hljs-number">1</span>, R) + merge(arr, L, mid, R);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">merge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> arr[], <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> mid, <span class="hljs-keyword">int</span> R)</span></span>&#123;
+    <span class="hljs-keyword">int</span> help[] = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[R - L + <span class="hljs-number">1</span>];
+    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> p1 = L;
+    <span class="hljs-keyword">int</span> p2 = mid + <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">int</span> result = <span class="hljs-number">0</span>;
+
+    <span class="hljs-keyword">while</span> (p1 &lt;= mid &amp;&amp; p2 &lt;= R)&#123;
+        result += arr[p1] &lt; arr[p2] ? arr[p1] * (R - p2 + <span class="hljs-number">1</span>) : <span class="hljs-number">0</span>;
+        help[i++] = arr[p1] &lt; arr[p2] ? arr[p1++] : arr[p2++];
+    &#125;
+    <span class="hljs-keyword">while</span> (p1 &lt;= mid)&#123;
+        help[i++] = arr[p1++];
+    &#125;
+    <span class="hljs-keyword">while</span> (p2 &lt;= R)&#123;
+        help[i++] = arr[p2++];
+    &#125;
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; help.length; i++) &#123;
+        arr[L + i] = help[i];
+    &#125;
+    <span class="hljs-keyword">return</span> result;
+&#125;</code></pre>
+
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><h3 id="Partition过程"><a href="#Partition过程" class="headerlink" title="Partition过程"></a>Partition过程</h3><blockquote>
+<p>给定一个数组arr，和一个整数num。请把小于等于num的数放在数组的左边，大于num的数放在数组的右边。<br>要求额外空间复杂度O(1)，时间复杂度O(N) </p>
+</blockquote>
+<p>设置一个 <strong><em>小于等于区</em></strong>, 设初始位置 -1, </p>
+<ol>
+<li><p>[i]&lt;=num,当前数和小于等于区下一个位置交换, 小于等于区右扩, i++</p>
+</li>
+<li><p>[i]&gt;num, i++</p>
+</li>
+</ol>
+<p>例子: [5, 3, 7, 2] num = 3</p>
+<p>一开始小于等于区位置 -1, i=0, i[0]=5 &gt; 3, i++, 跳到3, 3&lt;=num, 与小于等于区下一个数即i[0]交换</p>
+<p>变成[3, 5, 7, 2]小于等于区右扩, 初始位置为0, 逐步下去</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 以arr[R]做划分值</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">partition</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> R)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (L &gt; R) &#123;
+      <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
+   &#125;
+   <span class="hljs-keyword">if</span> (L == R) &#123;
+      <span class="hljs-keyword">return</span> L;
+   &#125;
+   <span class="hljs-keyword">int</span> lessEqual = L - <span class="hljs-number">1</span>;
+   <span class="hljs-keyword">int</span> index = L;
+   <span class="hljs-keyword">while</span> (index &lt; R) &#123;
+      <span class="hljs-keyword">if</span> (arr[index] &lt;= arr[R]) &#123;
+         swap(arr, index, ++lessEqual);
+      &#125;
+      index++;
+   &#125;
+   swap(arr, ++lessEqual, R);
+   <span class="hljs-keyword">return</span> lessEqual;
+&#125;</code></pre>
+
+<h3 id="荷兰国旗问题"><a href="#荷兰国旗问题" class="headerlink" title="荷兰国旗问题"></a>荷兰国旗问题</h3><blockquote>
+<p>给定一个数组arr，和一个整数num。请把小于num的数放在数组的左边，等于num的数放在中间，大于num的数放在数组的右边。</p>
+<p>要求额外空间复杂度O(1)，时间复杂度O(N)  </p>
+</blockquote>
+<p>设置一个 <strong><em>小于区</em></strong>,设初始位置 -1 ;  设置一个 <strong><em>大于区</em></strong>,设初始位置 length -1</p>
+<ol>
+<li><p>[i] == num, i++</p>
+</li>
+<li><p>[i] &lt; num, [i] 与小于区下一个交换, 小于区右扩, i++</p>
+</li>
+<li><p>[i] &gt; num, [i] 与大于区左一个交换, 大于区左扩, i <strong><em>停在原地</em></strong></p>
+</li>
+</ol>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201129162221.png" srcset="/img/loading.gif" alt="流程图"></p>
+<p>i与大于区边界撞上的时候停</p>
+<pre><code class="hljs java"><span class="hljs-comment">// arr[L...R] 玩荷兰国旗问题的划分，以arr[R]做划分值</span>
+<span class="hljs-comment">//  &lt;arr[R]  ==arr[R]  &gt; arr[R]</span>
+<span class="hljs-comment">// 返回等于区域范围</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span>[] netherlandsFlag(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> R) &#123;
+   <span class="hljs-keyword">if</span> (L &gt; R) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[] &#123; -<span class="hljs-number">1</span>, -<span class="hljs-number">1</span> &#125;;
+   &#125;
+   <span class="hljs-keyword">if</span> (L == R) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[] &#123; L, R &#125;;
+   &#125;
+   <span class="hljs-keyword">int</span> less = L - <span class="hljs-number">1</span>; <span class="hljs-comment">// &lt; 区 右边界</span>
+   <span class="hljs-keyword">int</span> more = R;     <span class="hljs-comment">// &gt; 区 左边界</span>
+   <span class="hljs-keyword">int</span> index = L;
+   <span class="hljs-keyword">while</span> (index &lt; more) &#123;
+      <span class="hljs-keyword">if</span> (arr[index] == arr[R]) &#123;
+         index++;
+      &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (arr[index] &lt; arr[R]) &#123;
+         swap(arr, index++, ++less);
+      &#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">// &gt;</span>
+         swap(arr, index, --more);
+      &#125;
+   &#125;
+   <span class="hljs-comment">// L...Less 小于区 less+1...more-1 等于区 more...R-1 大于区  R没动过</span>
+   <span class="hljs-comment">// 交换后</span>
+   <span class="hljs-comment">// L...Less 小于区 less+1.....more 等于区 more+1...R 大于区</span>
+   swap(arr, more, R);
+   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[] &#123; less + <span class="hljs-number">1</span>, more &#125;;
+&#125;</code></pre>
+
+<h2 id="快速排序1-0"><a href="#快速排序1-0" class="headerlink" title="快速排序1.0"></a>快速排序1.0</h2><p>在arr[L..R]范围上，进行快速排序的过程：<br>1）用arr[R]对该范围做partition，&lt;= arr[R]的数在左部分并且保证arr[R]最后来到左部分小于区的最后一个位置，记为M； &lt;= arr[R]的数在右部分（arr[M+1..R]）,此时X就已经排好序了<br>2）对arr[L..M-1]进行快速排序(递归)<br>3）对arr[M+1..R]进行快速排序(递归)<br>因为每一次partition都会搞定一个数的位置且不会再变动，所以排序能完成</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">quickSort1</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   process1(arr, <span class="hljs-number">0</span>, arr.length - <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">process1</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> R)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (L &gt;= R) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   <span class="hljs-comment">// L..R partition arr[R]  [   &lt;=arr[R]   arr[R]    &gt;arr[R]  ]</span>
+   <span class="hljs-keyword">int</span> M = partition(arr, L, R);
+   process1(arr, L, M - <span class="hljs-number">1</span>);
+   process1(arr, M + <span class="hljs-number">1</span>, R);
+&#125;</code></pre>
+
+
+
+<h2 id="快速排序2-0"><a href="#快速排序2-0" class="headerlink" title="快速排序2.0"></a>快速排序2.0</h2><p>在arr[L..R]范围上，进行快速排序的过程：<br>1）用arr[R]对该范围做partition，&lt; arr[R]的数在左部分，== arr[R]的数中间，&gt;arr[R]的数在右部分。假设== arr[R]的数所在范围是[a,b]<br>2）对arr[L..a-1]进行快速排序(递归)<br>3）对arr[b+1..R]进行快速排序(递归)<br>因为每一次partition都会搞定一批数的位置且不会再变动，所以排序能完成</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">quickSort2</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   process2(arr, <span class="hljs-number">0</span>, arr.length - <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">process2</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> R)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (L &gt;= R) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   <span class="hljs-keyword">int</span>[] equalArea = netherlandsFlag(arr, L, R);
+   process2(arr, L, equalArea[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>);
+   process2(arr, equalArea[<span class="hljs-number">1</span>] + <span class="hljs-number">1</span>, R);
+&#125;</code></pre>
+
+<h2 id="快速排序1-0和2-0的时间复杂度分析"><a href="#快速排序1-0和2-0的时间复杂度分析" class="headerlink" title="快速排序1.0和2.0的时间复杂度分析"></a>快速排序1.0和2.0的时间复杂度分析</h2><blockquote>
+<p>数组已经有序的时候就是复杂度最高的时候<br>时间复杂度O(N^2)</p>
+</blockquote>
+<h2 id="快速排序3-0-随机快排-荷兰国旗技巧优化"><a href="#快速排序3-0-随机快排-荷兰国旗技巧优化" class="headerlink" title="快速排序3.0(随机快排+荷兰国旗技巧优化)"></a>快速排序3.0(随机快排+荷兰国旗技巧优化)</h2><p>在arr[L..R]范围上，进行快速排序的过程：<br>1）在这个范围上，随机选一个数记为num，<br>1）用num对该范围做partition，&lt; num的数在左部分，== num的数中间，&gt;num的数在右部分。假设== num的数所在范围是[a,b]<br>2）对arr[L..a-1]进行快速排序(递归)<br>3）对arr[b+1..R]进行快速排序(递归)<br>因为每一次partition都会搞定一批数的位置且不会再变动，所以排序能完成</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">quickSort3</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   process3(arr, <span class="hljs-number">0</span>, arr.length - <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">process3</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> R)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (L &gt;= R) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   <span class="hljs-comment">// 1、2拿arr[R]做划分值</span>
+   <span class="hljs-comment">// 3 随机选一个i, 人为放到arr[R], 再以arr[R]做划分值</span>
+   swap(arr, L + (<span class="hljs-keyword">int</span>) (Math.random() * (R - L + <span class="hljs-number">1</span>)), R);
+   <span class="hljs-keyword">int</span>[] equalArea = netherlandsFlag(arr, L, R);
+   process3(arr, L, equalArea[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>);
+   process3(arr, equalArea[<span class="hljs-number">1</span>] + <span class="hljs-number">1</span>, R);
+&#125;</code></pre>
+
+<pre><code class="hljs apache"><span class="hljs-attribute">1</span>）通过分析知道，划分值越靠近中间，性能越好；越靠近两边，性能越差
+<span class="hljs-attribute">2</span>）随机选一个数进行划分的目的就是让好情况和差情况都变成概率事件
+<span class="hljs-attribute">3</span>）把每一种情况都列出来，会有每种情况下的时间复杂度，但概率都是<span class="hljs-number">1</span>/N
+<span class="hljs-attribute">4</span>）那么所有情况都考虑，时间复杂度就是这种概率模型下的长期期望！</code></pre>
+
+
+<p> *<strong>时间复杂度O(N<em>logN)，额外空间复杂度O(logN)都是这么来的。</em></strong></p>
 
             </div>
             <hr>
