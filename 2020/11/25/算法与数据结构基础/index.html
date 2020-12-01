@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      9.8k 字
+      11.2k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      139
+      157
        分钟
     </span>
   
@@ -1515,6 +1515,175 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 
 
 <p> *<strong>时间复杂度O(N<em>logN)，额外空间复杂度O(logN)都是这么来的。</em></strong></p>
+<h1 id="比较器与堆"><a href="#比较器与堆" class="headerlink" title="比较器与堆"></a>比较器与堆</h1><h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><h3 id="堆的实现"><a href="#堆的实现" class="headerlink" title="堆的实现"></a>堆的实现</h3><p>堆结构</p>
+<p>1）堆结构就是用数组实现的完全二叉树结构</p>
+<blockquote>
+<p>完全二叉树是什么</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201201131244.png" srcset="/img/loading.gif" alt="完全二叉树"></p>
+<blockquote>
+<p>结点从左至右变满, 一个结点也是, 两个结点, 第二个结点在左边也是</p>
+</blockquote>
+<p>堆可以从数组arr[0]开始, 也可以从arr[1]开始, 为什么会出现从arr[1]开始的情况？</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201201131532.png" srcset="/img/loading.gif" alt="arr[1]开始的堆"></p>
+<p><strong>如图所示, 如果堆从arr[1]开始增加, 子结点以及父节点的运算都可以用位运算, 位运算就是快！</strong></p>
+<p>2）完全二叉树中如果每棵子树的最大值都在顶部就是大根堆</p>
+<blockquote>
+<p>头结点为头的树, 最大值为头结点</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201201131811.png" srcset="/img/loading.gif" alt="大根堆"></p>
+<p>3）完全二叉树中如果每棵子树的最小值都在顶部就是小根堆</p>
+<blockquote>
+<p>头结点为头的树, 最小值为头结点</p>
+</blockquote>
+<p>4）堆结构的heapInsert与heapify操作</p>
+<blockquote>
+<p>heapInsert: 数放入数组后, 与父节点比较, 如果数更大, 交换, 直到换到根结点</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span></span>&#123;
+    <span class="hljs-keyword">if</span> (heapSize &gt; limit)&#123;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(<span class="hljs-string">&quot;heap is full!&quot;</span>);
+    &#125;
+    heap[heapSize] = value;
+    heapInsert(heap, heapSize++);
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 把默认最后加进来的数往上提</span>
+<span class="hljs-comment"> * <span class="hljs-doctag">@param</span> arr</span>
+<span class="hljs-comment"> * <span class="hljs-doctag">@param</span> index</span>
+<span class="hljs-comment"> * arr[index] &gt; arr[(index - 1) / 2]已经包含两个条件</span>
+<span class="hljs-comment"> * 1)arr[index] 不比arr[index父]大, 停</span>
+<span class="hljs-comment"> * 2)index = 0, 停</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">heapInsert</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> index)</span></span>&#123;
+    <span class="hljs-keyword">while</span> (arr[index] &gt; arr[(index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>])&#123;
+        swap(arr, index, (index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>);
+        index = (index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>;
+    &#125;
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201201133318.png" srcset="/img/loading.gif" alt="heapInsert"></p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 删除堆的最大值并返回, 重组堆</span>
+<span class="hljs-comment"> * 用最后的值去顶替arr[0]</span>
+<span class="hljs-comment"> * 再往下交换, 找到左孩子与右孩子之间更大的数, 如果更小, 则交换</span>
+<span class="hljs-comment"> * <span class="hljs-doctag">@return</span></span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span></span>&#123;
+    <span class="hljs-keyword">int</span> ans = heap[<span class="hljs-number">0</span>];
+    <span class="hljs-comment">// -- heapSize, 之后的数据进入无效区</span>
+    swap(heap, <span class="hljs-number">0</span>, -- heapSize);
+    heapify(heap, <span class="hljs-number">0</span>, heapSize);
+    <span class="hljs-keyword">return</span> ans;
+&#125;
+
+<span class="hljs-comment">// 从index的位置往下看, 不断的下沉</span>
+<span class="hljs-comment">// 1) 孩子都不比我大 停; 2) 已经没孩子了, 停</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">heapify</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> index, <span class="hljs-keyword">int</span> heapSize)</span></span>&#123;
+    <span class="hljs-keyword">int</span> left = index * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>;
+    <span class="hljs-comment">// 左孩子不越界就肯定有孩子</span>
+    <span class="hljs-keyword">while</span> (left &lt; heapSize)&#123;
+        <span class="hljs-comment">// 再判断有没有右孩子</span>
+        <span class="hljs-comment">// 右孩子更大的条件是: 有右孩子 &amp;&amp; 右孩子大于左孩子</span>
+        <span class="hljs-keyword">int</span> largest = left + <span class="hljs-number">1</span> &lt; heapSize &amp;&amp; arr[left + <span class="hljs-number">1</span>] &gt; arr[left] ? left + <span class="hljs-number">1</span> : left;
+        largest = arr[largest] &gt; arr[index] ? largest : index;
+        <span class="hljs-comment">// 如果index更大, 则不用下坠</span>
+        <span class="hljs-keyword">if</span> (largest == index)&#123;
+            <span class="hljs-keyword">break</span>;
+        &#125;
+        swap(arr, index, largest);
+        index = largest;
+        left = index * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>;
+    &#125;
+&#125;</code></pre>
+
+<p>5）堆结构的增大和减少<br>6）优先级队列结构，就是堆结构(小根堆)</p>
+<pre><code class="hljs java">PriorityQueue&lt;Integer&gt; heap = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(<span class="hljs-keyword">new</span> MyComp());</code></pre>
+
+<h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><blockquote>
+<p>先把数组数据变为大根堆结构, 再每次arr[0]与堆最后一个结点互换, 必定会把Max丢到最后, 再heapify</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-comment">// 堆排序额外空间复杂度O(1)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">heapSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
+            <span class="hljs-keyword">return</span>;
+        &#125;
+        <span class="hljs-comment">// O(N*logN)</span>
+<span class="hljs-comment">//    for (int i = 0; i &lt; arr.length; i++) &#123; // O(N)</span>
+<span class="hljs-comment">//       heapInsert(arr, i); // O(logN)</span>
+<span class="hljs-comment">//    &#125;</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = arr.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;
+            heapify(arr, i, arr.length);
+        &#125;
+        <span class="hljs-keyword">int</span> heapSize = arr.length;
+        swap(arr, <span class="hljs-number">0</span>, --heapSize);
+        <span class="hljs-comment">// O(N*logN)</span>
+        <span class="hljs-keyword">while</span> (heapSize &gt; <span class="hljs-number">0</span>) &#123; <span class="hljs-comment">// O(N)</span>
+            heapify(arr, <span class="hljs-number">0</span>, heapSize); <span class="hljs-comment">// O(logN)</span>
+            swap(arr, <span class="hljs-number">0</span>, --heapSize); <span class="hljs-comment">// O(1)</span>
+        &#125;
+    &#125;
+
+    <span class="hljs-comment">// arr[index]刚来的数，往上</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">heapInsert</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> index)</span> </span>&#123;
+        <span class="hljs-keyword">while</span> (arr[index] &gt; arr[(index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>]) &#123;
+            swap(arr, index, (index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>);
+            index = (index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>;
+        &#125;
+    &#125;
+
+    <span class="hljs-comment">// arr[index]位置的数，能否往下移动</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">heapify</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> index, <span class="hljs-keyword">int</span> heapSize)</span> </span>&#123;
+        <span class="hljs-keyword">int</span> left = index * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>; <span class="hljs-comment">// 左孩子的下标</span>
+        <span class="hljs-keyword">while</span> (left &lt; heapSize) &#123; <span class="hljs-comment">// 下方还有孩子的时候</span>
+            <span class="hljs-comment">// 两个孩子中，谁的值大，把下标给largest</span>
+            <span class="hljs-comment">// 1）只有左孩子，left -&gt; largest</span>
+            <span class="hljs-comment">// 2) 同时有左孩子和右孩子，右孩子的值&lt;= 左孩子的值，left -&gt; largest</span>
+            <span class="hljs-comment">// 3) 同时有左孩子和右孩子并且右孩子的值&gt; 左孩子的值， right -&gt; largest</span>
+            <span class="hljs-keyword">int</span> largest = left + <span class="hljs-number">1</span> &lt; heapSize &amp;&amp; arr[left + <span class="hljs-number">1</span>] &gt; arr[left] ? left + <span class="hljs-number">1</span> : left;
+            <span class="hljs-comment">// 父和较大的孩子之间，谁的值大，把下标给largest</span>
+            largest = arr[largest] &gt; arr[index] ? largest : index;
+            <span class="hljs-keyword">if</span> (largest == index) &#123;
+                <span class="hljs-keyword">break</span>;
+            &#125;
+            swap(arr, largest, index);
+            index = largest;
+            left = index * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>;
+        &#125;
+    &#125;</code></pre>
+
+<pre><code class="hljs mathematica"><span class="hljs-number">1</span>，先让整个数组都变成大根堆结构，建立堆的过程<span class="hljs-operator">:</span> 
+    <span class="hljs-number">1</span><span class="hljs-punctuation">)</span>从上到下的方法，时间复杂度为<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span> 
+    <span class="hljs-number">2</span><span class="hljs-punctuation">)</span>从下到上的方法，时间复杂度为<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span> 
+<span class="hljs-number">2</span>，把堆的最大值和堆末尾的值交换，然后减少堆的大小之后，再去调整堆，一直周而复始，时间复杂度为<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span> 
+<span class="hljs-number">3</span>，堆的大小减小成<span class="hljs-number">0</span>之后，排序完成</code></pre>
+
+
+
+<blockquote>
+<p>堆排序优化</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-comment">// O(N*logN)</span>
+<span class="hljs-comment">// 给定数据的数组,一个一个插入都可以</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; arr.length; i++) &#123; <span class="hljs-comment">// O(N)</span>
+   heapInsert(arr, i); <span class="hljs-comment">// O(logN)</span>
+&#125;
+      
+<span class="hljs-comment">// O(N)</span>
+<span class="hljs-comment">// 一定要给定数据数组, 一个一个插入无法使用</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = arr.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;
+   heapify(arr, i, arr.length);
+&#125;</code></pre>
+
+<p>一个O(N*logN), 一个O(N)</p>
+<p>怎么证明?</p>
+<p>对于从数组最后开始heapify来说, 一颗N结点的树, 最后一层结点应该为N/2, 往上依次为N/4, N/8</p>
+<p>最后一层只有”看”的操作, 倒数第二层有”看”和至多一次”换”的操作, 倒数第三层有”看”和至多两次”换”的操作</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201201135242.png" srcset="/img/loading.gif" alt="堆排序优化"></p>
+<h2 id="堆问题"><a href="#堆问题" class="headerlink" title="堆问题"></a>堆问题</h2><blockquote>
+<p>已知一个几乎有序的数组。几乎有序是指，如果把数组排好顺序的话，每个元素移动的距离一定不超过k，并且k相对于数组长度来说是比较小的。<br>请选择一个合适的排序策略，对这个数组进行排序。</p>
+</blockquote>
 
             </div>
             <hr>
