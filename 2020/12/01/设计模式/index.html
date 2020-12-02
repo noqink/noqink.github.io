@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      6.2k 字
+      8.4k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      82
+      108
        分钟
     </span>
   
@@ -1129,6 +1129,242 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 &#125;</code></pre>
 
 
+
+<h2 id="设计模式介绍"><a href="#设计模式介绍" class="headerlink" title="设计模式介绍"></a>设计模式介绍</h2><ol>
+<li>设计模式是程序员在面对同类软件工程设计问题所总结出来的有用的经验， <strong>模式不是代码</strong>，而是某类问题的通 用解决方案， <strong>设计模式(Design pattern)代表了最佳的实践</strong>。这些解决方案是众多软件开发人员经过相当长的 一段时间的试验和错误总结出来的。</li>
+<li>设计模式的本质 <strong>提高软件的维护性，通用性和扩展性，并降低软件的复杂度</strong>。</li>
+<li>&lt;&lt;设计模式&gt;&gt; 是经典的书，作者是 Erich Gamma、Richard Helm、Ralph Johnson 和 John Vlissides Design(俗称 “四人组 GOF”)</li>
+<li>设计模式并 <strong>不局限于某种语言</strong>，java，php，c++ 都有设计模式.</li>
+</ol>
+<h2 id="设计模式类型"><a href="#设计模式类型" class="headerlink" title="设计模式类型"></a>设计模式类型</h2><blockquote>
+<p>设计模式分为三种类型，共 <strong>23</strong> 种</p>
+</blockquote>
+<ol>
+<li><p>创建型模式: <strong><em>单例模式</em></strong>、抽象工厂模式、原型模式、建造者模式、 <strong><em>工厂模式</em></strong>。</p>
+</li>
+<li><p>结构型模式:适配器模式、桥接模式、 <strong><em>装饰模式</em></strong>、组合模式、外观模式、享元模式、 <strong><em>代理模式</em></strong>。</p>
+</li>
+<li><p>行为型模式:模版方法模式、命令模式、访问者模式、迭代器模式、 <strong><em>观察者模式</em></strong>、中介者模式、备忘录模式、 解释器模式(Interpreter 模式)、状态模式、策略模式、职责链模式(责任链模式)。</p>
+</li>
+</ol>
+<p>注意: <strong>不同的书籍上对分类和名称略有差别</strong></p>
+<h1 id="单例设计模式"><a href="#单例设计模式" class="headerlink" title="单例设计模式"></a>单例设计模式</h1><h2 id="单例设计模式介绍"><a href="#单例设计模式介绍" class="headerlink" title="单例设计模式介绍"></a>单例设计模式介绍</h2><blockquote>
+<p>所谓类的单例设计模式, 就是 **采取一定的方法保证在整个的软件系统中, 对某一个类只能存在一个对象实例, 并且该类只提供一个取得其对象实例的方法(静态方法)**。</p>
+</blockquote>
+<p>​       比如 Hibernate 的 SessionFactory，它充当数据存储源的代理，并负责创建 Session 对象。SessionFactory 并不是 轻量级的，一般情况下，一个项目通常只需要一个 SessionFactory 就够，这是就会使用到单例模式。</p>
+<h2 id="单例设计模式八种方式"><a href="#单例设计模式八种方式" class="headerlink" title="单例设计模式八种方式"></a>单例设计模式八种方式</h2><p><strong>1) 饿汉式(静态常量)</strong></p>
+<p><strong>2) 饿汉式(静态代码块)</strong></p>
+<ol start="3">
+<li><p>懒汉式(线程不安全)</p>
+</li>
+<li><p>懒汉式(线程安全，同步方法) </p>
+</li>
+<li><p>懒汉式(线程不安全，同步代码块) </p>
+</li>
+</ol>
+<p> <strong>6) 双重检查</strong></p>
+<p> <strong>7) 静态内部类</strong></p>
+<p> <strong>8) 枚举</strong></p>
+<h3 id="饿汉式-静态常量"><a href="#饿汉式-静态常量" class="headerlink" title="饿汉式(静态常量)"></a>饿汉式(静态常量)</h3><ol>
+<li>构造器私有化 (防止 new )</li>
+<li>类的内部创建对象</li>
+<li>向外暴露一个静态的公共方法。getInstance </li>
+</ol>
+<p>代码实现:</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 饿汉式(静态常量)实现单例模式</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonTest</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        Singleton singleton1 = Singleton.getInstance();
+        Singleton singleton2 = Singleton.getInstance();
+        System.out.println(singleton1 == singleton2); <span class="hljs-comment">// true</span>
+        System.out.println(<span class="hljs-string">&quot;singleton1.hashCode():&quot;</span>+singleton1.hashCode());
+        System.out.println(<span class="hljs-string">&quot;singleton2.hashCode():&quot;</span>+singleton2.hashCode());
+        <span class="hljs-comment">//singleton1.hashCode():1639705018</span>
+        <span class="hljs-comment">//singleton2.hashCode():1639705018</span>
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
+    <span class="hljs-comment">// 1. 构造器私有化</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;
+    <span class="hljs-comment">// 2. 本类内部创建对象实例</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Singleton instance = <span class="hljs-keyword">new</span> Singleton();
+    <span class="hljs-comment">// 3. 提供公有的静态方法返回实例对象</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> instance;
+    &#125;
+&#125;</code></pre>
+
+<ol>
+<li><p>优点:这种写法比较简单，就是在 <strong>类装载的时候就完成实例化</strong>。 <strong>避免了线程同步问题</strong>。</p>
+</li>
+<li><p>缺点:在类装载的时候就完成实例化，<strong>没有达到LazyLoading的效果</strong>。如果从始至终从未使用过这个实例，则</p>
+<p>会造成内存的浪费</p>
+</li>
+<li><p>这种方式基于classloder机制避免了多线程的同步问题，不过，instance在类装载时就实例化，在单例模式中大多数都是调用 getInstance 方法，但是 <strong>导致类装载的原因有很多种</strong>，因此不能确定有其他的方式(或者其他的静态方法)导致类装载，这时候初始化 instance 就 <strong>没有达到 lazy loading 的效果</strong></p>
+</li>
+</ol>
+<p>结论:这种单例模式 <strong><em>可用</em></strong>，可能造成 <strong><em>内存浪费</em></strong></p>
+<h3 id="饿汉式-静态代码块"><a href="#饿汉式-静态代码块" class="headerlink" title="饿汉式(静态代码块)"></a>饿汉式(静态代码块)</h3><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonTest</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        Singleton singleton1 = Singleton.getInstance();
+        Singleton singleton2 = Singleton.getInstance();
+        System.out.println(singleton1 == singleton2); <span class="hljs-comment">// true</span>
+        System.out.println(<span class="hljs-string">&quot;singleton1.hashCode():&quot;</span>+singleton1.hashCode());
+        System.out.println(<span class="hljs-string">&quot;singleton2.hashCode():&quot;</span>+singleton2.hashCode());
+        <span class="hljs-comment">//singleton1.hashCode():1639705018</span>
+        <span class="hljs-comment">//singleton2.hashCode():1639705018</span>
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
+    <span class="hljs-comment">// 1.构造器私有化</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;
+    <span class="hljs-comment">// 2.类中创建对象事例</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Singleton instance;
+    <span class="hljs-keyword">static</span> &#123;
+        <span class="hljs-comment">// 静态代码块中创建事例</span>
+        instance = <span class="hljs-keyword">new</span> Singleton();
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;<span class="hljs-keyword">return</span> instance;&#125;
+&#125;</code></pre>
+
+<ol>
+<li>这种方式和上面的方式其实类似，只不过将类实例化的过程放在了静态代码块中，也是在类装载的时候，就执行静态代码块中的代码，初始化类的实例。优缺点和上面是一样的。</li>
+</ol>
+<p>结论:这种单例模式可用，但是可能造成内存浪费</p>
+<h3 id="懒汉式-线程不安全"><a href="#懒汉式-线程不安全" class="headerlink" title="懒汉式(线程不安全)"></a>懒汉式(线程不安全)</h3><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 懒汉式(线程不安全写法)</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonTest</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        Singleton singleton1 = Singleton.getInstance();
+        Singleton singleton2 = Singleton.getInstance();
+        System.out.println(singleton1 == singleton2); <span class="hljs-comment">// true</span>
+        System.out.println(<span class="hljs-string">&quot;singleton1.hashCode():&quot;</span>+singleton1.hashCode());
+        System.out.println(<span class="hljs-string">&quot;singleton2.hashCode():&quot;</span>+singleton2.hashCode());
+        <span class="hljs-comment">// singleton1.hashCode():1639705018</span>
+        <span class="hljs-comment">// singleton2.hashCode():1639705018</span>
+    &#125;
+&#125;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Singleton instance;
+
+    <span class="hljs-comment">// 构造一个静态方法, 当用到该方法时, 才创建实例</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>)&#123;
+            instance = <span class="hljs-keyword">new</span> Singleton();
+        &#125;
+        <span class="hljs-keyword">return</span> instance;
+    &#125;
+&#125;</code></pre>
+
+<ol>
+<li><p>起到了 <strong>LazyLoading</strong>的效果，但是只能在 <strong>单线程</strong>下使用。</p>
+</li>
+<li><p>如果在多线程下，一个线程进入了if(singleton==null)判断语句块，还未来得及往下执行，另一个线程也通过</p>
+<p>了这个判断语句，这时便会产生 <strong>多个实例</strong>。所以在多线程环境下不可使用这种方式 </p>
+</li>
+</ol>
+<p>​   结论:在实际开发中，<strong>不要使用这种方式</strong>.</p>
+<h3 id="懒汉式-线程安全，同步方法"><a href="#懒汉式-线程安全，同步方法" class="headerlink" title="懒汉式(线程安全，同步方法)"></a>懒汉式(线程安全，同步方法)</h3><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Singleton instance;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">synchronized</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>)&#123;
+            instance = <span class="hljs-keyword">new</span> Singleton();
+        &#125;
+        <span class="hljs-keyword">return</span> instance;
+    &#125;
+&#125;</code></pre>
+
+<ol>
+<li><p><strong>解决了线程安全问题</strong></p>
+</li>
+<li><p><strong>效率太低</strong>了，每个线程在想获得类的实例时候，执行getInstance()方法 <strong>都要进行同步</strong>。而其实这个方法只执行一次实例化代码就够了，后面的想获得该类实例，直接 return 就行了。方法进行同步效率太低 </p>
+<p>结论:在实际开发中，<strong>不推荐使用这种方式</strong></p>
+</li>
+</ol>
+<h3 id="懒汉式-线程不安全，同步代码块"><a href="#懒汉式-线程不安全，同步代码块" class="headerlink" title="懒汉式(线程不安全，同步代码块)"></a>懒汉式(线程不安全，同步代码块)</h3><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202150123.png" srcset="/img/loading.gif" alt="无效" style="zoom:50%;" />
+
+<p>​   在这里加入synchronized无效, 无法解决线程安全问题, 一个线程进入了if(singleton==null)判断语句块, 还未来得及往下执行, 另一个线程也通过了这个判断语句, 这时便会产生 <strong>多个实例</strong>。</p>
+<h3 id="双重检查"><a href="#双重检查" class="headerlink" title="双重检查"></a>双重检查</h3><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">volatile</span> Singleton instance;
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;
+    <span class="hljs-comment">// 提供一个静态代码块，双重检查，解决线程安全问题，同时解决懒加载问题</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">synchronized</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>)&#123;
+            <span class="hljs-keyword">synchronized</span> (Singleton.class)&#123;
+                <span class="hljs-keyword">if</span>(instance == <span class="hljs-keyword">null</span>)&#123;
+                    instance = <span class="hljs-keyword">new</span> Singleton();
+                &#125;
+            &#125;
+        &#125;
+        <span class="hljs-keyword">return</span> instance;
+    &#125;
+&#125;</code></pre>
+
+<ol>
+<li>Double-Check 概念是多线程开发中常使用到的，如代码中所示，我们进行了两次 if (singleton == null)检查，这 样就可以保证线程安全了。</li>
+<li>这样，实例化代码只用执行一次，后面再次访问时，判断if(singleton==null)，直接return实例化对象，也避免的反复进行方法同步.</li>
+<li><strong>线程安全; 延迟加载;效率较高</strong></li>
+</ol>
+<p>结论:在实际开发中， <strong>推荐使用这种单例设计模式</strong></p>
+<h3 id="静态内部类"><a href="#静态内部类" class="headerlink" title="静态内部类"></a>静态内部类</h3><blockquote>
+<p>JVM装载类的时候线程是安全的</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;
+    <span class="hljs-comment">// 写一个静态内部类，该类中有一个静态属性Singleton</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonInstance</span></span>&#123;
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Singleton INSTANCE = <span class="hljs-keyword">new</span> Singleton();
+    &#125;
+    <span class="hljs-comment">// 提供一个静态公有方法，返回SingletonInstance.INSTANCE</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">synchronized</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> SingletonInstance.INSTANCE;
+    &#125;
+&#125;</code></pre>
+
+<ol>
+<li><p>这种方式采用了 <strong>类装载的机制</strong>来保证初始化实例时只有一个线程。(因为类装载是线程安全的)</p>
+</li>
+<li><p>  <strong>静态内部类方式在Singleton类被装载时并不会立即实例化</strong>，而是在需要实例化时， <strong>调用getInstance方法</strong>， <strong>才会装载 SingletonInstance 类</strong>，从而完成 Singleton 的实例化。</p>
+</li>
+<li><p> 类的静态属性只会在第一次加载类的时候初始化，所以在这里，JVM帮助我们保证了线程的安全性，在类进行   初始化时，别的线程是无法进入的。</p>
+</li>
+<li><p> 优点: <strong>避免了线程不安全，利用静态内部类特点实现延迟加载，效率高</strong></p>
+</li>
+<li><p> 结论: <strong>推荐</strong>使用.</p>
+</li>
+</ol>
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">Singleton</span></span>&#123;
+    INSTANCE;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sayOK</span><span class="hljs-params">()</span></span>&#123;
+        System.out.println(<span class="hljs-string">&quot;ok!&quot;</span>);
+    &#125;
+&#125;</code></pre>
+
+<p>使用:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+    Singleton instance = Singleton.INSTANCE;
+    Singleton instance2 = Singleton.INSTANCE;
+    System.out.println(instance == instance2);
+    System.out.println(instance.hashCode());
+    System.out.println(instance2.hashCode());
+    instance.sayOK(); 
+&#125;</code></pre>
+
+<ol>
+<li><p> 这 <strong>借助JDK1.5中添加的枚举</strong>来实现单例模式。不仅能 <strong>避免多线程同步问题，而且还能防止反序列化重新创建 新的对象</strong>。</p>
+</li>
+<li><p> 这种方式是<strong>EffectiveJava</strong>作者<strong>JoshBloch</strong>提倡的方式</p>
+</li>
+</ol>
+<p>​    结论: <strong>推荐</strong>使用</p>
 
             </div>
             <hr>
