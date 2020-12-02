@@ -286,7 +286,7 @@
 <li> 降低类的复杂度，一个类只负责一项职责。</li>
 <li> 提高类的可读性，可维护性</li>
 <li> 降低变更引起的风险</li>
-<li> 通常情况下，*<strong>我们应当遵守单一职责原则***，只有 *</strong>逻辑足够简单，才可以在代码级违反单一职责原则***;只有类中方法数量足够少，可以在方法级别保持单一职责原则</li>
+<li> 通常情况下， <strong>我们应当遵守单一职责原则</strong>，只有  <strong>逻辑足够简单，才可以在代码级违反单一职责原则</strong>;只有类中方法数量足够少，可以在方法级别保持单一职责原则</li>
 </ol>
 <h3 id="接口隔离原则-Interface-Segregation-Principle"><a href="#接口隔离原则-Interface-Segregation-Principle" class="headerlink" title="接口隔离原则(Interface Segregation Principle)"></a>接口隔离原则(Interface Segregation Principle)</h3><h4 id="基本介绍-1"><a href="#基本介绍-1" class="headerlink" title="基本介绍"></a>基本介绍</h4><ol>
 <li><p>客户端不应该依赖它不需要的接口，即 <strong>一个类对另一个类的依赖应该建立在最小的接口</strong>上</p>
@@ -300,7 +300,7 @@
 <p>​    3.     类A通过接口Interface1依赖类B，类C通过接口Interface1依赖类D，如果接口Interface1对于类A和类C</p>
 <p>来说不是最小接口，那么类 B 和类 D 必须去实现他们不需要的方法。 </p>
 <p>​    4.    按隔离原则应当这样处理:</p>
-<p>​    将接口  **Interface1 拆分为独立的几个接口(这里我们拆分成 3 个接口)**，类 A 和类 C 分别与他们需要的接口建立 依赖关系。也就是采用接口隔离原则</p>
+<p>​    将接口  Interface1 拆分为独立的几个接口(这里我们拆分成 3 个接口)，类 A 和类 C 分别与他们需要的接口建立 依赖关系。也就是采用接口隔离原则</p>
 <h4 id="应用实例-1"><a href="#应用实例-1" class="headerlink" title="应用实例"></a>应用实例</h4><ol>
 <li>实现方案1+分析说明</li>
 </ol>
