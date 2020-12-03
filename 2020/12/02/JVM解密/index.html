@@ -251,7 +251,10 @@
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202203444.png" srcset="/img/loading.gif" alt="JVM种类"></p>
 <h1 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h1><h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202203747.png" srcset="/img/loading.gif" alt="整体架构"></p>
-<pre><code class="hljs gcode">ClassLoader为类加载器，java源代码编译为java二进制字节码后通过类加载器加载到JVM里运行，类放在方法区，创建的实例、对象放在堆里，其间所用到的方法放入虚拟机栈、程序计数器以及本地方法栈，方法执行时每行代码由执行引擎解释器逐行执行，方法中的热点代码<span class="hljs-comment">(频繁调用的代码)</span>由JIT优化后执行，GC对堆中不再被引用的对象引用回收。与操作系统打交道则需要本地方法接口调用。</code></pre>
+<pre><code class="hljs mipsasm">ClassLoader为类加载器，<span class="hljs-keyword">java源代码编译为java二进制字节码后通过类加载器加载到JVM里运行，类放在方法区，</span>
+<span class="hljs-keyword">创建的实例、对象放在堆里，其间所用到的方法放入虚拟机栈、程序计数器以及本地方法栈，方法执行时每行代码由</span>
+<span class="hljs-keyword">执行引擎解释器逐行执行，方法中的热点代码(频繁调用的代码)由JIT优化后执行，GC对堆中不再被引用的对象引用</span>
+<span class="hljs-keyword">回收。与操作系统打交道则需要本地方法接口调用</span></code></pre>
 
 <h2 id="1、程序计数器"><a href="#1、程序计数器" class="headerlink" title="1、程序计数器"></a>1、程序计数器</h2><h3 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h3><blockquote>
 <p>Program Counter Register 程序计数器(寄存器)</p>
