@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.9k 字
+      3.5k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      24
+      47
        分钟
     </span>
   
@@ -567,7 +567,300 @@
 </ul>
 </li>
 </ul>
-<h4 id="案例2-cpu占用过高"><a href="#案例2-cpu占用过高" class="headerlink" title="案例2: cpu占用过高"></a>案例2: cpu占用过高</h4>
+<h4 id="案例2-cpu占用过高"><a href="#案例2-cpu占用过高" class="headerlink" title="案例2: cpu占用过高"></a>案例2: cpu占用过高</h4><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 演示 cpu 占用过高</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo_01_16</span> </span>&#123;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">null</span>, () -&gt; &#123;
+            System.out.println(<span class="hljs-string">&quot;1...&quot;</span>);
+            <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123;
+
+            &#125;
+        &#125;, <span class="hljs-string">&quot;thread1&quot;</span>).start();
+
+
+        <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">null</span>, () -&gt; &#123;
+            System.out.println(<span class="hljs-string">&quot;2...&quot;</span>);
+            <span class="hljs-keyword">try</span> &#123;
+                Thread.sleep(<span class="hljs-number">1000000L</span>);
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;, <span class="hljs-string">&quot;thread2&quot;</span>).start();
+
+        <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">null</span>, () -&gt; &#123;
+            System.out.println(<span class="hljs-string">&quot;3...&quot;</span>);
+            <span class="hljs-keyword">try</span> &#123;
+                Thread.sleep(<span class="hljs-number">1000000L</span>);
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;, <span class="hljs-string">&quot;thread3&quot;</span>).start();
+    &#125;
+&#125;</code></pre>
+
+<p>此代码运行到linux环境下:</p>
+<p>top命令:</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201203191313.png" srcset="/img/loading.gif" alt="top"></p>
+<p> <strong>只能定位到进程，无法定位到线程</strong></p>
+<p> <strong>ps H -eo pid, tid（线程id）, %cpu | grep 刚才通过top查到的进程号</strong></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201203191646.png" srcset="/img/loading.gif" alt="结果"></p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201203191750.png" srcset="/img/loading.gif" alt="test" style="zoom: 50%;" />
+
+<blockquote>
+<p>总结</p>
+</blockquote>
+<ul>
+<li><p>Linux环境下运行某些程序的时候，可能导致CPU的占用过高，这时需要定位占用CPU过高的线程</p>
+<ul>
+<li><p><strong>top</strong>命令，查看是哪个 <strong>进程</strong>占用CPU过高</p>
+</li>
+<li><p><strong>ps H -eo pid, tid（线程id）, %cpu | grep 刚才通过top查到的进程号</strong> 通过ps命令进一步查看是哪个线程占用CPU过高</p>
+</li>
+<li><p><strong>jstack 进程id</strong> 通过查看进程中的线程的nid，刚才通过ps命令看到的tid来 <strong>对比定位</strong>，注意jstack查找出的线程id是 <strong>16进制的</strong>， <strong>需要转换</strong></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204100850.png" srcset="/img/loading.gif" alt="16进制"></p>
+<p>32665的十六进制对应为7f99, 所以定位到线程thread1</p>
+<p>下面提示第八行代码出现问题</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="案例2-程序运行很长时间没有结果"><a href="#案例2-程序运行很长时间没有结果" class="headerlink" title="案例2: 程序运行很长时间没有结果"></a>案例2: 程序运行很长时间没有结果</h4><p>代码:</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 演示线程死锁</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span></span>&#123;&#125;;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">B</span></span>&#123;&#125;;
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo_01_03</span> </span>&#123;
+    <span class="hljs-keyword">static</span> A a = <span class="hljs-keyword">new</span> A();
+    <span class="hljs-keyword">static</span> B b = <span class="hljs-keyword">new</span> B();
+
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        <span class="hljs-keyword">new</span> Thread(()-&gt;&#123;
+            <span class="hljs-keyword">synchronized</span> (a) &#123;
+                <span class="hljs-keyword">try</span> &#123;
+                    Thread.sleep(<span class="hljs-number">2000</span>);
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+                <span class="hljs-keyword">synchronized</span> (b) &#123;
+                    System.out.println(<span class="hljs-string">&quot;我获得了 a 和 b&quot;</span>);
+                &#125;
+            &#125;
+        &#125;).start();
+        Thread.sleep(<span class="hljs-number">1000</span>);
+        <span class="hljs-keyword">new</span> Thread(()-&gt;&#123;
+            <span class="hljs-keyword">synchronized</span> (b) &#123;
+                <span class="hljs-keyword">synchronized</span> (a) &#123;
+                    System.out.println(<span class="hljs-string">&quot;我获得了 a 和 b&quot;</span>);
+                &#125;
+            &#125;
+        &#125;).start();
+    &#125;
+
+&#125;</code></pre>
+
+<p>同样可以利用jstack来查询</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204101456.png" srcset="/img/loading.gif" alt="结果"></p>
+<h2 id="3、本地方法栈"><a href="#3、本地方法栈" class="headerlink" title="3、本地方法栈"></a>3、本地方法栈</h2><blockquote>
+<p>java虚拟机调用本地方法时需要提供的内存空间</p>
+</blockquote>
+<p>本地方法: 一些带有 <strong>native关键字</strong>的方法就是需要JAVA去调用本地的 <strong>C或者C++方法</strong>，因为JAVA有时候没法直接和 <strong>操作系统底层</strong>交互，所以需要用到本地方法。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204102423.png" srcset="/img/loading.gif" alt="clone()"></p>
+<h2 id="4、堆"><a href="#4、堆" class="headerlink" title="4、堆"></a>4、堆</h2><blockquote>
+<p>堆和方法区是 <strong>线程共享</strong>的</p>
+</blockquote>
+<h3 id="4-1-定义"><a href="#4-1-定义" class="headerlink" title="4.1 定义"></a>4.1 定义</h3><ul>
+<li>通过new关键字 <strong>创建的对象</strong>都会被放在堆内存</li>
+</ul>
+<h3 id="4-2-特点"><a href="#4-2-特点" class="headerlink" title="4.2 特点"></a>4.2 特点</h3><ul>
+<li> <strong>所有线程共享</strong>，堆内存中的对象都需要<strong>考虑线程安全问题</strong></li>
+<li>有垃圾回收机制</li>
+</ul>
+<h3 id="4-3-堆内存溢出问题"><a href="#4-3-堆内存溢出问题" class="headerlink" title="4.3 堆内存溢出问题"></a>4.3 堆内存溢出问题</h3><blockquote>
+<p> <strong>java.lang.OutofMemoryError</strong> ：java heap space. 堆内存溢出</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo1_5</span> </span>&#123;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">try</span> &#123;
+            List&lt;String&gt; list = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+            String a = <span class="hljs-string">&quot;hello&quot;</span>;
+            <span class="hljs-keyword">while</span> (<span class="hljs-keyword">true</span>) &#123;
+                list.add(a); <span class="hljs-comment">// hello, hellohello, hellohellohellohello ...</span>
+                a = a + a;  <span class="hljs-comment">// hellohellohellohello</span>
+                i++;
+            &#125;
+        &#125; <span class="hljs-keyword">catch</span> (Throwable e) &#123;
+            e.printStackTrace();
+            System.out.println(i);
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204103052.png" srcset="/img/loading.gif" alt="结果"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204103650.png" srcset="/img/loading.gif" alt="修改"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204103719.png" srcset="/img/loading.gif" alt="结果"></p>
+<h3 id="4-4-堆内存诊断"><a href="#4-4-堆内存诊断" class="headerlink" title="4.4 堆内存诊断"></a>4.4 堆内存诊断</h3><h4 id="jps-工具"><a href="#jps-工具" class="headerlink" title="jps 工具"></a>jps 工具</h4><ul>
+<li>查看当前系统中有哪些 <strong>java进程</strong></li>
+</ul>
+<h3 id="jmap工具"><a href="#jmap工具" class="headerlink" title="jmap工具"></a>jmap工具</h3><ul>
+<li>查看 <strong>某个时刻</strong> 堆内存占用情况 ( - heap pid)</li>
+<li>Jdk 9以上 jhsdb jmap –heap –pid pid</li>
+</ul>
+<h3 id="jconsole工具"><a href="#jconsole工具" class="headerlink" title="jconsole工具"></a>jconsole工具</h3><ul>
+<li><p>图形界面的，多功能的检测工具，可以 <strong>连续监测</strong></p>
+<p>代码:</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo1_4</span> </span>&#123;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        System.out.println(<span class="hljs-string">&quot;1...&quot;</span>);
+        Thread.sleep(<span class="hljs-number">30000</span>);
+        <span class="hljs-keyword">byte</span>[] array = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[<span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">10</span>]; <span class="hljs-comment">// 10 Mb, 堆空间</span>
+        System.out.println(<span class="hljs-string">&quot;2...&quot;</span>);
+        Thread.sleep(<span class="hljs-number">30000</span>);
+        array = <span class="hljs-keyword">null</span>;
+        System.gc();
+        System.out.println(<span class="hljs-string">&quot;3...&quot;</span>);
+        Thread.sleep(<span class="hljs-number">1000000L</span>);
+    &#125;
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204105859.png" srcset="/img/loading.gif" alt="检测"></p>
+</li>
+</ul>
+<h3 id="案例-gc回收之后-内存占用仍然很高"><a href="#案例-gc回收之后-内存占用仍然很高" class="headerlink" title="案例: gc回收之后, 内存占用仍然很高"></a>案例: gc回收之后, 内存占用仍然很高</h3><p>​ 代码:</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 演示查看对象个数 堆转储 dump</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo1_13</span> </span>&#123;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        List&lt;Student&gt; students = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">200</span>; i++) &#123;
+            students.add(<span class="hljs-keyword">new</span> Student());
+<span class="hljs-comment">//            Student student = new Student();</span>
+        &#125;
+        Thread.sleep(<span class="hljs-number">1000000000L</span>);
+    &#125;
+&#125;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Student</span> </span>&#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">byte</span>[] big = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>];
+&#125;</code></pre>
+
+<p>​ 执行完gc后, 内存占用还是很高:</p>
+<p>​ <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204135214.png" srcset="/img/loading.gif" alt="执行完gc后"></p>
+<h3 id="使用jvisualvm"><a href="#使用jvisualvm" class="headerlink" title="使用jvisualvm"></a>使用jvisualvm</h3><p>堆快照:</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204135748.png" srcset="/img/loading.gif" alt="堆快照"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204135854.png" srcset="/img/loading.gif" alt="查找堆"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204140353.png" srcset="/img/loading.gif" alt="查到结果"></p>
+<p>查到结果为Student对象中浪费空间, list一直未被回收, 内存占用高</p>
+<h2 id="5、方法区"><a href="#5、方法区" class="headerlink" title="5、方法区"></a>5、方法区</h2><h3 id="5-1-定义"><a href="#5-1-定义" class="headerlink" title="5.1 定义"></a>5.1 定义</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204142845.png" srcset="/img/loading.gif" alt="定义"></p>
+<h3 id="5-2-结构"><a href="#5-2-结构" class="headerlink" title="5.2 结构"></a>5.2 结构</h3><p>​ <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204142945.png" srcset="/img/loading.gif" alt="结构"></p>
+<p>​   元空间已经不由jvm管理内存了</p>
+<h3 id="5-3-内存溢出"><a href="#5-3-内存溢出" class="headerlink" title="5.3 内存溢出"></a>5.3 内存溢出</h3><ul>
+<li><p>1.8以后会导致 <strong>元空间</strong>内存溢出</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 演示元空间内存溢出 java.lang.OutOfMemoryError: Metaspace</span>
+<span class="hljs-comment"> * -XX:MaxMetaspaceSize=8m</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo1_8</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ClassLoader</span> </span>&#123; <span class="hljs-comment">// 可以用来加载类的二进制字节码</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">try</span> &#123;
+            Demo1_8 test = <span class="hljs-keyword">new</span> Demo1_8();
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10000</span>; i++, j++) &#123;
+                <span class="hljs-comment">// ClassWriter 作用是生成类的二进制字节码</span>
+                ClassWriter cw = <span class="hljs-keyword">new</span> ClassWriter(<span class="hljs-number">0</span>);
+                <span class="hljs-comment">// 版本号， public， 类名, 包名, 父类， 接口</span>
+                cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, <span class="hljs-string">&quot;Class&quot;</span> + i, <span class="hljs-keyword">null</span>, <span class="hljs-string">&quot;java/lang/Object&quot;</span>, <span class="hljs-keyword">null</span>);
+                <span class="hljs-comment">// 返回 byte[]</span>
+                <span class="hljs-keyword">byte</span>[] code = cw.toByteArray();
+                <span class="hljs-comment">// 执行了类的加载</span>
+                test.defineClass(<span class="hljs-string">&quot;Class&quot;</span> + i, code, <span class="hljs-number">0</span>, code.length); <span class="hljs-comment">// Class 对象</span>
+            &#125;
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            System.out.println(j);
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204143911.png" srcset="/img/loading.gif" alt="配置"></p>
+<p>（元空间默认用系统内存，很难演示元空间溢出）</p>
+<p>若改为8m:Error occurred during initialization of VM MaxMetaspaceSize is too small.</p>
+<p>所以改为10m再次测试:          <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204144143.png" srcset="/img/loading.gif" alt="结果"></p>
+</li>
+</ul>
+<ul>
+<li><p>1.8以前会导致 <strong>永久代</strong>内存溢出</p>
+<p>使用java1.6:</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204144418.png" srcset="/img/loading.gif" alt="结果"></p>
+</li>
+</ul>
+<h3 id="5-4-真实场景"><a href="#5-4-真实场景" class="headerlink" title="5.4 真实场景"></a>5.4 真实场景</h3><p>​ <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204145437.png" srcset="/img/loading.gif" alt="区别"></p>
+<ul>
+<li><p>Spring</p>
+<ul>
+<li><p><strong>cjlib</strong> 生成代理类, AOP核心</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204145057.png" srcset="/img/loading.gif" alt="cjlib"></p>
+<p>都有ClassWriter和ClassVisitor，都是 <strong>运行期间动态生成类的字节码，完成动态的类加载，代理技术广泛应用这种字节码动态生成技术</strong></p>
+</li>
+</ul>
+</li>
+<li><p>mybatis</p>
+<ul>
+<li> <strong>cjlib</strong> 生成Mapper接口的实现类</li>
+</ul>
+<p>所以使用这种框架, 是很容易产生 <strong>永久代溢出</strong> 的情况的！</p>
+</li>
+</ul>
+<h3 id="5-5-常量池"><a href="#5-5-常量池" class="headerlink" title="5.5 常量池"></a>5.5 常量池</h3><pre><code class="hljs java"><span class="hljs-comment">// 运行先编译二进制字节码，包含了(类的基本信息、常量池、类的方法定义（包含了虚拟机指令）)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloWorld</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        System.out.println(<span class="hljs-string">&quot;hello!&quot;</span>);
+    &#125;
+&#125;</code></pre>
+
+<p>找到class文件:</p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204150212.png" srcset="/img/loading.gif" alt="class文件" style="zoom:50%;" />
+
+<p>javap -v HelloWorld.class 进行反编译,并显示全部信息:</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204150438.png" srcset="/img/loading.gif" alt="类的基本信息"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204150537.png" srcset="/img/loading.gif" alt="常量池1"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204150609.png" srcset="/img/loading.gif" alt="常量池2"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204150719.png" srcset="/img/loading.gif" alt="无参构造方法"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204150745.png" srcset="/img/loading.gif" alt="main方法"></p>
+<p>0,3,5,8后为虚拟机指令, getstatic为获取 <strong>静态变量</strong> , 即得到sout, ldc加载参数(hello!), invokevirtual虚方法调用,调用println, return为结束</p>
+<p>#2,#3,#4查表翻译:</p>
+<pre><code class="hljs clean">根据#<span class="hljs-number">2</span>查到常量池的表 -&gt; Fieldref -&gt; #<span class="hljs-number">21.</span>#<span class="hljs-number">22</span>
+#<span class="hljs-number">21</span> -&gt; Class -&gt; #<span class="hljs-number">28</span>
+(说明要找java/lang/System类的成员变量)
+#<span class="hljs-number">22</span> -&gt; #<span class="hljs-number">29</span> #<span class="hljs-number">30</span>
+(说明要找java/lang/System类中out的变量, 类型为java/io/PrintStream)
+
+根据#<span class="hljs-number">3</span>查到常量池的表 -&gt; #<span class="hljs-number">23</span>(String) -&gt; hello!(utf<span class="hljs-number">-8</span>) 加载进来
+
+#<span class="hljs-number">4</span> -&gt; 方法调用Methodref -&gt; ....</code></pre>
+
+<blockquote>
+<p>常量池作用</p>
+</blockquote>
+<p> <strong>给指令提供一些常量符号, 根据常量符号查表找到, 虚拟机指令才可正常执行</strong></p>
+<h3 id="5-6-运行时常量池"><a href="#5-6-运行时常量池" class="headerlink" title="5.6 运行时常量池"></a>5.6 运行时常量池</h3><ul>
+<li>常量池<ul>
+<li>就是一张表（如上图中的constant pool），虚拟机指令根据这张常量表找到要执行的类名、方法名、参数类型、字面量信息</li>
+</ul>
+</li>
+<li>运行时常量池<ul>
+<li>常量池是*.class文件中的，当该 <strong>类被加载以后</strong>，它的常量池信息就会 <strong>放入运行时常量池</strong>，并把里面的 <strong>符号地址变为真实地址</strong></li>
+</ul>
+</li>
+</ul>
+
             </div>
             <hr>
             <div>
