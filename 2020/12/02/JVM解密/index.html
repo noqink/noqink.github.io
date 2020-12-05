@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.5k 字
+      3.2k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      47
+      43
        分钟
     </span>
   
@@ -564,66 +564,6 @@
 <li> <strong>top</strong>命令，查看是哪个 <strong>进程</strong>占用CPU过高</li>
 <li> <strong>ps H -eo pid, tid（线程id）, %cpu | grep 刚才通过top查到的进程号</strong> 通过ps命令进一步查看是哪个线程占用CPU过高</li>
 <li> <strong>jstack 进程id</strong> 通过查看进程中的线程的nid，刚才通过ps命令看到的tid来 <strong>对比定位</strong>，注意jstack查找出的线程id是 <strong>16进制的</strong>， <strong>需要转换</strong></li>
-</ul>
-</li>
-</ul>
-<h4 id="案例2-cpu占用过高"><a href="#案例2-cpu占用过高" class="headerlink" title="案例2: cpu占用过高"></a>案例2: cpu占用过高</h4><pre><code class="hljs java"><span class="hljs-comment">/**</span>
-<span class="hljs-comment"> * 演示 cpu 占用过高</span>
-<span class="hljs-comment"> */</span>
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo_01_16</span> </span>&#123;
-
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
-        <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">null</span>, () -&gt; &#123;
-            System.out.println(<span class="hljs-string">&quot;1...&quot;</span>);
-            <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123;
-
-            &#125;
-        &#125;, <span class="hljs-string">&quot;thread1&quot;</span>).start();
-
-
-        <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">null</span>, () -&gt; &#123;
-            System.out.println(<span class="hljs-string">&quot;2...&quot;</span>);
-            <span class="hljs-keyword">try</span> &#123;
-                Thread.sleep(<span class="hljs-number">1000000L</span>);
-            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
-                e.printStackTrace();
-            &#125;
-        &#125;, <span class="hljs-string">&quot;thread2&quot;</span>).start();
-
-        <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">null</span>, () -&gt; &#123;
-            System.out.println(<span class="hljs-string">&quot;3...&quot;</span>);
-            <span class="hljs-keyword">try</span> &#123;
-                Thread.sleep(<span class="hljs-number">1000000L</span>);
-            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
-                e.printStackTrace();
-            &#125;
-        &#125;, <span class="hljs-string">&quot;thread3&quot;</span>).start();
-    &#125;
-&#125;</code></pre>
-
-<p>此代码运行到linux环境下:</p>
-<p>top命令:</p>
-<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201203191313.png" srcset="/img/loading.gif" alt="top"></p>
-<p> <strong>只能定位到进程，无法定位到线程</strong></p>
-<p> <strong>ps H -eo pid, tid（线程id）, %cpu | grep 刚才通过top查到的进程号</strong></p>
-<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201203191646.png" srcset="/img/loading.gif" alt="结果"></p>
-<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201203191750.png" srcset="/img/loading.gif" alt="test" style="zoom: 50%;" />
-
-<blockquote>
-<p>总结</p>
-</blockquote>
-<ul>
-<li><p>Linux环境下运行某些程序的时候，可能导致CPU的占用过高，这时需要定位占用CPU过高的线程</p>
-<ul>
-<li><p><strong>top</strong>命令，查看是哪个 <strong>进程</strong>占用CPU过高</p>
-</li>
-<li><p><strong>ps H -eo pid, tid（线程id）, %cpu | grep 刚才通过top查到的进程号</strong> 通过ps命令进一步查看是哪个线程占用CPU过高</p>
-</li>
-<li><p><strong>jstack 进程id</strong> 通过查看进程中的线程的nid，刚才通过ps命令看到的tid来 <strong>对比定位</strong>，注意jstack查找出的线程id是 <strong>16进制的</strong>， <strong>需要转换</strong></p>
-<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204100850.png" srcset="/img/loading.gif" alt="16进制"></p>
-<p>32665的十六进制对应为7f99, 所以定位到线程thread1</p>
-<p>下面提示第八行代码出现问题</p>
-</li>
 </ul>
 </li>
 </ul>
