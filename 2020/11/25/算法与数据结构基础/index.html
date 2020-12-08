@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      15.3k 字
+      18.3k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      218
+      263
        分钟
     </span>
   
@@ -2358,6 +2358,538 @@ s6.age = <span class="hljs-number">84</span>;
 </li>
 </ul>
 <p>系统函数：先反射，判定是引用传递还是值传递，引用归并，值传递快排</p>
+<h1 id="链表问题"><a href="#链表问题" class="headerlink" title="链表问题"></a>链表问题</h1><blockquote>
+<p> 面试时链表解题的 <strong>方法论</strong></p>
+</blockquote>
+<p>1)对于笔试，不用太在乎空间复杂度，一切为了时间复杂度</p>
+<p>2)对于面试，时间复杂度依然放在第一位，但是一定要找到空间最省的方法</p>
+<h2 id="链表面试题常用数据结构和技巧"><a href="#链表面试题常用数据结构和技巧" class="headerlink" title="链表面试题常用数据结构和技巧"></a>链表面试题常用数据结构和技巧</h2><p>1）使用容器(哈希表、数组等)</p>
+<p>2）快慢指针 </p>
+<h2 id="快慢指针"><a href="#快慢指针" class="headerlink" title="快慢指针"></a>快慢指针</h2><p>1）输入链表头节点，奇数长度返回中点，偶数长度返回上中点</p>
+<p>1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt;5 找到3, 1 -&gt; 2 -&gt; 3 -&gt; 4  找到2</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">midOrUpMidNode</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span> || head.next == <span class="hljs-keyword">null</span> || head.next.next == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> head;
+   &#125;
+   <span class="hljs-comment">// 链表 &gt;= 三个结点</span>
+   Node slow = head.next;
+   Node fast = head.next.next;
+   <span class="hljs-keyword">while</span> (fast.next != <span class="hljs-keyword">null</span> &amp;&amp; fast.next.next != <span class="hljs-keyword">null</span>) &#123;
+      slow = slow.next;
+      fast = fast.next.next;
+   &#125;
+   <span class="hljs-keyword">return</span> slow;
+&#125;</code></pre>
+
+<p>2）输入链表头节点，奇数长度返回中点，偶数长度返回下中点</p>
+<p>1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt;5 找到3,  1 -&gt; 2 -&gt; 3 -&gt; 4  找到3</p>
+<p>3）输入链表头节点，奇数长度返回中点前一个，偶数长度返回上中点前一个</p>
+<p>4）输入链表头节点，奇数长度返回中点前一个，偶数长度返回下中点前一个</p>
+<h2 id="常见面试题"><a href="#常见面试题" class="headerlink" title="常见面试题"></a>常见面试题</h2><h3 id="给定一个单链表的头节点head，请判断该链表是否为回文结构。"><a href="#给定一个单链表的头节点head，请判断该链表是否为回文结构。" class="headerlink" title="给定一个单链表的头节点head，请判断该链表是否为回文结构。"></a>给定一个单链表的头节点head，请判断该链表是否为回文结构。</h3><p>1）栈方法特别简单（笔试用）</p>
+<ul>
+<li><p><strong>栈实现</strong></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208150841.png" srcset="/img/loading.gif" alt="栈"></p>
+<p>把链表value全放栈中，再弹出一个一个对比。</p>
+<p>Code:</p>
+<pre><code class="hljs java"><span class="hljs-comment">// need n extra space</span>
+<span class="hljs-comment">// stack</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isPalindrome1</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   Stack&lt;Node&gt; stack = <span class="hljs-keyword">new</span> Stack&lt;Node&gt;();
+   Node cur = head;
+   <span class="hljs-keyword">while</span> (cur != <span class="hljs-keyword">null</span>) &#123;
+      stack.push(cur);
+      cur = cur.next;
+   &#125;
+   <span class="hljs-keyword">while</span> (head != <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">if</span> (head.value != stack.pop().value) &#123;
+         <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+      &#125;
+      head = head.next;
+   &#125;
+   <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+&#125;</code></pre>
+</li>
+<li><p><strong>栈实现2</strong></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208151246.png" srcset="/img/loading.gif" alt="快慢指针定位"></p>
+<p>快慢指针定位到中点的位置, 奇数唯一中点偶数上中点, 把右半部分加到栈中, 弹出与head一一对比</p>
+<pre><code class="hljs java"><span class="hljs-comment">// need n/2 extra space</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isPalindrome2</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span> || head.next == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+   &#125;
+   Node right = head.next;
+   Node cur = head;
+   <span class="hljs-keyword">while</span> (cur.next != <span class="hljs-keyword">null</span> &amp;&amp; cur.next.next != <span class="hljs-keyword">null</span>) &#123;
+      right = right.next;
+      cur = cur.next.next;
+   &#125;
+   Stack&lt;Node&gt; stack = <span class="hljs-keyword">new</span> Stack&lt;Node&gt;();
+   <span class="hljs-keyword">while</span> (right != <span class="hljs-keyword">null</span>) &#123;
+      stack.push(right);
+      right = right.next;
+   &#125;
+   <span class="hljs-keyword">while</span> (!stack.isEmpty()) &#123;
+      <span class="hljs-keyword">if</span> (head.value != stack.pop().value) &#123;
+         <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+      &#125;
+      head = head.next;
+   &#125;
+   <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+&#125;</code></pre>
+
+
+
+</li>
+</ul>
+<p>2）改原链表的方法就需要注意边界了（面试用）</p>
+<p>​ <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208151959.png" srcset="/img/loading.gif" alt="原链表"></p>
+<p>变化为-&gt;</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208152030.png" srcset="/img/loading.gif" alt="变化后"></p>
+<p>再L与R对比, 直到比到S, 最后再变回链表位置即可。</p>
+<p>这样的 <strong>额外空间复杂度为 O(1);</strong></p>
+<p>code:</p>
+<pre><code class="hljs java"><span class="hljs-comment">// need O(1) extra space</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isPalindrome3</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span> || head.next == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+   &#125;
+   Node n1 = head; <span class="hljs-comment">// slow</span>
+   Node n2 = head; <span class="hljs-comment">// fast</span>
+   <span class="hljs-keyword">while</span> (n2.next != <span class="hljs-keyword">null</span> &amp;&amp; n2.next.next != <span class="hljs-keyword">null</span>) &#123; <span class="hljs-comment">// find mid node</span>
+      n1 = n1.next; <span class="hljs-comment">// n1 -&gt; mid</span>
+      n2 = n2.next.next; <span class="hljs-comment">// n2 -&gt; end</span>
+   &#125;
+   n2 = n1.next; <span class="hljs-comment">// n2 -&gt; right part first node</span>
+   n1.next = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// mid.next -&gt; null</span>
+   Node n3 = <span class="hljs-keyword">null</span>;
+   <span class="hljs-keyword">while</span> (n2 != <span class="hljs-keyword">null</span>) &#123; <span class="hljs-comment">// right part convert</span>
+      n3 = n2.next; <span class="hljs-comment">// n3 -&gt; save next node</span>
+      n2.next = n1; <span class="hljs-comment">// next of right node convert</span>
+      n1 = n2; <span class="hljs-comment">// n1 move</span>
+      n2 = n3; <span class="hljs-comment">// n2 move</span>
+   &#125;
+   n3 = n1; <span class="hljs-comment">// n3 -&gt; save last node</span>
+   n2 = head;<span class="hljs-comment">// n2 -&gt; left first node</span>
+   <span class="hljs-keyword">boolean</span> res = <span class="hljs-keyword">true</span>;
+   <span class="hljs-keyword">while</span> (n1 != <span class="hljs-keyword">null</span> &amp;&amp; n2 != <span class="hljs-keyword">null</span>) &#123; <span class="hljs-comment">// check palindrome</span>
+      <span class="hljs-keyword">if</span> (n1.value != n2.value) &#123;
+         res = <span class="hljs-keyword">false</span>;
+         <span class="hljs-keyword">break</span>;
+      &#125;
+      n1 = n1.next; <span class="hljs-comment">// left to mid</span>
+      n2 = n2.next; <span class="hljs-comment">// right to mid</span>
+   &#125;
+   n1 = n3.next;
+   n3.next = <span class="hljs-keyword">null</span>;
+   <span class="hljs-keyword">while</span> (n1 != <span class="hljs-keyword">null</span>) &#123; <span class="hljs-comment">// recover list</span>
+      n2 = n1.next;
+      n1.next = n3;
+      n3 = n1;
+      n1 = n2;
+   &#125;
+   <span class="hljs-keyword">return</span> res;
+&#125;</code></pre>
+
+
+
+<h3 id="将单向链表按某值划分成左边小、中间相等、右边大的形式"><a href="#将单向链表按某值划分成左边小、中间相等、右边大的形式" class="headerlink" title="将单向链表按某值划分成左边小、中间相等、右边大的形式"></a>将单向链表按某值划分成左边小、中间相等、右边大的形式</h3><p>1）把链表放入数组里，在数组上做partition（笔试用）( <strong>不稳定</strong> )</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">listPartition1</span><span class="hljs-params">(Node head, <span class="hljs-keyword">int</span> pivot)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> head;
+   &#125;
+   Node cur = head;
+   <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+   <span class="hljs-keyword">while</span> (cur != <span class="hljs-keyword">null</span>) &#123;
+      i++;
+      cur = cur.next;
+   &#125;
+   Node[] nodeArr = <span class="hljs-keyword">new</span> Node[i];
+   i = <span class="hljs-number">0</span>;
+   cur = head;
+   <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i != nodeArr.length; i++) &#123;
+      nodeArr[i] = cur;
+      cur = cur.next;
+   &#125;
+   arrPartition(nodeArr, pivot);
+   <span class="hljs-keyword">for</span> (i = <span class="hljs-number">1</span>; i != nodeArr.length; i++) &#123;
+      nodeArr[i - <span class="hljs-number">1</span>].next = nodeArr[i];
+   &#125;
+   nodeArr[i - <span class="hljs-number">1</span>].next = <span class="hljs-keyword">null</span>;
+   <span class="hljs-keyword">return</span> nodeArr[<span class="hljs-number">0</span>];
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">arrPartition</span><span class="hljs-params">(Node[] nodeArr, <span class="hljs-keyword">int</span> pivot)</span> </span>&#123;
+   <span class="hljs-keyword">int</span> small = -<span class="hljs-number">1</span>;
+   <span class="hljs-keyword">int</span> big = nodeArr.length;
+   <span class="hljs-keyword">int</span> index = <span class="hljs-number">0</span>;
+   <span class="hljs-keyword">while</span> (index != big) &#123;
+      <span class="hljs-keyword">if</span> (nodeArr[index].value &lt; pivot) &#123;
+         swap(nodeArr, ++small, index++);
+      &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (nodeArr[index].value == pivot) &#123;
+         index++;
+      &#125; <span class="hljs-keyword">else</span> &#123;
+         swap(nodeArr, --big, index);
+      &#125;
+   &#125;
+&#125;</code></pre>
+
+
+
+<p>2）分成小、中、大三部分，再把各个部分之间串起来（面试用）</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208161643.png" srcset="/img/loading.gif" alt="六个变量"></p>
+<p>设置六个变量，分别为小于区头尾结点，大于区头尾结点，等于区头尾结点。</p>
+<p>依次遍历，例如遍历4结点，bH、bT = 4，4结点断开。2也是，发至sH和sT=2，3发至eH和eT=3。</p>
+<p>来到5时，要发到大于区，5串到4下面，bH=4，让bT指向5但5变成bT。</p>
+<p>来到6时，bT指向6并让bT找到6的位置。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208162538.png" srcset="/img/loading.gif" alt="流程"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208162652.png" srcset="/img/loading.gif" alt="流程2"></p>
+<p>每一步O(1),整体O(N); 且是 <strong>稳定的</strong></p>
+<p>code:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">listPartition2</span><span class="hljs-params">(Node head, <span class="hljs-keyword">int</span> pivot)</span> </span>&#123;
+   Node sH = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// small head</span>
+   Node sT = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// small tail</span>
+   Node eH = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// equal head</span>
+   Node eT = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// equal tail</span>
+   Node mH = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// big head</span>
+   Node mT = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// big tail</span>
+   Node next = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// save next node</span>
+   <span class="hljs-comment">// every node distributed to three lists</span>
+   <span class="hljs-keyword">while</span> (head != <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-comment">// 记录head.next 后面结点next是要销毁的</span>
+      next = head.next;
+      head.next = <span class="hljs-keyword">null</span>;
+      <span class="hljs-keyword">if</span> (head.value &lt; pivot) &#123;
+         <span class="hljs-keyword">if</span> (sH == <span class="hljs-keyword">null</span>) &#123;
+            sH = head;
+            sT = head;
+         &#125; <span class="hljs-keyword">else</span> &#123;
+            sT.next = head;
+            sT = head;
+         &#125;
+      &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (head.value == pivot) &#123;
+         <span class="hljs-keyword">if</span> (eH == <span class="hljs-keyword">null</span>) &#123;
+            eH = head;
+            eT = head;
+         &#125; <span class="hljs-keyword">else</span> &#123;
+            eT.next = head;
+            eT = head;
+         &#125;
+      &#125; <span class="hljs-keyword">else</span> &#123;
+         <span class="hljs-keyword">if</span> (mH == <span class="hljs-keyword">null</span>) &#123;
+            mH = head;
+            mT = head;
+         &#125; <span class="hljs-keyword">else</span> &#123;
+            mT.next = head;
+            mT = head;
+         &#125;
+      &#125;
+      head = next;
+   &#125;
+   <span class="hljs-comment">// small and equal reconnect</span>
+   <span class="hljs-keyword">if</span> (sT != <span class="hljs-keyword">null</span>) &#123; <span class="hljs-comment">// 如果有小于区域</span>
+      sT.next = eH;
+      eT = eT == <span class="hljs-keyword">null</span> ? sT : eT; <span class="hljs-comment">// 下一步，谁去连大于区域的头，谁就变成eT</span>
+   &#125;
+   <span class="hljs-comment">// 上面的if，不管跑了没有，et</span>
+   <span class="hljs-comment">// all reconnect</span>
+   <span class="hljs-keyword">if</span> (eT != <span class="hljs-keyword">null</span>) &#123; <span class="hljs-comment">// 如果小于区域和等于区域，不是都没有</span>
+      eT.next = mH;
+   &#125;
+   <span class="hljs-keyword">return</span> sH != <span class="hljs-keyword">null</span> ? sH : (eH != <span class="hljs-keyword">null</span> ? eH : mH);
+&#125;</code></pre>
+
+
+
+<h3 id="一种特殊的单链表节点类-random"><a href="#一种特殊的单链表节点类-random" class="headerlink" title="一种特殊的单链表节点类 random"></a>一种特殊的单链表节点类 random</h3><blockquote>
+<p> 一种特殊的单链表节点类描述如下</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123; 
+<span class="hljs-keyword">int</span> value; 
+Node next; 
+Node rand; 
+Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125; 
+&#125;</code></pre>
+
+<p>rand指针是单链表节点结构中新增的指针，rand可能指向链表中的任意一个节点，也可能指向null。<br>给定一个由Node节点类型组成的无环单链表的头节点 head，请实现一个函数完成这个链表的复制，并返回复制的新链表的头节点。<br> <strong>【要求】</strong><br> **时间复杂度O(N)，额外空间复杂度O(1) **</p>
+<ul>
+<li><p>哈希表</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">copyListWithRand1</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   HashMap&lt;Node, Node&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;Node, Node&gt;();
+   Node cur = head;
+   <span class="hljs-keyword">while</span> (cur != <span class="hljs-keyword">null</span>) &#123;
+      map.put(cur, <span class="hljs-keyword">new</span> Node(cur.value));
+      cur = cur.next;
+   &#125;
+   cur = head;
+   <span class="hljs-keyword">while</span> (cur != <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-comment">// cur 老          (key)</span>
+      <span class="hljs-comment">// map.get(cur) 新 (value)</span>
+      map.get(cur).next = map.get(cur.next);
+      map.get(cur).rand = map.get(cur.rand);
+      cur = cur.next;
+   &#125;
+   <span class="hljs-keyword">return</span> map.get(head);
+&#125;</code></pre>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>不用哈希表</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208175756.png" srcset="/img/loading.gif" alt="克隆, 放置后面"></p>
+<p>一次拿出一对:</p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208175936.png" srcset="/img/loading.gif" alt="如何克隆？" style="zoom:50%;" />
+
+
+
+</li>
+</ul>
+<p>  我们通过1找到1的random 3，又因为3’就在3后面，所以可以直接3.next找到并与1’连接</p>
+<p>  最后分离</p>
+<p>  code:</p>
+  <pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">copyListWithRand2</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+   &#125;
+   Node cur = head;
+   Node next = <span class="hljs-keyword">null</span>;
+   <span class="hljs-comment">// copy node and link to every node</span>
+   <span class="hljs-comment">// 1 -&gt; 2</span>
+   <span class="hljs-comment">// 1 -&gt; 1&#x27; -&gt; 2</span>
+   <span class="hljs-keyword">while</span> (cur != <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-comment">// cur 老</span>
+      <span class="hljs-comment">// next表示 老 的下一个</span>
+      next = cur.next;
+      cur.next = <span class="hljs-keyword">new</span> Node(cur.value);
+      cur.next.next = next;
+      cur = next;
+   &#125;
+   cur = head;
+   Node curCopy = <span class="hljs-keyword">null</span>;
+   <span class="hljs-comment">// set copy node rand</span>
+   <span class="hljs-comment">// 1 -&gt; 1&#x27; -&gt; 2 -&gt; 2&#x27;</span>
+   <span class="hljs-keyword">while</span> (cur != <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-comment">// cur 老</span>
+      <span class="hljs-comment">// cur.next  新 copy</span>
+      next = cur.next.next;
+      curCopy = cur.next;
+      <span class="hljs-comment">// 老的rand的下一个(插入进来的)</span>
+      curCopy.rand = cur.rand != <span class="hljs-keyword">null</span> ? cur.rand.next : <span class="hljs-keyword">null</span>;
+      cur = next;
+   &#125;
+   Node res = head.next;
+   cur = head;
+   <span class="hljs-comment">// split</span>
+   <span class="hljs-keyword">while</span> (cur != <span class="hljs-keyword">null</span>) &#123;
+      next = cur.next.next;
+      curCopy = cur.next;
+      cur.next = next;
+      curCopy.next = next != <span class="hljs-keyword">null</span> ? next.next : <span class="hljs-keyword">null</span>;
+      cur = next;
+   &#125;
+   <span class="hljs-keyword">return</span> res;
+&#125;</code></pre>
+
+<p>  不能边设置边断链： <strong>如果后面指向前面，前面已经和自己的 ‘ 断连了，.next已经没有用</strong></p>
+<h3 id="与约瑟夫环问题相同的噩梦（相交）"><a href="#与约瑟夫环问题相同的噩梦（相交）" class="headerlink" title="与约瑟夫环问题相同的噩梦（相交）"></a>与约瑟夫环问题相同的噩梦（相交）</h3><p>给定两个可能有环也可能无环的单链表，头节点head1和head2。请实现一个函数，如果两个链表相交，请返回相交的 第一个节点。如果不相交，返回null </p>
+<p>相交就是地址共用相同部分！</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208182234.png" srcset="/img/loading.gif" alt="相交"></p>
+<p>【要求】<br> <strong>如果两个链表长度之和为N，时间复杂度请达到O(N)，额外空间复杂度 请达到O(1)。</strong></p>
+<blockquote>
+<p>先设计 Node f(head) 返回 <strong>入环第一个结点</strong></p>
+</blockquote>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208182419.png" srcset="/img/loading.gif" alt="入环结点" style="zoom:50%;" />
+
+<p>如果整个是环，就是head</p>
+<p> <strong>一个链表只有一个next指针，进了环，是不能出来的。</strong></p>
+<p>可以用set<Node> 先查有没有在set里，查到第一个在的就是入环结点，没有环一定走到空上。</p>
+<ul>
+<li><p>不用set:</p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208183357.png" srcset="/img/loading.gif" alt="流程" style="zoom:50%;" />
+
+<p>一开始slow和fast指针从head开始出发，slow走一步，fast走两步；</p>
+<p>一直这样走下去，slow和fast一定会在同一个地方，当到达同一个地方时： <strong>证明一定有环</strong></p>
+<p>slow不变位置，fast回到开头，fast变成一次走一步，slow也继续一次走一步，</p>
+<p>当slow和fast再次相交时，这个点就是 <strong>第一个入环点</strong>。</p>
+<p>code：</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 找到链表第一个入环节点，如果无环，返回null</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getLoopNode</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span> || head.next == <span class="hljs-keyword">null</span> || head.next.next == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+   &#125;
+   <span class="hljs-comment">// n1 慢  n2 快</span>
+   Node n1 = head.next; <span class="hljs-comment">// n1 -&gt; slow</span>
+   Node n2 = head.next.next; <span class="hljs-comment">// n2 -&gt; fast</span>
+   <span class="hljs-keyword">while</span> (n1 != n2) &#123;
+      <span class="hljs-keyword">if</span> (n2.next == <span class="hljs-keyword">null</span> || n2.next.next == <span class="hljs-keyword">null</span>) &#123;
+         <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+      &#125;
+      n2 = n2.next.next;
+      n1 = n1.next;
+   &#125;
+   n2 = head; <span class="hljs-comment">// n2 -&gt; walk again from head</span>
+   <span class="hljs-keyword">while</span> (n1 != n2) &#123;
+      n1 = n1.next;
+      n2 = n2.next;
+   &#125;
+   <span class="hljs-keyword">return</span> n1;
+&#125;</code></pre>
+
+
+
+</li>
+</ul>
+<blockquote>
+<p>问题解决</p>
+</blockquote>
+<ol>
+<li>如果 <strong>两个无环链表相交</strong>，相交后为全部相交部分。</li>
+</ol>
+<ul>
+<li><p>用set</p>
+<p>把一个链表全部注册进去，对第二个链表逐步遍历直到找到第一个相交。</p>
+</li>
+<li><p>不用set</p>
+<p>假设第一个链表100个，第二个链表80个，两个都找到其最后一个结点（即下一个结点为null的结点），分别为end1和end2。</p>
+<ul>
+<li>判断 end1 是否等于 end2 ，如果不等于， 不相交。</li>
+<li>如果 end1 等于 end2， 链表1走（100-80）= 20步，从这里开始链表二也开始走，两个链表肯定会走到第一个相遇的地方。</li>
+</ul>
+<p>Code:</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 如果两个链表都无环，返回第一个相交节点，如果不想交，返回null</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">noLoop</span><span class="hljs-params">(Node head1, Node head2)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head1 == <span class="hljs-keyword">null</span> || head2 == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+   &#125;
+   Node cur1 = head1;
+   Node cur2 = head2;
+   <span class="hljs-keyword">int</span> n = <span class="hljs-number">0</span>;
+   <span class="hljs-keyword">while</span> (cur1.next != <span class="hljs-keyword">null</span>) &#123;
+      n++;
+      cur1 = cur1.next;
+   &#125;
+   <span class="hljs-keyword">while</span> (cur2.next != <span class="hljs-keyword">null</span>) &#123;
+      n--;
+      cur2 = cur2.next;
+   &#125;
+   <span class="hljs-comment">// n = cur1.len - cur2.len</span>
+   <span class="hljs-keyword">if</span> (cur1 != cur2) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+   &#125;
+   <span class="hljs-comment">// n  :  链表1长度减去链表2长度的值</span>
+   cur1 = n &gt; <span class="hljs-number">0</span> ? head1 : head2; <span class="hljs-comment">// 谁长，谁的头变成cur1</span>
+   cur2 = cur1 == head1 ? head2 : head1; <span class="hljs-comment">// 谁短，谁的头变成cur2</span>
+   n = Math.abs(n);
+   <span class="hljs-comment">// 长链表先走</span>
+   <span class="hljs-keyword">while</span> (n != <span class="hljs-number">0</span>) &#123;
+      n--;
+      cur1 = cur1.next;
+   &#125;
+   <span class="hljs-comment">// 一起走 走到相交点</span>
+   <span class="hljs-keyword">while</span> (cur1 != cur2) &#123;
+      cur1 = cur1.next;
+      cur2 = cur2.next;
+   &#125;
+   <span class="hljs-keyword">return</span> cur1;
+&#125;</code></pre>
+
+
+
+</li>
+</ul>
+<ol start="2">
+<li>如果 <strong>两个有环链表相交</strong>，一定是 <strong>共用这个环的</strong></li>
+</ol>
+<p>​ <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208190644.png" srcset="/img/loading.gif" alt="三种情况"></p>
+<ul>
+<li>没有相交部分<ul>
+<li>让loop1往下走，如果在 <strong>遇见自己之前一直没碰到loop2</strong>。</li>
+</ul>
+</li>
+<li>入环结点相同<ul>
+<li>loop1和loop2不等于空且相同</li>
+<li>不用再看环，把入环点作为尾结点，就变成了两个无环单链表相交问题</li>
+</ul>
+</li>
+<li>入环结点不同<ul>
+<li> 让loop1往下走，如果在 <strong>遇见自己之前一直碰到了loop2</strong>。</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>如果 <strong>一个有环一个无环</strong>， <strong>不可能相交</strong>。</li>
+</ol>
+<p>​ 因为是单链表。</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 两个有环链表，返回第一个相交节点，如果不想交返回null</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">bothLoop</span><span class="hljs-params">(Node head1, Node loop1, Node head2, Node loop2)</span> </span>&#123;
+   Node cur1 = <span class="hljs-keyword">null</span>;
+   Node cur2 = <span class="hljs-keyword">null</span>;
+   <span class="hljs-keyword">if</span> (loop1 == loop2) &#123;
+      <span class="hljs-comment">// 解决无环问题，只不过end变为loop</span>
+      cur1 = head1;
+      cur2 = head2;
+      <span class="hljs-keyword">int</span> n = <span class="hljs-number">0</span>;
+      <span class="hljs-keyword">while</span> (cur1 != loop1) &#123;
+         n++;
+         cur1 = cur1.next;
+      &#125;
+      <span class="hljs-keyword">while</span> (cur2 != loop2) &#123;
+         n--;
+         cur2 = cur2.next;
+      &#125;
+      cur1 = n &gt; <span class="hljs-number">0</span> ? head1 : head2;
+      cur2 = cur1 == head1 ? head2 : head1;
+      n = Math.abs(n);
+      <span class="hljs-keyword">while</span> (n != <span class="hljs-number">0</span>) &#123;
+         n--;
+         cur1 = cur1.next;
+      &#125;
+      <span class="hljs-keyword">while</span> (cur1 != cur2) &#123;
+         cur1 = cur1.next;
+         cur2 = cur2.next;
+      &#125;
+      <span class="hljs-keyword">return</span> cur1;
+   &#125; <span class="hljs-keyword">else</span> &#123;
+      cur1 = loop1.next;
+      <span class="hljs-keyword">while</span> (cur1 != loop1) &#123;
+         <span class="hljs-keyword">if</span> (cur1 == loop2) &#123;
+            <span class="hljs-keyword">return</span> loop1;
+         &#125;
+         cur1 = cur1.next;
+      &#125;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+   &#125;
+&#125;</code></pre>
+
+<p>最后总结：</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getIntersectNode</span><span class="hljs-params">(Node head1, Node head2)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head1 == <span class="hljs-keyword">null</span> || head2 == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+   &#125;
+   Node loop1 = getLoopNode(head1);
+   Node loop2 = getLoopNode(head2);
+   <span class="hljs-keyword">if</span> (loop1 == <span class="hljs-keyword">null</span> &amp;&amp; loop2 == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> noLoop(head1, head2);
+   &#125;
+   <span class="hljs-keyword">if</span> (loop1 != <span class="hljs-keyword">null</span> &amp;&amp; loop2 != <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> bothLoop(head1, loop1, head2, loop2);
+   &#125;
+   <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+&#125;</code></pre>
+
+
+
+<h3 id="能不能不给单链表的头节点，只给想要删除的节点，就能做到在链表上把这个点删掉？"><a href="#能不能不给单链表的头节点，只给想要删除的节点，就能做到在链表上把这个点删掉？" class="headerlink" title="能不能不给单链表的头节点，只给想要删除的节点，就能做到在链表上把这个点删掉？"></a>能不能不给单链表的头节点，只给想要删除的节点，就能做到在链表上把这个点删掉？</h3><p>把下一个值赋给当前结点，当前结点跳到下下个。</p>
+<p>1）但 <strong>实际上没有删除 “自己”，只是替代了内容！</strong></p>
+<p>2）如果不再是简单的结点问题，而是服务器问题， <strong>拷贝</strong>会变成一件很困难的事情！</p>
+<p>3） <strong>绝对无法删除链表最后一个结点的！</strong>没有办法改前一个结点的走向。NULL是一个特定系统区域，去调析构函数是没有用的！</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208192831.png" srcset="/img/loading.gif" alt="test代码"></p>
+<blockquote>
+<p>为什么不行？</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208192918.png" srcset="/img/loading.gif" alt="原因"></p>
+<p>c = null;只是让c没有指向Node(3), 但Node(2)还是指向Node(3)了！</p>
 
             </div>
             <hr>
