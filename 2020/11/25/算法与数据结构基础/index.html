@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      18.3k 字
+      19.6k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      263
+      280
        分钟
     </span>
   
@@ -2890,6 +2890,239 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208192918.png" srcset="/img/loading.gif" alt="原因"></p>
 <p>c = null;只是让c没有指向Node(3), 但Node(2)还是指向Node(3)了！</p>
+<h1 id="二叉树的基本算法"><a href="#二叉树的基本算法" class="headerlink" title="二叉树的基本算法"></a>二叉树的基本算法</h1><blockquote>
+<p>结构描述：</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
+  V value;
+  Node left;
+  Node right;
+&#125;</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
+   <span class="hljs-keyword">public</span> Node left;
+   <span class="hljs-keyword">public</span> Node right;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Node</span><span class="hljs-params">(<span class="hljs-keyword">int</span> v)</span> </span>&#123;
+      value = v;
+   &#125;
+&#125;</code></pre>
+
+
+
+<h2 id="二叉树的先序、中序、后序遍历"><a href="#二叉树的先序、中序、后序遍历" class="headerlink" title="二叉树的先序、中序、后序遍历"></a>二叉树的先序、中序、后序遍历</h2><p>​ <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209164047.png" srcset="/img/loading.gif" alt="如图"></p>
+<ul>
+<li><p>先序：任何子树的处理顺序都是，先头节点、再左子树、然后右子树</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 先序打印所有结点</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pre</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   System.out.println(head.value);
+   pre(head.left);
+   pre(head.right);
+&#125;</code></pre>
+
+<p>​ </p>
+</li>
+<li><p>中序：任何子树的处理顺序都是，先左子树、再头节点、然后右子树</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">in</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   in(head.left);
+   System.out.println(head.value);
+   in(head.right);
+&#125;</code></pre>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>后序：任何子树的处理顺序都是，先左子树、再右子树、然后头节点</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pos</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   pos(head.left);
+   pos(head.right);
+   System.out.println(head.value);
+&#125;</code></pre>
+
+
+
+</li>
+</ul>
+<h3 id="递归的本质是-递归序"><a href="#递归的本质是-递归序" class="headerlink" title="递归的本质是  递归序"></a>递归的本质是  <strong>递归序</strong></h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209170646.png" srcset="/img/loading.gif" alt="流程"></p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">f</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   <span class="hljs-comment">// 先序</span>
+   f(head.left);
+   <span class="hljs-comment">// 中序</span>
+   f(head.right);
+   <span class="hljs-comment">// 后序</span>
+&#125;</code></pre>
+
+<p>对于这样的代码，一定会 <strong>访问(返回)</strong> 三次：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209170852.png" srcset="/img/loading.gif" alt="每一个结点都会到达三次"></p>
+<p>先序就是每一次第一次到达了就打印：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209171028.png" srcset="/img/loading.gif" alt="第一次到达打印就是先序"></p>
+<p>先序，中序，后序只是 <strong>递归序的结果</strong>。</p>
+<p>所以在树上做动态规划的前提就是 <strong>每一个结点都会到此，走左边再回来，走右边再回来。</strong></p>
+<p>让一个东西来到 <strong>此地三次！</strong></p>
+<ul>
+<li>理解递归序</li>
+<li>先序、中序、后序都可以在递归序的基础上加工出来</li>
+<li>第一次到达一个节点就打印就是先序、第二次打印即中序、第三次即后序</li>
+</ul>
+<h3 id="非递归方式实现二叉树的先序、中序、后序遍历"><a href="#非递归方式实现二叉树的先序、中序、后序遍历" class="headerlink" title="非递归方式实现二叉树的先序、中序、后序遍历"></a>非递归方式实现二叉树的先序、中序、后序遍历</h3><ul>
+<li><p>任何递归函数都可以改成非递归</p>
+</li>
+<li><p>非递归实现先序遍历</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 先序遍历</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pre</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   System.out.print(<span class="hljs-string">&quot;pre-order: &quot;</span>);
+   <span class="hljs-keyword">if</span> (head != <span class="hljs-keyword">null</span>) &#123;
+      Stack&lt;Node&gt; stack = <span class="hljs-keyword">new</span> Stack&lt;Node&gt;();
+      stack.add(head);
+      <span class="hljs-keyword">while</span> (!stack.isEmpty()) &#123;
+         head = stack.pop();
+         System.out.print(head.value + <span class="hljs-string">&quot; &quot;</span>);
+         <span class="hljs-keyword">if</span> (head.right != <span class="hljs-keyword">null</span>) &#123;
+            stack.push(head.right);
+         &#125;
+         <span class="hljs-keyword">if</span> (head.left != <span class="hljs-keyword">null</span>) &#123;
+            stack.push(head.left);
+         &#125;
+      &#125;
+   &#125;
+   System.out.println();
+&#125;</code></pre>
+
+<ul>
+<li><p>先放头结点，弹出就打印</p>
+</li>
+<li><p>弹出打印后，如果有右孩子，先压入右孩子</p>
+</li>
+<li><p>如果有左孩子，再压入右孩子</p>
+</li>
+<li><p>例如对上面的树，先压入1，弹出1，压入3、2，弹出2，压入5、4，弹出4，弹出5，弹出3，压入7、6，弹出6、7</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>非递归实现后序遍历</p>
+<ul>
+<li><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209172717.png" srcset="/img/loading.gif" alt="流程与先序相反"></p>
+</li>
+<li><p> 如果上述，先压左再压入右， 头左右就会变成头右左，正好是后序的相反。</p>
+</li>
+</ul>
+<p>Code:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pos1</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   System.out.print(<span class="hljs-string">&quot;pos-order: &quot;</span>);
+   <span class="hljs-keyword">if</span> (head != <span class="hljs-keyword">null</span>) &#123;
+      Stack&lt;Node&gt; s1 = <span class="hljs-keyword">new</span> Stack&lt;Node&gt;();
+      Stack&lt;Node&gt; s2 = <span class="hljs-keyword">new</span> Stack&lt;Node&gt;();
+      s1.push(head);
+      <span class="hljs-keyword">while</span> (!s1.isEmpty()) &#123;
+         head = s1.pop();
+         <span class="hljs-comment">// 转移到s2里面，先序这里是直接打印</span>
+         s2.push(head);
+         <span class="hljs-comment">// 先压左</span>
+         <span class="hljs-keyword">if</span> (head.left != <span class="hljs-keyword">null</span>) &#123;
+            s1.push(head.left);
+         &#125;
+         <span class="hljs-keyword">if</span> (head.right != <span class="hljs-keyword">null</span>) &#123;
+            s1.push(head.right);
+         &#125;
+      &#125;
+      <span class="hljs-keyword">while</span> (!s2.isEmpty()) &#123;
+         System.out.print(s2.pop().value + <span class="hljs-string">&quot; &quot;</span>);
+      &#125;
+   &#125;
+   System.out.println();
+&#125;</code></pre>
+</li>
+<li><p>非递归实现后序遍历（方法二）</p>
+<ul>
+<li><p>死亡代码</p>
+</li>
+<li><p>左边到最底下，弹出一个往上管右边，右边再找左边最底下，直到把左边处理完再处理右边再处理自己。</p>
+</li>
+</ul>
+</li>
+</ul>
+  <pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pos2</span><span class="hljs-params">(Node h)</span> </span>&#123;
+   System.out.print(<span class="hljs-string">&quot;pos-order: &quot;</span>);
+   <span class="hljs-keyword">if</span> (h != <span class="hljs-keyword">null</span>) &#123;
+      Stack&lt;Node&gt; stack = <span class="hljs-keyword">new</span> Stack&lt;Node&gt;();
+      stack.push(h);
+      Node c = <span class="hljs-keyword">null</span>;
+      <span class="hljs-keyword">while</span> (!stack.isEmpty()) &#123;
+         c = stack.peek();
+         <span class="hljs-comment">// 左树没处理先处理左树</span>
+         <span class="hljs-keyword">if</span> (c.left != <span class="hljs-keyword">null</span> &amp;&amp; h != c.left &amp;&amp; h != c.right) &#123;
+            stack.push(c.left);
+         <span class="hljs-comment">// 右树没处理先处理右树</span>
+         &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (c.right != <span class="hljs-keyword">null</span> &amp;&amp; h != c.right) &#123;
+            stack.push(c.right);
+         <span class="hljs-comment">// 该处理自己了</span>
+         &#125; <span class="hljs-keyword">else</span> &#123;
+            System.out.print(stack.pop().value + <span class="hljs-string">&quot; &quot;</span>);
+            <span class="hljs-comment">// h跟踪上次打印的结点</span>
+            h = c;
+         &#125;
+      &#125;
+   &#125;
+   System.out.println();
+&#125;</code></pre>
+
+
+
+<ul>
+<li><p>非递归实现中序遍历</p>
+<ul>
+<li><p>整条左边界依次入栈</p>
+</li>
+<li><p>第一条逻辑无法再命中，就弹出结点并打印，然后来到弹出结点的右树上继续执行条件一</p>
+</li>
+<li><p>如上面的树，左边界全入栈，栈顶 - &gt; 栈底以此为 4,2,1，不能再命中了，弹出4，来到4的右孩子且为Null，弹出2，来到2的右孩子且为5，压入5，弹出5，来到5的右孩子且为Null，弹出1，来到1的右孩子3，3、6依此入栈，弹出6，来到6的右孩子且为Null，弹出3，来到3的右孩子且为7，弹出7。</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 左头无限分解</span>
+<span class="hljs-comment">// 左边左头分解，右边也左头分解</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">in</span><span class="hljs-params">(Node head)</span> </span>&#123;
+    System.out.print(<span class="hljs-string">&quot;in-order: &quot;</span>);
+    <span class="hljs-keyword">if</span> (head != <span class="hljs-keyword">null</span>) &#123;
+      Stack&lt;Node&gt; stack = <span class="hljs-keyword">new</span> Stack&lt;Node&gt;();
+      <span class="hljs-keyword">while</span> (!stack.isEmpty() || head != <span class="hljs-keyword">null</span>) &#123;
+        <span class="hljs-comment">// 把左边全压入</span>
+        <span class="hljs-keyword">if</span> (head != <span class="hljs-keyword">null</span>) &#123;
+          stack.push(head);
+          head = head.left;
+        &#125; <span class="hljs-keyword">else</span> &#123;
+          head = stack.pop();
+          System.out.print(head.value + <span class="hljs-string">&quot; &quot;</span>);
+          head = head.right;
+        &#125;
+      &#125;
+    &#125;
+    System.out.println();
+  &#125;</code></pre>
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>自己设计压栈的来实现</li>
+</ul>
 
             </div>
             <hr>
