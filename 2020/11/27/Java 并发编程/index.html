@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.6k 字
+      5.7k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      45
+      73
        分钟
     </span>
   
@@ -734,6 +734,385 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 <p>加入t1执行完后</p>
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201127184706.png" srcset="/img/loading.gif" alt="t1执行完后, main重新开始执行"></p>
+</li>
+</ul>
+<h3 id="2-5-线程常用方法"><a href="#2-5-线程常用方法" class="headerlink" title="2.5 线程常用方法"></a>2.5 线程常用方法</h3><h4 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法:"></a>常用方法:</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209100229.png" srcset="/img/loading.gif" alt="1"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209100254.png" srcset="/img/loading.gif" alt="2"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209100315.png" srcset="/img/loading.gif" alt="3"></p>
+<h4 id="start-vs-run"><a href="#start-vs-run" class="headerlink" title="start vs run"></a>start vs run</h4><blockquote>
+<p>如果直接run会发生什么？</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209101753.png" srcset="/img/loading.gif" alt="单独run"></p>
+<p>并不是t1线程执行，并不能起到异步效果。</p>
+<p>start启用线程，再由新的线程执行。</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 打印线程状态</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-meta">@Slf4j(topic = &quot;c.Test&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test5</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            log.debug(<span class="hljs-string">&quot;running&quot;</span>);
+        &#125;, <span class="hljs-string">&quot;t1&quot;</span>);
+
+        System.out.println(t1.getState());
+        t1.run();
+        System.out.println(t1.getState());
+        t1.start();
+        System.out.println(t1.getState());
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs css"><span class="hljs-selector-tag">NEW</span>
+10<span class="hljs-selector-pseudo">:25</span><span class="hljs-selector-pseudo">:53</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span>
+<span class="hljs-selector-tag">NEW</span>
+<span class="hljs-selector-tag">RUNNABLE</span>
+10<span class="hljs-selector-pseudo">:25</span><span class="hljs-selector-pseudo">:53</span> <span class="hljs-selector-attr">[t1]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span></code></pre>
+
+<blockquote>
+<p>不能调用多次start()方法</p>
+</blockquote>
+<pre><code class="hljs css"><span class="hljs-selector-tag">Exception</span> <span class="hljs-selector-tag">in</span> <span class="hljs-selector-tag">thread</span> &quot;<span class="hljs-selector-tag">main</span>&quot; 10<span class="hljs-selector-pseudo">:27</span><span class="hljs-selector-pseudo">:05</span> <span class="hljs-selector-attr">[t1]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span>
+<span class="hljs-selector-tag">java</span><span class="hljs-selector-class">.lang</span><span class="hljs-selector-class">.IllegalThreadStateException</span>
+    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">java</span><span class="hljs-selector-class">.lang</span><span class="hljs-selector-class">.Thread</span><span class="hljs-selector-class">.start</span>(<span class="hljs-selector-tag">Thread</span><span class="hljs-selector-class">.java</span><span class="hljs-selector-pseudo">:708)</span>
+    <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">com</span><span class="hljs-selector-class">.qiuke</span><span class="hljs-selector-class">.test</span><span class="hljs-selector-class">.Test5</span><span class="hljs-selector-class">.main</span>(<span class="hljs-selector-tag">Test5</span><span class="hljs-selector-class">.java</span><span class="hljs-selector-pseudo">:19)</span>
+// 多次调用<span class="hljs-selector-tag">start</span>()</code></pre>
+
+<blockquote>
+<p>小结</p>
+</blockquote>
+<p>直接调用 run 是在 <strong>主线程中执行了 run</strong>，没有启动新的线程<br> 使用 start 是 <strong>启动新的线程</strong>，通过新的线程间接执行 run 中的代码</p>
+<h4 id="sleep-vs-yield"><a href="#sleep-vs-yield" class="headerlink" title="sleep vs yield"></a>sleep vs yield</h4><p> <strong><em>sleep</em></strong></p>
+<ul>
+<li><p>调用 sleep 会让当前线程从  <strong>Running 进入 Timed Waiting 状态(阻塞)</strong></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209103716.png" srcset="/img/loading.gif" alt="Timed Waiting"></p>
+</li>
+<li><p>其它线程可以使用  <strong>interrupt</strong> 方法打断正在睡眠的线程，这时 sleep 方法会抛出  **InterruptedException **</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209104226.png" srcset="/img/loading.gif" alt="interrupted异常"></p>
+</li>
+<li><p>睡眠结束后的线程 <strong>未必会立刻得到执行</strong></p>
+<ul>
+<li>要等任务调度器分配时间片</li>
+</ul>
+</li>
+<li><p>建议用 <strong>TimeUnit 的 sleep</strong> 代替 Thread 的 sleep 来获得更好的可读性</p>
+<ul>
+<li><pre><code class="java">public void sleep(long timeout) throws InterruptedException &#123;
+    if (timeout &gt; 0) &#123;
+        long ms = toMillis(timeout);
+        int ns = excessNanos(timeout, ms);
+        Thread.sleep(ms, ns);
+    &#125;
+&#125;
+// 内部仍然是sleep
+<pre><code class="hljs reasonml">
+- ```java
+  <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">TimeUnit</span>.</span><span class="hljs-module"><span class="hljs-identifier">SECONDS</span>.</span></span>sleep(<span class="hljs-number">2000</span>);</code></pre></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<p> <strong><em>yield</em></strong></p>
+<ul>
+<li><p>调用 yield 会让当前线程从  <strong>Running 进入 Runnable 就绪状态</strong>，然后调度执行其它线程</p>
+<ul>
+<li>任务调度器会把时间片分配给 <strong>就绪状态</strong>，但不会分配给 <strong>阻塞状态</strong>。</li>
+<li>yield几乎没有 <strong>等待时间</strong>。</li>
+</ul>
+</li>
+<li><p>具体的实现依赖于操作系统的任务调度器</p>
+<ul>
+<li>想让，但没有其他线程要运行， <strong>任务调度器还是会把时间片分配给自己</strong>。</li>
+</ul>
+</li>
+</ul>
+<h4 id="线程优先级"><a href="#线程优先级" class="headerlink" title="线程优先级"></a>线程优先级</h4><ul>
+<li>线程优先级会 <strong>提示(hint)**调度器优先调度该线程，但它 **仅仅是一个提示</strong>，调度器可以忽略它。</li>
+<li>如果 cpu 比较忙，那么优先级高的线程会获得更多的时间片，但 cpu 闲时，优先级几乎没作用</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        Runnable task1 = () -&gt; &#123;
+            <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">for</span> (;;) &#123;
+                System.out.println(<span class="hljs-string">&quot;----&gt;1 &quot;</span> + count++);
+            &#125;
+        &#125;;
+        Runnable task2 = () -&gt; &#123;
+            <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">for</span> (;;) &#123;
+<span class="hljs-comment">//                Thread.yield();</span>
+                System.out.println(<span class="hljs-string">&quot;              ----&gt;2 &quot;</span> + count++);
+            &#125;
+        &#125;;
+        Thread t1 = <span class="hljs-keyword">new</span> Thread(task1, <span class="hljs-string">&quot;t1&quot;</span>);
+        Thread t2 = <span class="hljs-keyword">new</span> Thread(task2, <span class="hljs-string">&quot;t2&quot;</span>);
+        t1.setPriority(Thread.MIN_PRIORITY);
+        t2.setPriority(Thread.MAX_PRIORITY);
+        t1.start();
+        t2.start();
+    &#125;</code></pre>
+
+<blockquote>
+<p>优先级高的，最终打印的count应该更大</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209110407.png" srcset="/img/loading.gif" alt="结果"></p>
+<p>如果线程2开启yield：</p>
+<pre><code class="hljs java">Runnable task2 = () -&gt; &#123;
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> (;;) &#123;
+        Thread.yield();
+        System.out.println(<span class="hljs-string">&quot;              ----&gt;2 &quot;</span> + count++);
+    &#125;
+&#125;;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209110459.png" srcset="/img/loading.gif" alt="新结果"></p>
+<p>如果将优先级注释掉：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209110557.png" srcset="/img/loading.gif" alt="新结果"></p>
+<h4 id="sleep案例-防止cpu占用百分之百"><a href="#sleep案例-防止cpu占用百分之百" class="headerlink" title="sleep案例:防止cpu占用百分之百"></a>sleep案例:防止cpu占用百分之百</h4><h5 id="sleep实现"><a href="#sleep实现" class="headerlink" title="sleep实现"></a>sleep实现</h5><ul>
+<li><p>在没有利用 cpu 来计算时，不要让 while(true) 空转浪费 cpu，这时可以使用 yield 或 sleep 来让出 cpu 的使用权 给其他程序</p>
+<pre><code class="hljs java"><span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123; 
+  <span class="hljs-keyword">try</span> &#123;
+      Thread.sleep(<span class="hljs-number">50</span>);
+  &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+      e.printStackTrace(); &#125;
+&#125;</code></pre>
+
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209111647.png" srcset="/img/loading.gif" alt="测试(加了sleep)" style="zoom: 50%;" />
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209112407.png" srcset="/img/loading.gif" alt="服务器"></p>
+<p>注意：自己服务器多核，可能没有这样的效果！</p>
+<ul>
+<li><p>如果没有加sleep：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209112645.png" srcset="/img/loading.gif" alt="没有sleep"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209112747.png" srcset="/img/loading.gif" alt="cpu直接被打满"></p>
+<p>如图，cpu直接被打满。</p>
+</li>
+</ul>
+</li>
+<li><p>可以用 wait 或 条件变量达到类似的效果 </p>
+</li>
+<li><p>不同的是，后两种都 <strong>需要加锁</strong>，并且需要相应的唤醒操作，一般适用于要进行同步的场景 </p>
+</li>
+<li><p>sleep 适用于 <strong>无需锁同步的场景</strong></p>
+</li>
+</ul>
+<h4 id="join"><a href="#join" class="headerlink" title="join"></a>join</h4><blockquote>
+<p>下面的代码执行，打印 r 是什么?</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> r = <span class="hljs-number">0</span>;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+    test1();
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test1</span><span class="hljs-params">()</span> </span>&#123;
+    log.debug(<span class="hljs-string">&quot;开始&quot;</span>);
+    Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        log.debug(<span class="hljs-string">&quot;开始&quot;</span>);
+        <span class="hljs-keyword">try</span> &#123;
+            Thread.sleep(<span class="hljs-number">1</span>);
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+        log.debug(<span class="hljs-string">&quot;结束&quot;</span>); 
+        r = <span class="hljs-number">10</span>;
+    &#125;);
+    t1.start();
+    log.debug(<span class="hljs-string">&quot;结果为:&#123;&#125;&quot;</span>, r);
+    log.debug(<span class="hljs-string">&quot;结束&quot;</span>);
+&#125;</code></pre>
+
+<pre><code class="hljs css">11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 开始
+11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[Thread-0]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 开始
+11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 结果为<span class="hljs-selector-pseudo">:0</span>
+11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[Thread-0]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 结束
+11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 结束</code></pre>
+
+<p>主线程调用test1，线程1被启动，主线程继续往下运行，不会等到t1结束，直接打印结果r=0；</p>
+<blockquote>
+<p>分析</p>
+</blockquote>
+<p>因为 **主线程和线程 t1 是并行执行的 **，t1 线程需要 1 秒之后才能算出 r=10</p>
+<p>而主线程一开始就要打印 r 的结果，所以只能打印出 r=0</p>
+<blockquote>
+<p>解决方法</p>
+</blockquote>
+<p>用 sleep 行不行?为什么?</p>
+<ul>
+<li><p>可实现，但不推荐，因为未知线程t1执行到r赋值语句所需执行的时间</p>
+<p>用 join，加在 t1.start() 之后即可</p>
+</li>
+<li><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209135850.png" srcset="/img/loading.gif" alt="join"></p>
+</li>
+</ul>
+<h4 id="join案例-同步"><a href="#join案例-同步" class="headerlink" title="join案例:同步"></a>join案例:同步</h4><ul>
+<li>需要等待结果返回，才能继续运行就是 <strong>同步</strong><ul>
+<li>刚才的案例中：</li>
+<li><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209140223.png" srcset="/img/loading.gif" alt="主线程在同步等待t1线程"></li>
+</ul>
+</li>
+<li>不需要等待结果返回，就能继续运行就是 <strong>异步</strong></li>
+</ul>
+<h5 id="等待多个结果"><a href="#等待多个结果" class="headerlink" title="等待多个结果"></a>等待多个结果</h5><blockquote>
+<p>下面代码 cost 大约多少秒?</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test2</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+    Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">try</span> &#123;
+            TimeUnit.SECONDS.sleep(<span class="hljs-number">1</span>);
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+        r1 = <span class="hljs-number">10</span>;
+    &#125;);
+    Thread t2 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">try</span> &#123;
+            TimeUnit.SECONDS.sleep(<span class="hljs-number">2</span>);
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+        r2 = <span class="hljs-number">20</span>;
+    &#125;);
+    t1.start();
+    t2.start();
+    <span class="hljs-keyword">long</span> start = System.currentTimeMillis();
+    log.debug(<span class="hljs-string">&quot;join begin&quot;</span>);
+    <span class="hljs-comment">// t1先join</span>
+    t1.join();
+    log.debug(<span class="hljs-string">&quot;t2 join end&quot;</span>);
+    <span class="hljs-comment">// t2再join</span>
+    t2.join();
+    log.debug(<span class="hljs-string">&quot;t1 join end&quot;</span>);
+    <span class="hljs-keyword">long</span> end = System.currentTimeMillis();
+    log.debug(<span class="hljs-string">&quot;r1: &#123;&#125; r2: &#123;&#125; cost: &#123;&#125;&quot;</span>, r1, r2, end - start);
+&#125;</code></pre>
+
+<pre><code class="hljs css">14<span class="hljs-selector-pseudo">:07</span><span class="hljs-selector-pseudo">:10</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.TestJoin</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">join</span> <span class="hljs-selector-tag">begin</span>
+14<span class="hljs-selector-pseudo">:07</span><span class="hljs-selector-pseudo">:12</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.TestJoin</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">t2</span> <span class="hljs-selector-tag">join</span> <span class="hljs-selector-tag">end</span>
+14<span class="hljs-selector-pseudo">:07</span><span class="hljs-selector-pseudo">:12</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.TestJoin</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">t1</span> <span class="hljs-selector-tag">join</span> <span class="hljs-selector-tag">end</span>
+14<span class="hljs-selector-pseudo">:07</span><span class="hljs-selector-pseudo">:12</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.TestJoin</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">r1</span>: 10 <span class="hljs-selector-tag">r2</span>: 20 <span class="hljs-selector-tag">cost</span>: 2002</code></pre>
+
+<p>时间差值为 <strong>2s</strong>！</p>
+<p>如果t2先join，t1再join呢？</p>
+<p>时间差值仍为 <strong>2s</strong>！</p>
+<blockquote>
+<p>分析如下</p>
+</blockquote>
+<ul>
+<li><p>第一个 join:等待 t1 时, t2 并没有停止, 而在运行</p>
+</li>
+<li><p>第二个 join:1s 后, 执行到此, t2 也运行了 1s, 因此也只需再等待 1s</p>
+</li>
+</ul>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209141248.png" srcset="/img/loading.gif" alt="流程图"></p>
+<h5 id="join的限时同步"><a href="#join的限时同步" class="headerlink" title="join的限时同步"></a>join的限时同步</h5><blockquote>
+<p>Join(long n)等待n毫秒</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209141710.png" srcset="/img/loading.gif" alt="测试"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209141803.png" srcset="/img/loading.gif" alt="测试2"></p>
+<h4 id="interrupt"><a href="#interrupt" class="headerlink" title="interrupt"></a>interrupt</h4><h5 id="打断-sleep，wait，join-的线程"><a href="#打断-sleep，wait，join-的线程" class="headerlink" title="打断 sleep，wait，join 的线程"></a>打断 <strong>sleep，wait，join</strong> 的线程</h5><blockquote>
+<p>打断 <strong>sleep，wait，join</strong> 的线程，且清空打断标记，置为false</p>
+</blockquote>
+<p>这几个方法都会让线程 <strong>进入阻塞状态</strong><br> 打断 sleep 的线程, 会 <strong>清空打断状态</strong>，以 sleep 为例</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209142900.png" srcset="/img/loading.gif" alt="测试interrupt"></p>
+<p>注意：一定要 <strong>先sleep再打断</strong>，如果先打断再sleep，打断表示为true！</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209143036.png" srcset="/img/loading.gif" alt="先打断再sleep情况"></p>
+<h5 id="打断正常运行的线程"><a href="#打断正常运行的线程" class="headerlink" title="打断正常运行的线程"></a>打断正常运行的线程</h5><p>Code:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+    Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123;
+            <span class="hljs-keyword">boolean</span> interrupted = Thread.currentThread().isInterrupted();
+            <span class="hljs-keyword">if</span>(interrupted) &#123;
+                log.debug(<span class="hljs-string">&quot;被打断了, 退出循环&quot;</span>);
+                <span class="hljs-keyword">break</span>;
+            &#125;
+        &#125;
+    &#125;, <span class="hljs-string">&quot;t1&quot;</span>);
+    t1.start();
+
+    Thread.sleep(<span class="hljs-number">1000</span>);
+    log.debug(<span class="hljs-string">&quot;interrupt&quot;</span>);
+    t1.interrupt();
+&#125;</code></pre>
+
+<p>如果不加break，退不出循环。并不会影响程序正常运行。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209143718.png" srcset="/img/loading.gif" alt="不加break 程序仍在运行"></p>
+<p>主线程执行打断，只是告诉线程你要打断， <strong>继续运行还是停止运行由该线程自己决定</strong>。</p>
+<h5 id="模式之两阶段终止"><a href="#模式之两阶段终止" class="headerlink" title="* 模式之两阶段终止"></a>* 模式之两阶段终止</h5><blockquote>
+<p>Two Phase Termination</p>
+</blockquote>
+<p>在一个线程T1中如何“ <strong>优雅</strong> ”的终止线程T2？这里的优雅指的是给T2一个料理后事的机会。</p>
+<blockquote>
+<p>错误思想</p>
+</blockquote>
+<ul>
+<li><p>使用线程对象的 <strong>stop()</strong> 方法停止线程</p>
+<ul>
+<li>stop方法会 <strong>真正杀死线程</strong>，如果这时线程锁住了 <strong>共享资源</strong> ，那么当它被杀死后就再也 <strong>没有机会释放锁</strong>，其他线程将永远无法获取锁</li>
+</ul>
+</li>
+<li><p>使用 <strong>System.exit(int)</strong> 方法停止线程</p>
+<ul>
+<li>目的仅是停止一个线程，这种做法会 <strong>让整个程序都停止</strong></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>对于监控线程来说，应该使用while(true)不断运行</p>
+</blockquote>
+<ul>
+<li><p>怎么让监控线程停止监控，就得使用 <strong>两阶段终止模式</strong></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209145702.png" srcset="/img/loading.gif" alt="流程"></p>
+<p>​ 需要sleep，不然会打满cpu。</p>
+<p>​ 如果在 <strong>监控阶段被打断</strong>，打断标记为 true，下一轮判断是否被打断后会退出。</p>
+<p>​ 如果在 <strong>睡眠阶段被打断</strong>，抛出InterruptedException异常，打断标记清空。可以抓住这个异常，重新设计打断标记，下一轮继续判断。</p>
+<p>​ code模拟:</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 通过两阶段终止模式实现监控线程</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-meta">@Slf4j(topic = &quot;c.Test13&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test13</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        TwoPhaseTermination tpt = <span class="hljs-keyword">new</span> TwoPhaseTermination();
+        tpt.start();
+
+        Thread.sleep(<span class="hljs-number">4000</span>);
+        tpt.stop();
+    &#125;
+&#125;
+
+<span class="hljs-meta">@Slf4j(topic = &quot;c.TwoPhaseTermination&quot;)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TwoPhaseTermination</span></span>&#123;
+    <span class="hljs-keyword">private</span> Thread monitorThread;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">stop</span><span class="hljs-params">()</span></span>&#123;
+        monitorThread.interrupt();
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span></span>&#123;
+        monitorThread = <span class="hljs-keyword">new</span> Thread(()-&gt;&#123;
+            <span class="hljs-keyword">while</span> (<span class="hljs-keyword">true</span>)&#123;
+                Thread current = Thread.currentThread();
+                <span class="hljs-keyword">if</span> (current.isInterrupted())&#123;
+                    log.debug(<span class="hljs-string">&quot;料理后事&quot;</span>);
+                    <span class="hljs-keyword">break</span>;
+                &#125;
+                <span class="hljs-keyword">try</span> &#123;
+                    Thread.sleep(<span class="hljs-number">1000</span>); <span class="hljs-comment">// 如果期间被打断 需要捕获异常 重置打断标记</span>
+                    log.debug(<span class="hljs-string">&quot;执行监控中...&quot;</span>);
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                    <span class="hljs-comment">// 重新设置打断标记</span>
+                    current.interrupt();
+                    System.out.println(current.isInterrupted());
+                &#125;
+            &#125;
+        &#125;,<span class="hljs-string">&quot;monitor&quot;</span>);
+        monitorThread.start();
+    &#125;
+
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209162750.png" srcset="/img/loading.gif" alt="结果演示"></p>
 </li>
 </ul>
 
