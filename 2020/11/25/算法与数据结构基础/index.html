@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      19.6k 字
+      22.7k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      280
+      324
        分钟
     </span>
   
@@ -3120,9 +3120,513 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 </ul>
 </li>
 </ul>
+<h2 id="实现二叉树的按层遍历"><a href="#实现二叉树的按层遍历" class="headerlink" title="实现二叉树的按层遍历"></a>实现二叉树的按层遍历</h2><ul>
+<li><p>其实就是 <strong>宽度优先遍历</strong> ，用 <strong>队列</strong></p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">level</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   Queue&lt;Node&gt; queue = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
+   queue.add(head);
+   <span class="hljs-keyword">while</span> (!queue.isEmpty()) &#123;
+      Node cur = queue.poll();
+      System.out.println(cur.value);
+      <span class="hljs-keyword">if</span> (cur.left != <span class="hljs-keyword">null</span>) &#123;
+         queue.add(cur.left);
+      &#125;
+      <span class="hljs-keyword">if</span> (cur.right != <span class="hljs-keyword">null</span>) &#123;
+         queue.add(cur.right);
+      &#125;
+   &#125;
+&#125;</code></pre>
+
 <ul>
-<li>自己设计压栈的来实现</li>
+<li><p>先把头结点加入</p>
+</li>
+<li><p>开始循环，弹出打印，先加左再加右</p>
+</li>
+<li><p>1弹出，2、3进，2弹出，4、5进，3弹出，6、7进…..</p>
+</li>
 </ul>
+</li>
+</ul>
+<h3 id="二叉树最大宽度"><a href="#二叉树最大宽度" class="headerlink" title="二叉树最大宽度"></a>二叉树最大宽度</h3><ul>
+<li><p>可以通过设置 <strong>flag变量</strong> 的方式，来发现某一层的 <strong>结束</strong>（看题目）</p>
+<p>如：找到二叉树最宽的一层，建议一个发现机制就行，发现结束就意味着开始。</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 寻找到二叉树最大宽度</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxWidthUseMap</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+   &#125;
+   Queue&lt;Node&gt; queue = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
+   queue.add(head);
+   <span class="hljs-comment">// key在哪一层</span>
+   HashMap&lt;Node, Integer&gt; levelMap = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+   levelMap.put(head, <span class="hljs-number">1</span>);
+   <span class="hljs-comment">// 当前正在统计哪一层的宽度</span>
+   <span class="hljs-keyword">int</span> curLevel = <span class="hljs-number">1</span>;
+   <span class="hljs-comment">// 当前正在统计层的宽度是多少</span>
+   <span class="hljs-keyword">int</span> curLevelNodes = <span class="hljs-number">0</span>; <span class="hljs-comment">// 一律规定出来的时候加，初始为0</span>
+   <span class="hljs-keyword">int</span> max = <span class="hljs-number">0</span>;
+   <span class="hljs-keyword">while</span> (!queue.isEmpty()) &#123;
+      Node cur = queue.poll();
+      <span class="hljs-comment">// 当前层级别</span>
+      <span class="hljs-keyword">int</span> curNodeLevel = levelMap.get(cur);
+      <span class="hljs-keyword">if</span> (cur.left != <span class="hljs-keyword">null</span>) &#123;
+         levelMap.put(cur.left, curNodeLevel + <span class="hljs-number">1</span>);
+         queue.add(cur.left);
+      &#125;
+      <span class="hljs-keyword">if</span> (cur.right != <span class="hljs-keyword">null</span>) &#123;
+         levelMap.put(cur.right, curNodeLevel + <span class="hljs-number">1</span>);
+         queue.add(cur.right);
+      &#125;
+      <span class="hljs-keyword">if</span> (curNodeLevel == curLevel) &#123;
+         curLevelNodes++;
+      &#125; <span class="hljs-keyword">else</span> &#123;
+         max = Math.max(max, curLevelNodes);
+         curLevel++;
+         curLevelNodes = <span class="hljs-number">1</span>;
+      &#125;
+   &#125;
+   <span class="hljs-comment">// 最后一层没有出发max机制</span>
+   max = Math.max(max, curLevelNodes);
+   <span class="hljs-keyword">return</span> max;
+&#125;</code></pre>
+
+<p>用map记录结点位置（每一个新层到来结算上一层的老层）</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201210083532.png" srcset="/img/loading.gif" alt="流程"></p>
+</li>
+</ul>
+<ul>
+<li><p>不用map寻找最大宽度机制：</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxWidthNoMap</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+   &#125;
+   Queue&lt;Node&gt; queue = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
+   queue.add(head);
+   <span class="hljs-comment">// 当前层最右结点是谁</span>
+   Node curEnd = head;
+   <span class="hljs-comment">// 如果有下一层，下一层最右结点是谁</span>
+   Node nextEnd = <span class="hljs-keyword">null</span>;
+   <span class="hljs-keyword">int</span> max = <span class="hljs-number">0</span>;
+   <span class="hljs-keyword">int</span> curLevelNodes = <span class="hljs-number">0</span>; <span class="hljs-comment">// 当前层结点数</span>
+   <span class="hljs-keyword">while</span> (!queue.isEmpty()) &#123;
+      Node cur = queue.poll();
+      <span class="hljs-keyword">if</span> (cur.left != <span class="hljs-keyword">null</span>) &#123;
+         queue.add(cur.left);
+         nextEnd = cur.left;
+      &#125;
+      <span class="hljs-keyword">if</span> (cur.right != <span class="hljs-keyword">null</span>) &#123;
+         queue.add(cur.right);
+         nextEnd = cur.right;
+      &#125;
+      curLevelNodes++;
+      <span class="hljs-comment">// 当前层结点是否为当前层最右结点</span>
+      <span class="hljs-keyword">if</span> (cur == curEnd) &#123;
+         max = Math.max(max, curLevelNodes);
+         curLevelNodes = <span class="hljs-number">0</span>;
+         curEnd = nextEnd;
+      &#125;
+   &#125;</code></pre>
+
+
+
+</li>
+</ul>
+<h2 id="二叉树的序列化和反序列化"><a href="#二叉树的序列化和反序列化" class="headerlink" title="二叉树的序列化和反序列化"></a>二叉树的序列化和反序列化</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201210085559.png" srcset="/img/loading.gif" alt="序列化"></p>
+<h3 id="先序序列化"><a href="#先序序列化" class="headerlink" title="先序序列化"></a>先序序列化</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Queue&lt;String&gt; <span class="hljs-title">preSerial</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   Queue&lt;String&gt; ans = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
+   pres(head, ans);
+   <span class="hljs-keyword">return</span> ans;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pres</span><span class="hljs-params">(Node head, Queue&lt;String&gt; ans)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      ans.add(<span class="hljs-keyword">null</span>);
+   &#125; <span class="hljs-keyword">else</span> &#123;
+      ans.add(String.valueOf(head.value));
+      pres(head.left, ans);
+      pres(head.right, ans);
+   &#125;
+&#125;</code></pre>
+
+
+
+<h3 id="已知序列化好的队列，还原树"><a href="#已知序列化好的队列，还原树" class="headerlink" title="已知序列化好的队列，还原树"></a>已知序列化好的队列，还原树</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">buildByPreQueue</span><span class="hljs-params">(Queue&lt;String&gt; prelist)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (prelist == <span class="hljs-keyword">null</span> || prelist.size() == <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+   &#125;
+   <span class="hljs-keyword">return</span> preb(prelist);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">preb</span><span class="hljs-params">(Queue&lt;String&gt; prelist)</span> </span>&#123;
+   String value = prelist.poll();
+   <span class="hljs-keyword">if</span> (value == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+   &#125;
+   Node head = <span class="hljs-keyword">new</span> Node(Integer.valueOf(value));
+   head.left = preb(prelist);
+   head.right = preb(prelist);
+   <span class="hljs-keyword">return</span> head;
+&#125;</code></pre>
+
+<blockquote>
+<p>中序、后序只需要改一下顺序就可以了</p>
+</blockquote>
+<h3 id="按层序列化"><a href="#按层序列化" class="headerlink" title="按层序列化"></a>按层序列化</h3><p>整体上就是 <strong>宽度优先遍历</strong></p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Queue&lt;String&gt; <span class="hljs-title">levelSerial</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-comment">// 序列化结果</span>
+   Queue&lt;String&gt; ans = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      ans.add(<span class="hljs-keyword">null</span>);
+   &#125; <span class="hljs-keyword">else</span> &#123;
+      ans.add(String.valueOf(head.value));
+      Queue&lt;Node&gt; queue = <span class="hljs-keyword">new</span> LinkedList&lt;Node&gt;();
+      queue.add(head);
+      <span class="hljs-keyword">while</span> (!queue.isEmpty()) &#123;
+         head = queue.poll();
+         <span class="hljs-keyword">if</span> (head.left != <span class="hljs-keyword">null</span>) &#123;
+            <span class="hljs-comment">// 即序列化 也加队列</span>
+            ans.add(String.valueOf(head.left.value));
+            queue.add(head.left);
+         &#125; <span class="hljs-keyword">else</span> &#123;
+            <span class="hljs-comment">// 只序列化</span>
+            ans.add(<span class="hljs-keyword">null</span>);
+         &#125;
+         <span class="hljs-keyword">if</span> (head.right != <span class="hljs-keyword">null</span>) &#123;
+            ans.add(String.valueOf(head.right.value));
+            queue.add(head.right);
+         &#125; <span class="hljs-keyword">else</span> &#123;
+            ans.add(<span class="hljs-keyword">null</span>);
+         &#125;
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> ans;
+&#125;</code></pre>
+
+<p>其实就是多了一个ans队列，把空补齐。层序遍历的时候只有一个queue，queue里面放的一定不为null，再弹出判断。序列化只是ans可以放null，自己另外准备的queue不放null进行层序遍历而已。</p>
+<h3 id="按层反序列化"><a href="#按层反序列化" class="headerlink" title="按层反序列化"></a>按层反序列化</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">buildByLevelQueue</span><span class="hljs-params">(Queue&lt;String&gt; levelList)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (levelList == <span class="hljs-keyword">null</span> || levelList.size() == <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+   &#125;
+   Node head = generateNode(levelList.poll());
+   Queue&lt;Node&gt; queue = <span class="hljs-keyword">new</span> LinkedList&lt;Node&gt;();
+   <span class="hljs-keyword">if</span> (head != <span class="hljs-keyword">null</span>) &#123;
+      queue.add(head);
+   &#125;
+   Node node = <span class="hljs-keyword">null</span>;
+   <span class="hljs-keyword">while</span> (!queue.isEmpty()) &#123;
+      node = queue.poll();
+      node.left = generateNode(levelList.poll());
+      node.right = generateNode(levelList.poll());
+      <span class="hljs-keyword">if</span> (node.left != <span class="hljs-keyword">null</span>) &#123;
+         queue.add(node.left);
+      &#125;
+      <span class="hljs-keyword">if</span> (node.right != <span class="hljs-keyword">null</span>) &#123;
+         queue.add(node.right);
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> head;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">generateNode</span><span class="hljs-params">(String val)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (val == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+   &#125;
+   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Node(Integer.valueOf(val));
+&#125;</code></pre>
+
+
+
+<h2 id="设计一种打印树的方式"><a href="#设计一种打印树的方式" class="headerlink" title="设计一种打印树的方式"></a>设计一种打印树的方式</h2><blockquote>
+<p>如何设计一个打印整棵树的打印函数?</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211094340.png" srcset="/img/loading.gif" alt="打印出来的效果"></p>
+<p>Code:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">printTree</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   System.out.println(<span class="hljs-string">&quot;Binary Tree:&quot;</span>);
+   printInOrder(head, <span class="hljs-number">0</span>, <span class="hljs-string">&quot;H&quot;</span>, <span class="hljs-number">17</span>);
+   System.out.println();
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">printInOrder</span><span class="hljs-params">(Node head, <span class="hljs-keyword">int</span> height, String to, <span class="hljs-keyword">int</span> len)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   printInOrder(head.right, height + <span class="hljs-number">1</span>, <span class="hljs-string">&quot;v&quot;</span>, len);
+   String val = to + head.value + to;
+   <span class="hljs-keyword">int</span> lenM = val.length();
+   <span class="hljs-keyword">int</span> lenL = (len - lenM) / <span class="hljs-number">2</span>;
+   <span class="hljs-keyword">int</span> lenR = len - lenM - lenL;
+   val = getSpace(lenL) + val + getSpace(lenR);
+   System.out.println(getSpace(height * len) + val);
+   printInOrder(head.left, height + <span class="hljs-number">1</span>, <span class="hljs-string">&quot;^&quot;</span>, len);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getSpace</span><span class="hljs-params">(<span class="hljs-keyword">int</span> num)</span> </span>&#123;
+   String space = <span class="hljs-string">&quot; &quot;</span>;
+   StringBuffer buf = <span class="hljs-keyword">new</span> StringBuffer(<span class="hljs-string">&quot;&quot;</span>);
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; num; i++) &#123;
+      buf.append(space);
+   &#125;
+   <span class="hljs-keyword">return</span> buf.toString();
+&#125;</code></pre>
+
+<p>思路：</p>
+<p>要打印上面的树，实际上就是按照 <strong>右头左</strong> 的顺序打印。</p>
+<p> <strong>printInOrder</strong> 函数就是先打印右边，再头，再左边。</p>
+<p>对于每个要打印的当前头部：height表示高度，to标识二叉树左右子树分支关系或头结点关系，len表示当前数字占用的距离。中间的打印头过程其实就是对当前头结点“渲染”了一下而已。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211095016.png" srcset="/img/loading.gif" alt="例子"></p>
+<p>前面的空格数由层数决定，每个数字占17位，前后补气空格</p>
+<h2 id="特殊二叉树返回该节点的后继节点"><a href="#特殊二叉树返回该节点的后继节点" class="headerlink" title="特殊二叉树返回该节点的后继节点"></a>特殊二叉树返回该节点的后继节点</h2><p>二叉树结构如下定义：</p>
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
+  V value;
+  Node left;
+  Node right;
+  Node parent;
+&#125;</code></pre>
+
+<blockquote>
+<p>后继结点定义</p>
+</blockquote>
+<p>后继结点是：<strong>中序遍历</strong> 中一个结点的下一个结点。 </p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211095339.png" srcset="/img/loading.gif" alt="后继结点"></p>
+<ul>
+<li><p>思路一</p>
+<p>因为有parent结点，所以可以一直往上找，找到头结点。再根据头结点 <strong>中序遍历</strong> ，最后根据 <strong>中序遍历</strong> 的结果找后继结点。 <strong>时间复杂度为 O(N)</strong></p>
+</li>
+</ul>
+<ul>
+<li><p>思路二</p>
+<ul>
+<li><p>假设当前结点距离后继结点距离为k，此方法 <strong>时间复杂度为O(K)</strong></p>
+</li>
+<li><p>对于 <strong>有右子树</strong> 的结点，其 <strong>后继结点就是右子树最左结点</strong> 。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211095756.png" srcset="/img/loading.gif" alt="有右树的情况"></p>
+</li>
+<li><p>对于 <strong>没有右子树</strong> 的结点，如果 <strong>我是我的父节点的右孩子</strong>  ，<strong>就一直往上找</strong> ，直到到达的结点为当前结点 <strong>父节点的左孩子</strong>，这个父节点就是后继结点。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211100108.png" srcset="/img/loading.gif" alt="后继"></p>
+</li>
+<li><p>由此可以定义: 如果 <strong>结点a左子树上的最右结点(最后打印的结点)为b</strong> ，则a为b的后继结点。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211100308.png" srcset="/img/loading.gif" alt="结论"></p>
+</li>
+<li><p>整棵树的最右结点的后继结点为空</p>
+</li>
+</ul>
+<p>code:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getSuccessorNode</span><span class="hljs-params">(Node node)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (node == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> node;
+   &#125;
+   <span class="hljs-keyword">if</span> (node.right != <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> getLeftMost(node.right);
+   &#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">// 无右子树</span>
+      Node parent = node.parent;
+      <span class="hljs-keyword">while</span> (parent != <span class="hljs-keyword">null</span> &amp;&amp; parent.left != node) &#123; <span class="hljs-comment">// 当前节点是其父亲节点右孩子</span>
+         node = parent;
+         parent = node.parent;
+      &#125;
+      <span class="hljs-keyword">return</span> parent;
+   &#125;
+&#125;
+
+<span class="hljs-comment">// 找最左边</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getLeftMost</span><span class="hljs-params">(Node node)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (node == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> node;
+   &#125;
+   <span class="hljs-keyword">while</span> (node.left != <span class="hljs-keyword">null</span>) &#123;
+      node = node.left;
+   &#125;
+   <span class="hljs-keyword">return</span> node;
+&#125;</code></pre>
+
+</li>
+</ul>
+<h3 id="前驱结点"><a href="#前驱结点" class="headerlink" title="前驱结点"></a>前驱结点</h3><p>正好相反，先找有无左子树，如果有，找左子树最右结点。</p>
+<p>如果没有左子树，如果当前结点为父节点的左孩子，一直往上直到当前结点为父节点的右孩子。</p>
+<h2 id="折痕问题"><a href="#折痕问题" class="headerlink" title="折痕问题"></a>折痕问题</h2><p>请把一段纸条竖着放在桌子上，然后从纸条的下边向上方对折1次，压出折痕后展开。此时折痕是凹下去的，即折痕突起的方向指向纸条的背面。 如果从纸条的下边向上方连续对折2次，压出折痕后展开，此时有三条折痕，从上到下依次是下折痕、下折痕和上折痕。 </p>
+<p>给定一个输入参数N，代表纸条都从下边向上方连续对折N次。 请从上到下打印所有折痕的方向。<br>例如:N=1时，打印: down N=2时，打印: down down up </p>
+<ul>
+<li>实际对折，会发现：每次对折都会在当前折痕前面加一个down，后面加一个up。</li>
+</ul>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211101348.png" srcset="/img/loading.gif" alt="图解"></p>
+<ul>
+<li><p>所以实际上就是中序遍历</p>
+<ul>
+<li>如果用数组实现，N次折产生2的n次方-1个折痕，浪费空间。</li>
+<li>新code:</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">printAllFolds</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N)</span> </span>&#123;
+   printProcess(<span class="hljs-number">1</span>, N, <span class="hljs-keyword">true</span>);
+&#125;
+
+<span class="hljs-comment">// 递归过程，来到了某一个节点，</span>
+<span class="hljs-comment">// i是节点的层数，N一共的层数，down == true  凹    down == false 凸</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">printProcess</span><span class="hljs-params">(<span class="hljs-keyword">int</span> i, <span class="hljs-keyword">int</span> N, <span class="hljs-keyword">boolean</span> down)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (i &gt; N) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   printProcess(i + <span class="hljs-number">1</span>, N, <span class="hljs-keyword">true</span>);
+   System.out.println(down ? <span class="hljs-string">&quot;凹 &quot;</span> : <span class="hljs-string">&quot;凸 &quot;</span>);
+   printProcess(i + <span class="hljs-number">1</span>, N, <span class="hljs-keyword">false</span>);
+&#125;</code></pre>
+
+<ul>
+<li>空间复杂度 O(N) 创建了N个i</li>
+</ul>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211101703.png" srcset="/img/loading.gif" alt="流程"></p>
+</li>
+</ul>
+<h1 id="二叉树的递归套路"><a href="#二叉树的递归套路" class="headerlink" title="二叉树的递归套路"></a>二叉树的递归套路</h1><blockquote>
+<p>本质是利用递归遍历二叉树的 <strong>便利性</strong> (会到每个结点 <strong>3次</strong> )</p>
+</blockquote>
+<p>潜意识：任何结点x为头的树，可以得到 <strong>左右子树信息</strong> ，并利用此信息求解过程。</p>
+<p>1）假设以X节点为头，假设可以向X左树和X右树要任何信息</p>
+<p>2）在上一步的假设下，讨论以X为头节点的树，得到答案的可能性（最重要）</p>
+<p>3）列出所有可能性后，确定到底需要向左树和右树要什么样的信息</p>
+<p>3）列出所有可能性后，确定到底需要向左树和右树要什么样的信息</p>
+<p>4）把左树信息和右树信息求全集，就是任何一棵子树都需要返回的信息S</p>
+<p>5）递归函数都返回S，每一棵子树都这么要求</p>
+<p>6）写代码，在代码中考虑如何把左树的信息和右树信息整合出整棵树的信</p>
+<h2 id="给定一棵二叉树的头节点head，返回这颗二叉树是不是平衡二叉树"><a href="#给定一棵二叉树的头节点head，返回这颗二叉树是不是平衡二叉树" class="headerlink" title="给定一棵二叉树的头节点head，返回这颗二叉树是不是平衡二叉树"></a>给定一棵二叉树的头节点head，返回这颗二叉树是不是平衡二叉树</h2><p>二叉树中每一颗子树，左数的 <strong>高度差</strong> 与右树的高度差不超过 1。</p>
+<ol>
+<li>左树平衡 2) 右树平衡 3) 左右树高度差不大于一            <strong>|左高 - 右高| &lt; 2</strong></li>
+</ol>
+<p>在能确定获取子树信息情况下列出可能性：要的信息： <strong>是否平衡， 高度多少</strong></p>
+<p>求解过程就变成如何返回信息的过程：</p>
+<p>平衡树info：</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 左树和右树要求一样的</span>
+<span class="hljs-comment">// 信息返回的结构体</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> isBalaced;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> height;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Info</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> b, <span class="hljs-keyword">int</span> h)</span> </span>&#123;
+      isBalaced = b;
+      height = h;
+   &#125;
+&#125;</code></pre>
+
+<p>code:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isBalanced2</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">return</span> process2(head).isBalaced;
+&#125;
+
+<span class="hljs-comment">// 左树和右树要求一样的</span>
+<span class="hljs-comment">// 信息返回的结构体</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> isBalaced;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> height;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Info</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> b, <span class="hljs-keyword">int</span> h)</span> </span>&#123;
+      isBalaced = b;
+      height = h;
+   &#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Info <span class="hljs-title">process2</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(<span class="hljs-keyword">true</span>, <span class="hljs-number">0</span>);
+   &#125;
+   Info leftInfo = process2(head.left);
+   Info rightInfo = process2(head.right);
+   <span class="hljs-keyword">int</span> height = Math.max(leftInfo.height, rightInfo.height) + <span class="hljs-number">1</span>;
+   <span class="hljs-keyword">boolean</span> isBalanced = <span class="hljs-keyword">true</span>;
+   <span class="hljs-keyword">if</span> (!leftInfo.isBalaced || !rightInfo.isBalaced || Math.abs(leftInfo.height - rightInfo.height) &gt; <span class="hljs-number">1</span>) &#123;
+      isBalanced = <span class="hljs-keyword">false</span>;
+   &#125;
+   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(isBalanced, height);
+&#125;</code></pre>
+
+
+
+<h2 id="给定一棵二叉树的头节点head，任何两个节点之间都存在距离，返回整棵二叉树的最大距离"><a href="#给定一棵二叉树的头节点head，任何两个节点之间都存在距离，返回整棵二叉树的最大距离" class="headerlink" title="给定一棵二叉树的头节点head，任何两个节点之间都存在距离，返回整棵二叉树的最大距离"></a>给定一棵二叉树的头节点head，任何两个节点之间都存在距离，返回整棵二叉树的最大距离</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211104832.png" srcset="/img/loading.gif" alt="距离"></p>
+<p>最大距离不是最左到最后！</p>
+<ul>
+<li>与x无关时，不跨过x，要么是左树最大距离，要么是右树最大距离。</li>
+</ul>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211105433.png" srcset="/img/loading.gif" alt="最大距离与x无关"></p>
+<ul>
+<li><p>与x有关时，最大距离会通过x，x左树上离他最远的点走到右树上离他最远的点，也就是左边高度，加自己一步，加右边高度。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211105622.png" srcset="/img/loading.gif" alt="有关"></p>
+</li>
+</ul>
+<blockquote>
+<p>所以info就需要包含 <strong>最大距离 和 高度</strong></p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> maxDistance;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> height;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Info</span><span class="hljs-params">(<span class="hljs-keyword">int</span> dis, <span class="hljs-keyword">int</span> h)</span> </span>&#123;
+      maxDistance = dis;
+      height = h;
+   &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Info <span class="hljs-title">process</span><span class="hljs-params">(Node head)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+   &#125;
+   Info leftInfo = process(head.left);
+   Info rightInfo = process(head.right);
+   <span class="hljs-keyword">int</span> height = Math.max(leftInfo.height, rightInfo.height) + <span class="hljs-number">1</span>;
+   <span class="hljs-comment">// 返回的 (左子树和右子树最大距离)和(左子树高加上右子树高)的最大值</span>
+   <span class="hljs-comment">// 距离只可能为左子树最大距离或者右子树最大距离或者左子树高度加上右子树高度</span>
+   <span class="hljs-keyword">int</span> maxDistance = Math.max(Math.max(leftInfo.maxDistance, rightInfo.maxDistance),
+         leftInfo.height + rightInfo.height + <span class="hljs-number">1</span>);
+   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(maxDistance, height);
+&#125;</code></pre>
+
+
+
+<h2 id="给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的大小（结点的个数）"><a href="#给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的大小（结点的个数）" class="headerlink" title="给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的大小（结点的个数）"></a>给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的大小（结点的个数）</h2><p>搜索二叉树：整个树上没有重复值，左树值都小于父，右树值都大于父</p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211112015.png" srcset="/img/loading.gif" alt="搜索二叉" style="zoom:50%;" />
+
+<ul>
+<li><p>与x无关，就可能为左边子树或者右边子树</p>
+</li>
+<li><p>与x有关，三个条件，左树整体是搜索二叉树，右树整体是搜索二叉树，左树最大值小于x，右树最大值大于x</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211113138.png" srcset="/img/loading.gif" alt="条件"></p>
+</li>
+</ul>
+<ul>
+<li>左树信息就变成<ul>
+<li>左边最大子搜索树大小</li>
+<li>是否为最大子搜索树</li>
+<li>左树最大值</li>
+</ul>
+</li>
+<li>右树信息就变成<ul>
+<li>右边最大子搜索树大小</li>
+<li>是否为最大子搜索树</li>
+<li>右树最小值</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>就要用到合并左右树信息</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-comment">// 对于任何子树都返回四个信息</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> isBST;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> maxSubBSTSize;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> min;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> max;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Info</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> is, <span class="hljs-keyword">int</span> size, <span class="hljs-keyword">int</span> mi, <span class="hljs-keyword">int</span> ma)</span> </span>&#123;
+      isBST = is;
+      maxSubBSTSize = size;
+      min = mi;
+      max = ma;
+   &#125;
+&#125;</code></pre>
+
+
+
+
 
             </div>
             <hr>
