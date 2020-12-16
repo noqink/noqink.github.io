@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      27.7k 字
+      31.6k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      395
+      452
        分钟
     </span>
   
@@ -4361,6 +4361,580 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p> <strong>解决连通性的利器</strong> </p>
 <h2 id="并查集的应用"><a href="#并查集的应用" class="headerlink" title="并查集的应用"></a>并查集的应用</h2><p>解决两大块区域的合并问题</p>
 <p>常用在图等领域中</p>
+<h1 id="图"><a href="#图" class="headerlink" title="图"></a>图</h1><blockquote>
+<p>不难在算法，难在结构</p>
+</blockquote>
+<p>1）由点的集合和边的集合构成</p>
+<p>2）虽然存在有向图和无向图的概念，但实际上都可以用有向图来表达，无向图可以想象两条有向边</p>
+<p>3）边上可能带有权值</p>
+<h2 id="图结构的表达"><a href="#图结构的表达" class="headerlink" title="图结构的表达"></a>图结构的表达</h2><p>1）邻接表法</p>
+<p>2）邻接矩阵法</p>
+<p>3）除此之外还有其他众多的方式</p>
+<p>邻接表法：记录能直接到达的点</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215085231.png" srcset="/img/loading.gif" alt="邻接表法"></p>
+<p>邻接矩阵法：abcd列行填格子</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215085523.png" srcset="/img/loading.gif" alt="邻接矩阵"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215085839.png" srcset="/img/loading.gif" alt="另外的表达"></p>
+<h2 id="图的面试题如何搞定"><a href="#图的面试题如何搞定" class="headerlink" title="图的面试题如何搞定"></a>图的面试题如何搞定</h2><p>图的算法都不算难，只不过coding的代价比较高</p>
+<p>1）先用 <strong>自己最熟练的方式</strong> ，实现图结构的表达</p>
+<p>2）在自己熟悉的结构上， <strong>实现所有常用的图算法作为模板</strong></p>
+<p>3）把面试题 <strong>提供的图结构转化为自己熟悉的图结构</strong> ，再调用模板或改写即可</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 点结构描述</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
+   <span class="hljs-comment">// 编号</span>
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
+   <span class="hljs-comment">// 入度 多少个点直接连向</span>
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> in;
+   <span class="hljs-comment">// 出度 多少个点直接出向</span>
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> out;
+   <span class="hljs-comment">// 直接邻居</span>
+   <span class="hljs-keyword">public</span> ArrayList&lt;Node&gt; nexts;
+   <span class="hljs-comment">// 边</span>
+   <span class="hljs-keyword">public</span> ArrayList&lt;Edge&gt; edges;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Node</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span> </span>&#123;
+      <span class="hljs-keyword">this</span>.value = value;
+      in = <span class="hljs-number">0</span>;
+      out = <span class="hljs-number">0</span>;
+      nexts = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+      edges = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+   &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-comment">// 边描述 无向图只是from to相同</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Edge</span> </span>&#123;
+   <span class="hljs-comment">// 权重</span>
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> weight;
+   <span class="hljs-keyword">public</span> Node from;
+   <span class="hljs-keyword">public</span> Node to;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Edge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> weight, Node from, Node to)</span> </span>&#123;
+      <span class="hljs-keyword">this</span>.weight = weight;
+      <span class="hljs-keyword">this</span>.from = from;
+      <span class="hljs-keyword">this</span>.to = to;
+   &#125;
+
+&#125;</code></pre>
+
+<p>图结构就出来了：</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Graph</span> </span>&#123;
+   <span class="hljs-comment">// Integer表示Node里面的value编号</span>
+   <span class="hljs-keyword">public</span> HashMap&lt;Integer, Node&gt; nodes;
+   <span class="hljs-keyword">public</span> HashSet&lt;Edge&gt; edges;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Graph</span><span class="hljs-params">()</span> </span>&#123;
+      nodes = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+      edges = <span class="hljs-keyword">new</span> HashSet&lt;&gt;();
+   &#125;
+&#125;</code></pre>
+
+
+
+<blockquote>
+<p>结构转化为上述第三图中矩阵N*3的图结构</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-comment">// matrix 所有的边</span>
+<span class="hljs-comment">// N*3 的矩阵</span>
+<span class="hljs-comment">// [weight, from节点上面的值，to节点上面的值]</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Graph <span class="hljs-title">createGraph</span><span class="hljs-params">(Integer[][] matrix)</span> </span>&#123;
+   Graph graph = <span class="hljs-keyword">new</span> Graph();
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; matrix.length; i++) &#123; <span class="hljs-comment">// matrix[0][0], matrix[0][1]  matrix[0][2]</span>
+      Integer from = matrix[i][<span class="hljs-number">0</span>];
+      Integer to = matrix[i][<span class="hljs-number">1</span>];
+      Integer weight = matrix[i][<span class="hljs-number">2</span>];
+      <span class="hljs-keyword">if</span> (!graph.nodes.containsKey(from)) &#123;
+         graph.nodes.put(from, <span class="hljs-keyword">new</span> Node(from));
+      &#125;
+      <span class="hljs-keyword">if</span> (!graph.nodes.containsKey(to)) &#123;
+         graph.nodes.put(to, <span class="hljs-keyword">new</span> Node(to));
+      &#125;
+      Node fromNode = graph.nodes.get(from);
+      Node toNode = graph.nodes.get(to);
+      Edge newEdge = <span class="hljs-keyword">new</span> Edge(weight, fromNode, toNode);
+      fromNode.nexts.add(toNode);
+      fromNode.out++;
+      toNode.in++;
+      fromNode.edges.add(newEdge);
+      graph.edges.add(newEdge);
+   &#125;
+   <span class="hljs-keyword">return</span> graph;
+&#125;</code></pre>
+
+
+
+<h2 id="图的宽度优先-amp-深度优先遍历"><a href="#图的宽度优先-amp-深度优先遍历" class="headerlink" title="图的宽度优先&amp;深度优先遍历"></a>图的宽度优先&amp;深度优先遍历</h2><p>宽度优先遍历 (同一层内部的顺序可以无所谓)<br>1，利用 <strong>队列</strong> 实现<br>2，从源节点开始依次按照宽度进队列，然后弹出<br>3，每弹出一个点，把该节点 <strong>所有没有进过队列的邻接点放入队列</strong><br>4，直到队列变空</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 从node出发，进行宽度优先遍历</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">bfs</span><span class="hljs-params">(Node node)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (node == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   Queue&lt;Node&gt; queue = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
+   <span class="hljs-comment">// 图会有环的问题，二叉树没有</span>
+   HashSet&lt;Node&gt; set = <span class="hljs-keyword">new</span> HashSet&lt;&gt;();
+   queue.add(node);
+   set.add(node);
+   <span class="hljs-keyword">while</span> (!queue.isEmpty()) &#123;
+      Node cur = queue.poll();
+      <span class="hljs-comment">// 出打印</span>
+      System.out.println(cur.value);
+      <span class="hljs-keyword">for</span> (Node next : cur.nexts) &#123;
+         <span class="hljs-keyword">if</span> (!set.contains(next)) &#123;
+            set.add(next);
+            queue.add(next);
+         &#125;
+      &#125;
+   &#125;
+&#125;</code></pre>
+
+
+
+<p>深度优先遍历<br>1，利用 <strong>栈</strong> 实现<br>2，从源节点开始把节点按照深度放入栈，然后弹出<br>3，每弹出一个点，把该节点 <strong>下一个没有进过栈的邻接点放入栈</strong><br>4，直到栈变空 </p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(Node node)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (node == <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   <span class="hljs-comment">// 记录从头结点走到的路径</span>
+   Stack&lt;Node&gt; stack = <span class="hljs-keyword">new</span> Stack&lt;&gt;();
+   HashSet&lt;Node&gt; set = <span class="hljs-keyword">new</span> HashSet&lt;&gt;();
+   stack.add(node);
+   set.add(node);
+   System.out.println(node.value);
+   <span class="hljs-keyword">while</span> (!stack.isEmpty()) &#123;
+      Node cur = stack.pop();
+      <span class="hljs-keyword">for</span> (Node next : cur.nexts) &#123;
+         <span class="hljs-keyword">if</span> (!set.contains(next)) &#123;
+            <span class="hljs-comment">// 一条路走到不能再走直接返回</span>
+            stack.push(cur);
+            stack.push(next);
+            set.add(next);
+            <span class="hljs-comment">// 进去的时候打印</span>
+            System.out.println(next.value);
+            <span class="hljs-keyword">break</span>;
+         &#125;
+      &#125;
+   &#125;
+&#125;</code></pre>
+
+
+
+<h2 id="图的拓扑排序算法-有向无环图"><a href="#图的拓扑排序算法-有向无环图" class="headerlink" title="图的拓扑排序算法(有向无环图)"></a>图的拓扑排序算法(有向无环图)</h2><p>1）在图中找到 <strong>所有入度为0</strong> 的点输出<br>2）把所有入度为0的点在图中 <strong>删掉</strong> ，继续找入度为0的点输出，周而复始<br>3）图的所有点都被删除后，依次输出的顺序就是拓扑排序</p>
+<p>要求： <strong>有向图且其中没有环</strong><br>应用： <strong>事件安排</strong> 、 <strong>编译顺序</strong></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215103658.png" srcset="/img/loading.gif" alt="拓扑"></p>
+<p>a、b、c、e、f、t</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215104648.png" srcset="/img/loading.gif" alt="循环依赖与图关系"></p>
+<p>ABC各有各自的config，最终会变成有向无环图，如果有环，就形成了循环依赖。</p>
+<p>拓扑排序从最底层包往上编译，最终编译出来。</p>
+<pre><code class="hljs java"><span class="hljs-comment">// directed graph and no loop</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;Node&gt; <span class="hljs-title">sortedTopology</span><span class="hljs-params">(Graph graph)</span> </span>&#123;
+   <span class="hljs-comment">// key：某一个node</span>
+   <span class="hljs-comment">// value：剩余的入度</span>
+   HashMap&lt;Node, Integer&gt; inMap = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+   <span class="hljs-comment">// 入度为0的点，才能进这个队列</span>
+   Queue&lt;Node&gt; zeroInQueue = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
+   <span class="hljs-keyword">for</span> (Node node : graph.nodes.values()) &#123;
+      inMap.put(node, node.in);
+      <span class="hljs-comment">// 有向无环图，一定会有入度为0的点</span>
+      <span class="hljs-keyword">if</span> (node.in == <span class="hljs-number">0</span>) &#123;
+         zeroInQueue.add(node);
+      &#125;
+   &#125;
+   <span class="hljs-comment">// 拓扑排序的结果，依次加入result</span>
+   List&lt;Node&gt; result = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+   <span class="hljs-keyword">while</span> (!zeroInQueue.isEmpty()) &#123;
+      Node cur = zeroInQueue.poll();
+      result.add(cur);
+      <span class="hljs-keyword">for</span> (Node next : cur.nexts) &#123;
+         inMap.put(next, inMap.get(next) - <span class="hljs-number">1</span>);
+         <span class="hljs-keyword">if</span> (inMap.get(next) == <span class="hljs-number">0</span>) &#123;
+            zeroInQueue.add(next);
+         &#125;
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> result;
+&#125;</code></pre>
+
+
+
+<h2 id="最小生成树算法之Kruskal"><a href="#最小生成树算法之Kruskal" class="headerlink" title="最小生成树算法之Kruskal"></a>最小生成树算法之Kruskal</h2><p>1）总是从 <strong>权值最小的边</strong> 开始考虑，依次考察权值依次变大的边<br>2）当前的边要么进入最小生成树的集合，要么丢弃<br>3）如果当前的边进入最小生成树的集合中不会形成环，就要当前边<br>4）如果当前的边进入最小生成树的集合中会形成环，就不要当前边<br>5）考察完所有边之后，最小生成树的集合也得到了</p>
+<p>最小权值连通所有的点</p>
+<p>流程：</p>
+<p>所有的 <strong>边</strong> 根据 <strong>权值由小到大排序</strong> ，对边遍历，如果左右两头没有在同一个集合，union，如果在一个集合，淘汰。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215110718.png" srcset="/img/loading.gif" alt="流程"></p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Set&lt;Edge&gt; <span class="hljs-title">kruskalMST</span><span class="hljs-params">(Graph graph)</span> </span>&#123;
+   UnionFind unionFind = <span class="hljs-keyword">new</span> UnionFind();
+   unionFind.makeSets(graph.nodes.values());
+   PriorityQueue&lt;Edge&gt; priorityQueue = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(<span class="hljs-keyword">new</span> EdgeComparator());
+   <span class="hljs-keyword">for</span> (Edge edge : graph.edges) &#123; <span class="hljs-comment">// M 条边</span>
+      priorityQueue.add(edge);  <span class="hljs-comment">// O(logM)</span>
+   &#125;
+   Set&lt;Edge&gt; result = <span class="hljs-keyword">new</span> HashSet&lt;&gt;();
+   <span class="hljs-keyword">while</span> (!priorityQueue.isEmpty()) &#123; <span class="hljs-comment">// M 条边</span>
+      Edge edge = priorityQueue.poll(); <span class="hljs-comment">// O(logM)</span>
+      <span class="hljs-keyword">if</span> (!unionFind.isSameSet(edge.from, edge.to)) &#123; <span class="hljs-comment">// O(1)</span>
+         result.add(edge);
+         unionFind.union(edge.from, edge.to);
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> result;
+&#125;</code></pre>
+
+<p>有向图有效，如果是 <strong>无向图，会少一半边</strong> ：</p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215111956.png" srcset="/img/loading.gif" alt="少一半边" style="zoom:50%;" />
+
+<p>每次只会union一次，下次不会再union</p>
+<h2 id="最小生成树算法之Prim"><a href="#最小生成树算法之Prim" class="headerlink" title="最小生成树算法之Prim"></a>最小生成树算法之Prim</h2><p>1）可以从 <strong>任意节点</strong> 出发来寻找最小生成树<br>2）某个点加入到被选取的点中后，解锁这个点出发的所有新的边<br>3）在所有解锁的边中选最小的边，然后看看这个边会不会形成环<br>4）如果会，不要当前边，继续考察剩下解锁的边中最小的边，重复3）<br>5）如果不会，要当前边，将该边的指向点加入到被选取的点中，重复2）<br>6）当所有点都被选取，最小生成树就得到了</p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215113103.png" srcset="/img/loading.gif" alt="例子" style="zoom:33%;" />
+
+<p>a点被解锁，直接边被解锁，在可以被看到的边里选一个最小的边，看看边两侧有没有新结点，解锁，没有新结点抛弃。c被解锁，已经选过的边不被重复解锁，b被解锁，边被解锁，找到所有解锁的边最小继续解锁…一直到所有点被解锁</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215113614.png" srcset="/img/loading.gif" alt="结果"></p>
+<p>总是一个一个点进，而不是一大片结合，所以一个set即可。</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Set&lt;Edge&gt; <span class="hljs-title">primMST</span><span class="hljs-params">(Graph graph)</span> </span>&#123;
+   <span class="hljs-comment">// 解锁的边进入小根堆</span>
+   PriorityQueue&lt;Edge&gt; priorityQueue = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(
+         <span class="hljs-keyword">new</span> EdgeComparator());
+
+   HashSet&lt;Node&gt; nodeSet = <span class="hljs-keyword">new</span> HashSet&lt;&gt;();
+   <span class="hljs-comment">// 防止边重复</span>
+   HashSet&lt;Edge&gt; edgeSet = <span class="hljs-keyword">new</span> HashSet&lt;&gt;();
+
+   Set&lt;Edge&gt; result = <span class="hljs-keyword">new</span> HashSet&lt;&gt;(); <span class="hljs-comment">// 依次挑选的的边在result里</span>
+   <span class="hljs-keyword">for</span> (Node node : graph.nodes.values()) &#123; <span class="hljs-comment">// 随便挑了一个点</span>
+   <span class="hljs-comment">// for循环防森林</span>
+
+
+      <span class="hljs-comment">// node 是开始点</span>
+      <span class="hljs-keyword">if</span> (!set.contains(node)) &#123;
+         set.add(node);
+         <span class="hljs-keyword">for</span> (Edge edge : node.edges) &#123; <span class="hljs-comment">// 由一个点，解锁所有相连的边</span>
+            <span class="hljs-keyword">if</span> (!edgeSet.contains(edge))&#123;
+               edgeSet.add(edge);
+               priorityQueue.add(edge);
+            &#125;
+         &#125;
+         <span class="hljs-keyword">while</span> (!priorityQueue.isEmpty()) &#123;
+            Edge edge = priorityQueue.poll(); <span class="hljs-comment">// 弹出解锁的边中，最小的边</span>
+            Node toNode = edge.to; <span class="hljs-comment">// 可能的一个新的点</span>
+            <span class="hljs-keyword">if</span> (!set.contains(toNode)) &#123; <span class="hljs-comment">// 不含有的时候，就是新的点</span>
+               set.add(toNode);
+               result.add(edge);
+               <span class="hljs-keyword">for</span> (Edge nextEdge : toNode.edges) &#123;
+                  <span class="hljs-keyword">if</span> (!edgeSet.contains(nextEdge))&#123;
+                     edgeSet.add(nextEdge);
+                     priorityQueue.add(nextEdge);
+                  &#125;
+               &#125;
+            &#125;
+         &#125;
+      &#125;
+
+
+      <span class="hljs-comment">//break;</span>
+   &#125;
+   <span class="hljs-keyword">return</span> result;
+&#125;</code></pre>
+
+
+
+<h2 id="Dijkstra算法-是一种贪心"><a href="#Dijkstra算法-是一种贪心" class="headerlink" title="Dijkstra算法(是一种贪心)"></a>Dijkstra算法(是一种贪心)</h2><p>1）Dijkstra算法必须指定一个源点<br>2）生成一个源点到各个点的最小距离表，一开始只有一条记录，即原点到自己的最小距离为0，源点到其他所有点的最小距离都为正无穷大</p>
+<p>​ <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216085732.png" srcset="/img/loading.gif" alt="初始表" style="zoom:50%;" /></p>
+<p>3）从距离表中拿出没拿过记录里的最小记录，通过这个点发出的边，更新源点到各个点的最小距离表，不断重复这一步</p>
+<p>​ <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216085957.png" srcset="/img/loading.gif" alt="更新一次" style="zoom:50%;" /></p>
+<p>​ 选B再更新…. 注： <strong>使用完的记录，要锁住</strong></p>
+<p>4）源点到所有的点记录如果都被拿过一遍，过程停止，最小距离表得到了</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216085032.png" srcset="/img/loading.gif" alt="最小距离表"></p>
+<p> <strong>权值为正数，如果出现负数，环问题可能没有解</strong></p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> HashMap&lt;Node, Integer&gt; <span class="hljs-title">dijkstra1</span><span class="hljs-params">(Node from)</span> </span>&#123;
+   <span class="hljs-comment">// 从from出发到所有点的最小距离</span>
+   <span class="hljs-comment">// key : 从head出发到达key</span>
+   <span class="hljs-comment">// value : 从head出发到达key的最小距离</span>
+   <span class="hljs-comment">// 如果在表中，没有T的记录，含义是从head出发到T这个点的距离为正无穷</span>
+   HashMap&lt;Node, Integer&gt; distanceMap = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+   distanceMap.put(from, <span class="hljs-number">0</span>);
+
+   <span class="hljs-comment">// 已经求过距离的节点，存在selectedNodes中，以后再也不碰</span>
+   HashSet&lt;Node&gt; selectedNodes = <span class="hljs-keyword">new</span> HashSet&lt;&gt;();
+
+   <span class="hljs-comment">// 选择最小距离且没有被锁住的点</span>
+   Node minNode = getMinDistanceAndUnselectedNode(distanceMap, selectedNodes);
+   <span class="hljs-keyword">while</span> (minNode != <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-keyword">int</span> distance = distanceMap.get(minNode);
+      <span class="hljs-keyword">for</span> (Edge edge : minNode.edges) &#123;
+         Node toNode = edge.to;
+         <span class="hljs-keyword">if</span> (!distanceMap.containsKey(toNode)) &#123;
+            distanceMap.put(toNode, distance + edge.weight);
+         &#125; <span class="hljs-keyword">else</span> &#123;
+            distanceMap.put(edge.to, Math.min(distanceMap.get(toNode), distance + edge.weight));
+         &#125;
+      &#125;
+      selectedNodes.add(minNode);
+      minNode = getMinDistanceAndUnselectedNode(distanceMap, selectedNodes);
+   &#125;
+   <span class="hljs-keyword">return</span> distanceMap;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getMinDistanceAndUnselectedNode</span><span class="hljs-params">(HashMap&lt;Node, Integer&gt; distanceMap, HashSet&lt;Node&gt; touchedNodes)</span> </span>&#123;
+   <span class="hljs-comment">// touchedNodes为selectedNodes</span>
+   <span class="hljs-comment">// 找到最小且未被锁住的点</span>
+   Node minNode = <span class="hljs-keyword">null</span>;
+   <span class="hljs-keyword">int</span> minDistance = Integer.MAX_VALUE;
+   <span class="hljs-keyword">for</span> (Entry&lt;Node, Integer&gt; entry : distanceMap.entrySet()) &#123;
+      Node node = entry.getKey();
+      <span class="hljs-keyword">int</span> distance = entry.getValue();
+      <span class="hljs-keyword">if</span> (!touchedNodes.contains(node) &amp;&amp; distance &lt; minDistance) &#123;
+         minNode = node;
+         minDistance = distance;
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> minNode;
+&#125;</code></pre>
+
+
+
+<h3 id="小根堆优化"><a href="#小根堆优化" class="headerlink" title="小根堆优化"></a>小根堆优化</h3><p>上述的算法中，for (Entry&lt;Node, Integer&gt; entry : distanceMap.entrySet())这段代码需要对当前取出的结点的下面所有点进行 <strong>遍历</strong>，可以使用一个小根堆，每次取出的就是最小。</p>
+<p>原来是遍历哈希表 O(N) 现在是小根堆 O(logN)</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NodeRecord</span> </span>&#123;
+   <span class="hljs-keyword">public</span> Node node;
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> distance;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">NodeRecord</span><span class="hljs-params">(Node node, <span class="hljs-keyword">int</span> distance)</span> </span>&#123;
+      <span class="hljs-keyword">this</span>.node = node;
+      <span class="hljs-keyword">this</span>.distance = distance;
+   &#125;
+&#125;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NodeHeap</span> </span>&#123;
+   <span class="hljs-keyword">private</span> Node[] nodes; <span class="hljs-comment">// 实际的堆结构</span>
+   <span class="hljs-comment">// key 某一个node， value 上面数组中的位置  -1表示曾经进来过</span>
+   <span class="hljs-keyword">private</span> HashMap&lt;Node, Integer&gt; heapIndexMap;
+   <span class="hljs-comment">// key 某一个节点， value 从源节点出发到该节点的目前最小距离</span>
+   <span class="hljs-keyword">private</span> HashMap&lt;Node, Integer&gt; distanceMap;
+   <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> size; <span class="hljs-comment">// 堆上有多少个点</span>
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">NodeHeap</span><span class="hljs-params">(<span class="hljs-keyword">int</span> size)</span> </span>&#123;
+      nodes = <span class="hljs-keyword">new</span> Node[size];
+      heapIndexMap = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+      distanceMap = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+      size = <span class="hljs-number">0</span>;
+   &#125;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isEmpty</span><span class="hljs-params">()</span> </span>&#123;
+      <span class="hljs-keyword">return</span> size == <span class="hljs-number">0</span>;
+   &#125;
+
+   <span class="hljs-comment">// 有一个点叫node，现在发现了一个从源节点出发到达node的距离为distance</span>
+   <span class="hljs-comment">// 判断要不要更新，如果需要的话，就更新</span>
+   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addOrUpdateOrIgnore</span><span class="hljs-params">(Node node, <span class="hljs-keyword">int</span> distance)</span> </span>&#123;
+      <span class="hljs-keyword">if</span> (inHeap(node)) &#123;
+         distanceMap.put(node, Math.min(distanceMap.get(node), distance));
+         insertHeapify(node, heapIndexMap.get(node));
+      &#125;
+      <span class="hljs-keyword">if</span> (!isEntered(node)) &#123;
+         nodes[size] = node;
+         heapIndexMap.put(node, size);
+         distanceMap.put(node, distance);
+         insertHeapify(node, size++);
+      &#125;
+   &#125;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> NodeRecord <span class="hljs-title">pop</span><span class="hljs-params">()</span> </span>&#123;
+      NodeRecord nodeRecord = <span class="hljs-keyword">new</span> NodeRecord(nodes[<span class="hljs-number">0</span>], distanceMap.get(nodes[<span class="hljs-number">0</span>]));
+      swap(<span class="hljs-number">0</span>, size - <span class="hljs-number">1</span>);
+      heapIndexMap.put(nodes[size - <span class="hljs-number">1</span>], -<span class="hljs-number">1</span>);
+      distanceMap.remove(nodes[size - <span class="hljs-number">1</span>]);
+      <span class="hljs-comment">// free C++同学还要把原本堆顶节点析构，对java同学不必</span>
+      nodes[size - <span class="hljs-number">1</span>] = <span class="hljs-keyword">null</span>;
+      heapify(<span class="hljs-number">0</span>, --size);
+      <span class="hljs-keyword">return</span> nodeRecord;
+   &#125;
+
+   <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">insertHeapify</span><span class="hljs-params">(Node node, <span class="hljs-keyword">int</span> index)</span> </span>&#123;
+      <span class="hljs-keyword">while</span> (distanceMap.get(nodes[index]) &lt; distanceMap.get(nodes[(index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>])) &#123;
+         swap(index, (index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>);
+         index = (index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>;
+      &#125;
+   &#125;
+
+   <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">heapify</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index, <span class="hljs-keyword">int</span> size)</span> </span>&#123;
+      <span class="hljs-keyword">int</span> left = index * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>;
+      <span class="hljs-keyword">while</span> (left &lt; size) &#123;
+         <span class="hljs-keyword">int</span> smallest = left + <span class="hljs-number">1</span> &lt; size &amp;&amp; distanceMap.get(nodes[left + <span class="hljs-number">1</span>]) &lt; distanceMap.get(nodes[left])
+               ? left + <span class="hljs-number">1</span>
+               : left;
+         smallest = distanceMap.get(nodes[smallest]) &lt; distanceMap.get(nodes[index]) ? smallest : index;
+         <span class="hljs-keyword">if</span> (smallest == index) &#123;
+            <span class="hljs-keyword">break</span>;
+         &#125;
+         swap(smallest, index);
+         index = smallest;
+         left = index * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>;
+      &#125;
+   &#125;
+
+   <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isEntered</span><span class="hljs-params">(Node node)</span> </span>&#123;
+      <span class="hljs-keyword">return</span> heapIndexMap.containsKey(node);
+   &#125;
+
+   <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">inHeap</span><span class="hljs-params">(Node node)</span> </span>&#123;
+      <span class="hljs-keyword">return</span> isEntered(node) &amp;&amp; heapIndexMap.get(node) != -<span class="hljs-number">1</span>;
+   &#125;
+
+   <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">swap</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index1, <span class="hljs-keyword">int</span> index2)</span> </span>&#123;
+      heapIndexMap.put(nodes[index1], index2);
+      heapIndexMap.put(nodes[index2], index1);
+      Node tmp = nodes[index1];
+      nodes[index1] = nodes[index2];
+      nodes[index2] = tmp;
+   &#125;
+&#125;
+
+<span class="hljs-comment">// 改进后的dijkstra算法</span>
+<span class="hljs-comment">// 从head出发，所有head能到达的节点，生成到达每个节点的最小路径记录并返回</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> HashMap&lt;Node, Integer&gt; <span class="hljs-title">dijkstra2</span><span class="hljs-params">(Node head, <span class="hljs-keyword">int</span> size)</span> </span>&#123;
+   NodeHeap nodeHeap = <span class="hljs-keyword">new</span> NodeHeap(size);
+   nodeHeap.addOrUpdateOrIgnore(head, <span class="hljs-number">0</span>);
+   HashMap&lt;Node, Integer&gt; result = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+   <span class="hljs-keyword">while</span> (!nodeHeap.isEmpty()) &#123;
+      NodeRecord record = nodeHeap.pop();
+      Node cur = record.node;
+      <span class="hljs-keyword">int</span> distance = record.distance;
+      <span class="hljs-keyword">for</span> (Edge edge : cur.edges) &#123;
+         nodeHeap.addOrUpdateOrIgnore(edge.to, edge.weight + distance);
+      &#125;
+      result.put(cur, distance);
+   &#125;
+   <span class="hljs-keyword">return</span> result;
+&#125;</code></pre>
+
+
+
+<h1 id="暴力递归"><a href="#暴力递归" class="headerlink" title="暴力递归"></a>暴力递归</h1><blockquote>
+<p> 暴力递归就是尝试 </p>
+</blockquote>
+<p>1，把问题转化为规模缩小了的同类问题的子问题<br>2，有明确的不需要继续进行递归的条件(base case)<br>3，有当得到了子问题的结果之后的决策过程<br>4， <strong>不记录</strong>每一个子问题的解，记录就是 <strong>动态规划</strong> </p>
+<h2 id="熟悉什么叫尝试？"><a href="#熟悉什么叫尝试？" class="headerlink" title="熟悉什么叫尝试？"></a>熟悉什么叫尝试？</h2><ul>
+<li><p>打印n层汉诺塔从最左边移动到最右边的全部过程（2^n -1 步）</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216104132.png" srcset="/img/loading.gif" alt="汉诺塔"></p>
+</li>
+</ul>
+<p>​ 思路：1 - N-1个挪到中间，第N个挪到最右边，1 - N-1挪到最右边</p>
+<blockquote>
+<p>细化递归过程的代码:</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">hanoi1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   leftToRight(n);
+&#125;
+
+<span class="hljs-comment">// 把 1 - N层圆盘从左移动到右</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">leftToRight</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) &#123;
+      System.out.println(<span class="hljs-string">&quot;Move 1 from left to right&quot;</span>);
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   leftToMid(n - <span class="hljs-number">1</span>);
+   System.out.println(<span class="hljs-string">&quot;Move &quot;</span> + n + <span class="hljs-string">&quot; from left to right&quot;</span>);
+   midToRight(n - <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-comment">// 腾出空间</span>
+<span class="hljs-comment">// 移动最底</span>
+<span class="hljs-comment">// 移动其他</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">leftToMid</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) &#123;
+      System.out.println(<span class="hljs-string">&quot;Move 1 from left to mid&quot;</span>);
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   leftToRight(n - <span class="hljs-number">1</span>);
+   System.out.println(<span class="hljs-string">&quot;Move &quot;</span> + n + <span class="hljs-string">&quot; from left to mid&quot;</span>);
+   rightToMid(n - <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rightToMid</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) &#123;
+      System.out.println(<span class="hljs-string">&quot;Move 1 from right to mid&quot;</span>);
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   rightToLeft(n - <span class="hljs-number">1</span>);
+   System.out.println(<span class="hljs-string">&quot;Move &quot;</span> + n + <span class="hljs-string">&quot; from right to mid&quot;</span>);
+   leftToMid(n - <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">midToRight</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) &#123;
+      System.out.println(<span class="hljs-string">&quot;Move 1 from mid to right&quot;</span>);
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   midToLeft(n - <span class="hljs-number">1</span>);
+   System.out.println(<span class="hljs-string">&quot;Move &quot;</span> + n + <span class="hljs-string">&quot; from mid to right&quot;</span>);
+   leftToRight(n - <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">midToLeft</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) &#123;
+      System.out.println(<span class="hljs-string">&quot;Move 1 from mid to left&quot;</span>);
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   midToRight(n - <span class="hljs-number">1</span>);
+   System.out.println(<span class="hljs-string">&quot;Move &quot;</span> + n + <span class="hljs-string">&quot; from mid to left&quot;</span>);
+   rightToLeft(n - <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rightToLeft</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) &#123;
+      System.out.println(<span class="hljs-string">&quot;Move 1 from right to left&quot;</span>);
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   rightToMid(n - <span class="hljs-number">1</span>);
+   System.out.println(<span class="hljs-string">&quot;Move &quot;</span> + n + <span class="hljs-string">&quot; from right to left&quot;</span>);
+   midToLeft(n - <span class="hljs-number">1</span>);
+&#125;</code></pre>
+
+<p>为每个移动过程都描述过程。</p>
+<blockquote>
+<p>如果忽略左中右，直接from to other代替全部</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">hanoi2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (n &gt; <span class="hljs-number">0</span>) &#123;
+      func(n, <span class="hljs-string">&quot;left&quot;</span>, <span class="hljs-string">&quot;right&quot;</span>, <span class="hljs-string">&quot;mid&quot;</span>);
+   &#125;
+&#125;
+
+<span class="hljs-comment">// 1~i 圆盘 目标是from -&gt; to， other是另外一个</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">func</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, String from, String to, String other)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (N == <span class="hljs-number">1</span>) &#123; <span class="hljs-comment">// base</span>
+      System.out.println(<span class="hljs-string">&quot;Move 1 from &quot;</span> + from + <span class="hljs-string">&quot; to &quot;</span> + to);
+   &#125; <span class="hljs-keyword">else</span> &#123;
+      func(N - <span class="hljs-number">1</span>, from, other, to);
+      System.out.println(<span class="hljs-string">&quot;Move &quot;</span> + N + <span class="hljs-string">&quot; from &quot;</span> + from + <span class="hljs-string">&quot; to &quot;</span> + to);
+      func(N - <span class="hljs-number">1</span>, other, to, from);
+   &#125;
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216111446.png" srcset="/img/loading.gif" alt="过程"></p>
+<pre><code class="hljs livecodeserver">打印过程：
+Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> left <span class="hljs-built_in">to</span> <span class="hljs-literal">right</span>
+Move <span class="hljs-number">2</span> <span class="hljs-built_in">from</span> left <span class="hljs-built_in">to</span> <span class="hljs-keyword">mid</span>
+Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> <span class="hljs-literal">right</span> <span class="hljs-built_in">to</span> <span class="hljs-keyword">mid</span>
+Move <span class="hljs-number">3</span> <span class="hljs-built_in">from</span> left <span class="hljs-built_in">to</span> <span class="hljs-literal">right</span>
+Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> <span class="hljs-keyword">mid</span> <span class="hljs-built_in">to</span> left
+Move <span class="hljs-number">2</span> <span class="hljs-built_in">from</span> <span class="hljs-keyword">mid</span> <span class="hljs-built_in">to</span> <span class="hljs-literal">right</span>
+Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> left <span class="hljs-built_in">to</span> <span class="hljs-literal">right</span></code></pre>
+
+
+
+<ul>
+<li><p>打印一个字符串的全部子序列</p>
+</li>
+<li><p>打印一个字符串的全部子序列，要求不要出现重复字面值的子序列</p>
+</li>
+<li><p>打印一个字符串的全部排列</p>
+</li>
+<li><p>打印一个字符串的全部排列，要求不要出现重复的排列</p>
+</li>
+</ul>
+<h2 id="仰望好的尝试？"><a href="#仰望好的尝试？" class="headerlink" title="仰望好的尝试？"></a>仰望好的尝试？</h2><p>给你一个栈，请你 <strong>逆序</strong> 这个栈，<br>不能申请额外的数据结构，<br>只能使用递归函数。 如何实现? </p>
+<p>f函数功能: 把栈底元素抽离</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216114416.png" srcset="/img/loading.gif" alt="流程"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216114856.png" srcset="/img/loading.gif" alt="reverse流程"></p>
 
             </div>
             <hr>
