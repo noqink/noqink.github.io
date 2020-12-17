@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      31.6k 字
+      32.2k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      452
+      462
        分钟
     </span>
   
@@ -4920,21 +4920,151 @@ Move <span class="hljs-number">2</span> <span class="hljs-built_in">from</span> 
 Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> left <span class="hljs-built_in">to</span> <span class="hljs-literal">right</span></code></pre>
 
 
-
 <ul>
 <li><p>打印一个字符串的全部子序列</p>
+<p> <strong>子串</strong> 必须连续。子序列不需要连续，但相对次序不能乱。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201217083355.png" srcset="/img/loading.gif" alt="子串"></p>
 </li>
+</ul>
+<p>  <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201217083652.png" srcset="/img/loading.gif" alt="子序列每个都可以选择要或不要"></p>
+  <pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;String&gt; <span class="hljs-title">subs</span><span class="hljs-params">(String s)</span> </span>&#123;
+   <span class="hljs-keyword">char</span>[] str = s.toCharArray();
+   String path = <span class="hljs-string">&quot;&quot;</span>;
+   List&lt;String&gt; ans = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+   process1(str, <span class="hljs-number">0</span>, ans, path);
+   <span class="hljs-keyword">return</span> ans;
+&#125;
+
+<span class="hljs-comment">// str为原始字符串</span>
+<span class="hljs-comment">// index此时来到的位置</span>
+<span class="hljs-comment">// 如果index来到终止位置 路径所形成的答案放到ans中</span>
+<span class="hljs-comment">// 之前做出的选择，就是path</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">process1</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[] str, <span class="hljs-keyword">int</span> index, List&lt;String&gt; ans, String path)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (index == str.length) &#123;
+      ans.add(path);
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   String no = path;
+   process1(str, index + <span class="hljs-number">1</span>, ans, no);
+   String yes = path + String.valueOf(str[index]);
+   process1(str, index + <span class="hljs-number">1</span>, ans, yes);
+&#125;</code></pre>
+
+
+
+<ul>
 <li><p>打印一个字符串的全部子序列，要求不要出现重复字面值的子序列</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">process2</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[] str, <span class="hljs-keyword">int</span> index, HashSet&lt;String&gt; set, String path)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (index == str.length) &#123;
+      set.add(path);
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   String no = path;
+   process2(str, index + <span class="hljs-number">1</span>, set, no);
+   String yes = path + String.valueOf(str[index]);
+   process2(str, index + <span class="hljs-number">1</span>, set, yes);
+&#125;</code></pre>
+
+
+
 </li>
+</ul>
+<ul>
 <li><p>打印一个字符串的全部排列</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201217085722.png" srcset="/img/loading.gif" alt="不用额外空间尝试"></p>
+<p>只需要一个数组，让index所到位置后面所有字符都到该位置一次</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ArrayList&lt;String&gt; <span class="hljs-title">permutation</span><span class="hljs-params">(String str)</span> </span>&#123;
+   ArrayList&lt;String&gt; res = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+   <span class="hljs-keyword">if</span> (str == <span class="hljs-keyword">null</span> || str.length() == <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-keyword">return</span> res;
+   &#125;
+   <span class="hljs-keyword">char</span>[] chs = str.toCharArray();
+   process(chs, <span class="hljs-number">0</span>, res);
+   <span class="hljs-keyword">return</span> res;
+&#125;
+
+<span class="hljs-comment">// str[0..i-1]已经做好决定</span>
+<span class="hljs-comment">// str[i...]后的都有机会来到i位置</span>
+<span class="hljs-comment">// i来到终止位置，全部做好决定，已经排列好</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">process</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[] str, <span class="hljs-keyword">int</span> i, ArrayList&lt;String&gt; res)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (i == str.length) &#123;
+      res.add(String.valueOf(str));
+   &#125;
+  <span class="hljs-comment">// i没有到终止位置，i往后所有位置来到i位置</span>
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = i; j &lt; str.length; j++) &#123;
+      swap(str, i, j);
+      process(str, i + <span class="hljs-number">1</span>, res);
+     <span class="hljs-comment">// 恢复现场</span>
+      swap(str, i, j);
+   &#125;
+&#125;</code></pre>
+
+
+
 </li>
+</ul>
+<ul>
 <li><p>打印一个字符串的全部排列，要求不要出现重复的排列</p>
+<p>直接在上面代码改为set，是暴力递归 ➕ 过滤</p>
+<p>但如果使用分支限界方法不一样，在执行过程前杀死支路。</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 分支限界方法</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ArrayList&lt;String&gt; <span class="hljs-title">permutationNoRepeat</span><span class="hljs-params">(String str)</span> </span>&#123;
+   ArrayList&lt;String&gt; res = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+   <span class="hljs-keyword">if</span> (str == <span class="hljs-keyword">null</span> || str.length() == <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-keyword">return</span> res;
+   &#125;
+   <span class="hljs-keyword">char</span>[] chs = str.toCharArray();
+   process2(chs, <span class="hljs-number">0</span>, res);
+   <span class="hljs-keyword">return</span> res;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">process2</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[] str, <span class="hljs-keyword">int</span> i, ArrayList&lt;String&gt; res)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (i == str.length) &#123;
+      res.add(String.valueOf(str));
+   &#125;
+  
+   <span class="hljs-comment">// x位置有没有使用过</span>
+   <span class="hljs-keyword">boolean</span>[] visit = <span class="hljs-keyword">new</span> <span class="hljs-keyword">boolean</span>[<span class="hljs-number">26</span>]; <span class="hljs-comment">// visit[0 1 .. 25]</span>
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = i; j &lt; str.length; j++) &#123;
+      <span class="hljs-keyword">if</span> (!visit[str[j] - <span class="hljs-string">&#x27;a&#x27;</span>]) &#123;
+         visit[str[j] - <span class="hljs-string">&#x27;a&#x27;</span>] = <span class="hljs-keyword">true</span>;
+         swap(str, i, j);
+         process2(str, i + <span class="hljs-number">1</span>, res);
+         swap(str, i, j);
+      &#125;
+   &#125;
+&#125;</code></pre>
+
 </li>
 </ul>
 <h2 id="仰望好的尝试？"><a href="#仰望好的尝试？" class="headerlink" title="仰望好的尝试？"></a>仰望好的尝试？</h2><p>给你一个栈，请你 <strong>逆序</strong> 这个栈，<br>不能申请额外的数据结构，<br>只能使用递归函数。 如何实现? </p>
 <p>f函数功能: 把栈底元素抽离</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216114416.png" srcset="/img/loading.gif" alt="流程"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216114856.png" srcset="/img/loading.gif" alt="reverse流程"></p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">reverse</span><span class="hljs-params">(Stack&lt;Integer&gt; stack)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (stack.isEmpty()) &#123;
+      <span class="hljs-keyword">return</span>;
+   &#125;
+   <span class="hljs-keyword">int</span> i = f(stack);
+   reverse(stack);
+   stack.push(i);
+&#125;
+
+<span class="hljs-comment">// 功能： 莫名其妙把栈底元素搞没了 还返回了</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">f</span><span class="hljs-params">(Stack&lt;Integer&gt; stack)</span> </span>&#123;
+   <span class="hljs-keyword">int</span> result = stack.pop();
+   <span class="hljs-keyword">if</span> (stack.isEmpty()) &#123;
+      <span class="hljs-keyword">return</span> result;
+   &#125; <span class="hljs-keyword">else</span> &#123;
+      <span class="hljs-keyword">int</span> last = f(stack);
+      stack.push(result);
+      <span class="hljs-keyword">return</span> last;
+   &#125;
+&#125;</code></pre>
+
+
+
+
 
             </div>
             <hr>
