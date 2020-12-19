@@ -1,0 +1,1171 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/imgfavicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Nowcoder Community Code Review - Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/imgdefault.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Nowcoder Community Code Review">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-14 16:52" pubdate>
+        2020年12月14日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      53
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Nowcoder Community Code Review</h1>
+            
+            <div class="markdown-body">
+              <h1 id="系统分析"><a href="#系统分析" class="headerlink" title="系统分析"></a>系统分析</h1><h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216143154.png" srcset="/img/loading.gif" alt="需求列表"></p>
+<h2 id="数据库设计"><a href="#数据库设计" class="headerlink" title="数据库设计"></a>数据库设计</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216150139.png" srcset="/img/loading.gif" alt="数据库表设计1"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216150203.png" srcset="/img/loading.gif" alt="数据库表设计2"></p>
+<h2 id="架构设计"><a href="#架构设计" class="headerlink" title="架构设计"></a>架构设计</h2><ul>
+<li><p>技术栈架构</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216151114.png" srcset="/img/loading.gif" alt="技术栈"></p>
+</li>
+<li><p>部署架构</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219154749.png" srcset="/img/loading.gif" alt="部署架构图"></p>
+</li>
+</ul>
+<h2 id="项目结构一览"><a href="#项目结构一览" class="headerlink" title="项目结构一览"></a>项目结构一览</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219160159.png" srcset="/img/loading.gif" alt="结构"></p>
+<p>此结构有瑕疵，application配置文件应区分 <strong>dev or produce</strong></p>
+<h2 id="项目开发前框架基础配置"><a href="#项目开发前框架基础配置" class="headerlink" title="项目开发前框架基础配置"></a>项目开发前框架基础配置</h2><blockquote>
+<p>Mybatis</p>
+</blockquote>
+<pre><code class="hljs xml"># MybatisProperties
+mybatis.mapper-locations=classpath:mapper/*.xml
+mybatis.type-aliases-package=com.nowcoder.community.entity
+mybatis.configuration.useGeneratedKeys=true
+#驼峰命名与数据库下划线命名转换
+mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre>
+
+
+
+<blockquote>
+<p>Spring</p>
+</blockquote>
+<pre><code class="hljs yaml"><span class="hljs-comment"># ServerProperties</span>
+<span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">8080</span>
+  <span class="hljs-attr">servlet:</span>
+    <span class="hljs-attr">context-path:</span> <span class="hljs-string">/community</span>
+
+<span class="hljs-comment"># ThymeleafProperties</span>
+<span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">thymeleaf:</span>
+    <span class="hljs-attr">cache:</span> <span class="hljs-literal">false</span>
+  <span class="hljs-comment"># DataSourceProperties</span>
+  <span class="hljs-attr">datasource:</span>
+    <span class="hljs-attr">driver-class-name:</span> <span class="hljs-string">com.mysql.cj.jdbc.Driver</span>
+    <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:mysql://localhost:3306/community?characterEncoding=utf-8&amp;useSSL=false&amp;serverTimezone=Hongkong</span>
+    <span class="hljs-attr">username:</span> <span class="hljs-string">root</span>
+    <span class="hljs-attr">password:</span> <span class="hljs-string">password</span>
+    <span class="hljs-attr">type:</span> <span class="hljs-string">com.zaxxer.hikari.HikariDataSource</span>
+    <span class="hljs-attr">hikari:</span>
+      <span class="hljs-attr">maximum-pool-size:</span> <span class="hljs-number">15</span>
+      <span class="hljs-attr">minimum-idle:</span> <span class="hljs-number">5</span>
+      <span class="hljs-attr">idle-timeout:</span> <span class="hljs-number">30000</span></code></pre>
+
+<p>默认使用 <strong>hikari连接池</strong></p>
+<blockquote>
+<p>maven</p>
+</blockquote>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.projectlombok<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lombok<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>mysql<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mysql-connector-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.1.3<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">exclusions</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">exclusion</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.junit.vintage<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>junit-vintage-engine<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">exclusion</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">exclusions</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>junit<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>junit<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>4.12<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+        <span class="hljs-comment">&lt;!--&lt;scope&gt;test&lt;/scope&gt;--&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+  	<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-aop<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-devtools<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>runtime<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span></code></pre>
+
+
+
+<h1 id="首页展示模块"><a href="#首页展示模块" class="headerlink" title="首页展示模块"></a>首页展示模块</h1><h2 id="开发社区首页"><a href="#开发社区首页" class="headerlink" title="开发社区首页"></a>开发社区首页</h2><h3 id="开发流程概括"><a href="#开发流程概括" class="headerlink" title="开发流程概括"></a>开发流程概括</h3><ul>
+<li><p>流程请求执行过程</p>
+<ul>
+<li><p>1次请求的执行过程</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219155543.png" srcset="/img/loading.gif" alt="请求过程"></p>
+</li>
+</ul>
+</li>
+<li><p>分步实现</p>
+<ul>
+<li>开发首页，显示前十个帖子</li>
+<li>开发 <strong>分页</strong> 组件(手动实现)，分页显示所有帖子</li>
+</ul>
+</li>
+</ul>
+<p>基础配置已在系统分析给出，不再多概述。</p>
+<blockquote>
+<p>编写分页前，只显示十条数据</p>
+</blockquote>
+<ol>
+<li><p>编写 <strong>实体类</strong></p>
+<p>为什么要同时编写 User相关的，因为页面需要Username，headerUrl等信息，所以查询一并返回。</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Data</span>
+<span class="hljs-meta">@AllArgsConstructor</span>
+<span class="hljs-meta">@NoArgsConstructor</span>
+<span class="hljs-comment">// 使用了lombok</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DiscussPost</span> </span>&#123;
+  
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> id;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> userId;
+    <span class="hljs-keyword">private</span> String title;
+    <span class="hljs-keyword">private</span> String content;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> type;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> status;
+    <span class="hljs-keyword">private</span> Date createTime;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> commentCount;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">double</span> score;
+
+&#125;
+
+<span class="hljs-meta">@Data</span>
+<span class="hljs-meta">@AllArgsConstructor</span>
+<span class="hljs-meta">@NoArgsConstructor</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> </span>&#123;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> id;
+    <span class="hljs-keyword">private</span> String username;
+    <span class="hljs-keyword">private</span> String password;
+    <span class="hljs-keyword">private</span> String salt;
+    <span class="hljs-keyword">private</span> String email;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> type;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> status;
+    <span class="hljs-keyword">private</span> String activationCode;
+    <span class="hljs-keyword">private</span> String headerUrl;
+    <span class="hljs-keyword">private</span> Date createTime;
+&#125;</code></pre>
+</li>
+<li><p>描述接口Mapper</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Mapper</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">DiscussPostMapper</span> </span>&#123;
+
+    <span class="hljs-comment">// userId为&quot;我发布的帖子&quot;功能调用</span>
+    <span class="hljs-comment">// offset,limit为分页功能调用</span>
+    <span class="hljs-function">List&lt;DiscussPost&gt; <span class="hljs-title">selectDiscussPosts</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">int</span> offset, <span class="hljs-keyword">int</span> limit, <span class="hljs-keyword">int</span> orderMode)</span></span>;
+		<span class="hljs-comment">// @Param注解用于给参数取别名</span>
+    <span class="hljs-comment">// 动态sql在&lt;if&gt;中使用,单一参数,一定要取别名,否则报错</span>
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">selectDiscussPostRows</span><span class="hljs-params">(<span class="hljs-meta">@Param(&quot;userId&quot;)</span> <span class="hljs-keyword">int</span> userId)</span></span>;
+&#125;
+
+<span class="hljs-meta">@Mapper</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">UserMapper</span> </span>&#123;
+
+    <span class="hljs-function">User <span class="hljs-title">selectById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>;
+&#125;</code></pre>
+</li>
+<li><p>写接口对应的Mapper文件</p>
+<p>xml文件开头过于冗余，已忽略，请查略源代码文件</p>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- discussPost-mapper --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">sql</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;</span>
+    id, user_id, title, content, type, status, create_time, comment_count, score
+<span class="hljs-tag">&lt;/<span class="hljs-name">sql</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectDiscussPosts&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;DiscussPost&quot;</span>&gt;</span>
+        select
+        <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+        from discuss_post
+        where status != 2
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;userId!=0&quot;</span>&gt;</span>
+            and user_id = #&#123;userId&#125;
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+        limit #&#123;offset&#125;,#&#123;limit&#125;
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectDiscussPostRows&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;int&quot;</span>&gt;</span>
+        select count(id)
+        from discuss_post
+        where status != 2
+        <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;userId!=0&quot;</span>&gt;</span>
+            and user_id = #&#123;userId&#125;
+        <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- user-mapper --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">sql</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;</span>
+        id, username, password, salt, email, type, status, activation_code, header_url, create_time
+<span class="hljs-tag">&lt;/<span class="hljs-name">sql</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectById&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;User&quot;</span>&gt;</span>
+        select <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+        from user
+        where id = #&#123;id&#125;
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span></code></pre>
+</li>
+<li><p>写Service</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DiscussPostService</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> DiscussPostMapper discussPostMapper;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;DiscussPost&gt; <span class="hljs-title">findDiscussPosts</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">int</span> offset, <span class="hljs-keyword">int</span> limit)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> discussPostMapper.selectDiscussPosts(userId, offset, limit);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findDiscussPostRows</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> discussPostMapper.selectDiscussPostRows(userId);
+    &#125;
+&#125;
+
+<span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserService</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> UserMapper userMapper;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> User <span class="hljs-title">findUserById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> userMapper.selectById(id);
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>编写HomeController</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HomeController</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> DiscussPostService discussPostService;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> UserService userService;
+
+    <span class="hljs-meta">@RequestMapping(path = &quot;/index&quot;, method = RequestMethod.GET)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getIndexPage</span><span class="hljs-params">(Model model)</span> </span>&#123;
+
+        List&lt;DiscussPost&gt; list = discussPostService.findDiscussPosts(<span class="hljs-number">0</span>, page.getOffset(), page.getLimit());
+        List&lt;Map&lt;String, Object&gt;&gt; discussPosts = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+        <span class="hljs-keyword">if</span> (list != <span class="hljs-keyword">null</span>) &#123;
+            <span class="hljs-keyword">for</span> (DiscussPost post : list) &#123;
+                Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+                map.put(<span class="hljs-string">&quot;post&quot;</span>, post);
+                User user = userService.findUserById(post.getUserId());
+                map.put(<span class="hljs-string">&quot;user&quot;</span>, user);
+                discussPosts.add(map);
+            &#125;
+        &#125;
+        model.addAttribute(<span class="hljs-string">&quot;discussPosts&quot;</span>, discussPosts);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;/index&quot;</span>;
+    &#125;
+
+&#125;</code></pre>
+</li>
+<li><p>对index页进行 <strong>模版引擎修改</strong> </p>
+<p>详细修改请查看源代码</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219164449.png" srcset="/img/loading.gif" alt="index修改"></p>
+</li>
+<li><p>总体流程归纳：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219164943.png" srcset="/img/loading.gif" alt="流程归纳"></p>
+</li>
+</ol>
+<blockquote>
+<p>编写分页</p>
+</blockquote>
+<ol>
+<li><p>封装分页对象</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 封装分页相关信息</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Page</span> </span>&#123;
+
+    <span class="hljs-comment">// 当前页码(默认为1)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> current = <span class="hljs-number">1</span>;
+    <span class="hljs-comment">// 显示上限(默认为10)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> limit = <span class="hljs-number">10</span>;
+    <span class="hljs-comment">// 数据总数,用于计算总的页数</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> rows;
+    <span class="hljs-comment">// 查询路径,用于复用分页链接</span>
+    <span class="hljs-keyword">private</span> String path;
+&#125;</code></pre>
+
+<p>分页里面的set和get方法有 <strong>技巧</strong>，有许多判断和默认值，不使用lombok，详细代码请看源码。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219165225.png" srcset="/img/loading.gif" alt="分页对象信息"></p>
+</li>
+<li><p>修改HomeController</p>
+<p>修改后的controller：</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/index&quot;, method = RequestMethod.GET)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getIndexPage</span><span class="hljs-params">(Model model, Page page)</span> </span>&#123;
+    <span class="hljs-comment">// 方法调用前,SpringMVC会自动实例化Model和Page,并将Page注入Model.</span>
+    <span class="hljs-comment">// 所以,在thymeleaf中可以直接访问Page对象中的数据.</span>
+    page.setRows(discussPostService.findDiscussPostRows(<span class="hljs-number">0</span>));
+    page.setPath(<span class="hljs-string">&quot;/index&quot;</span>);
+
+    List&lt;DiscussPost&gt; list = discussPostService.findDiscussPosts(<span class="hljs-number">0</span>, page.getOffset(), page.getLimit());
+    List&lt;Map&lt;String, Object&gt;&gt; discussPosts = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+    <span class="hljs-keyword">if</span> (list != <span class="hljs-keyword">null</span>) &#123;
+        <span class="hljs-keyword">for</span> (DiscussPost post : list) &#123;
+            Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+            map.put(<span class="hljs-string">&quot;post&quot;</span>, post);
+            User user = userService.findUserById(post.getUserId());
+            map.put(<span class="hljs-string">&quot;user&quot;</span>, user);
+            discussPosts.add(map);
+        &#125;
+    &#125;
+    model.addAttribute(<span class="hljs-string">&quot;discussPosts&quot;</span>, discussPosts);
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;/index&quot;</span>;
+&#125;</code></pre>
+</li>
+<li><p>修改模版引擎分页系统(可复用)</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219165634.png" srcset="/img/loading.gif" alt="模版引擎处理"></p>
+</li>
+<li><p>分页总体流程归纳</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219170954.png" srcset="/img/loading.gif" alt="流程图"></p>
+</li>
+</ol>
+<h2 id="日志分级输出"><a href="#日志分级输出" class="headerlink" title="日志分级输出"></a>日志分级输出</h2><p>详细请参考resources目录下的logback-spring.xml文件</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219171414.png" srcset="/img/loading.gif" alt="日志"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219171501.png" srcset="/img/loading.gif" alt="日志分级"></p>
+<h2 id="发送邮件功能-非aliyun实现"><a href="#发送邮件功能-非aliyun实现" class="headerlink" title="发送邮件功能 (非aliyun实现)"></a>发送邮件功能 (非aliyun实现)</h2><ul>
+<li>邮件设置<ul>
+<li>启用客户端SMTP服务</li>
+</ul>
+</li>
+<li>Spring Email<ul>
+<li>导入jar包</li>
+<li>邮箱参数配置</li>
+<li>使用 <strong>JavaMailSender</strong> 发送邮件</li>
+</ul>
+</li>
+<li>模版引擎<ul>
+<li>使用 <strong>Thymeleaf</strong> 发送 <strong>HTML</strong> 邮件</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发流程概括-1"><a href="#开发流程概括-1" class="headerlink" title="开发流程概括"></a>开发流程概括</h3><ol>
+<li><p>确保邮箱服务开启</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219172636.png" srcset="/img/loading.gif" alt="邮箱服务"></p>
+</li>
+<li><p>Maven导入</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-mail<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.2.6.RELEASE<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+</li>
+<li><p>配置文件</p>
+<pre><code class="hljs yaml"><span class="hljs-comment">#MailProperties</span>
+<span class="hljs-attr">mail:</span>
+  <span class="hljs-attr">host:</span> <span class="hljs-string">smtp.163.com</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">465</span>
+  <span class="hljs-attr">username:</span> <span class="hljs-string">username</span>
+  <span class="hljs-attr">password:</span> <span class="hljs-string">pwd</span>
+  <span class="hljs-attr">protocol:</span> <span class="hljs-string">smtps</span>
+  <span class="hljs-attr">properties:</span>
+    <span class="hljs-attr">smtp:</span>
+      <span class="hljs-attr">ssl:</span>
+        <span class="hljs-attr">enable:</span> <span class="hljs-literal">true</span></code></pre>
+</li>
+<li><p>编写MailClient的工具类</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MailClient</span> </span>&#123;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(MailClient.class);
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> JavaMailSender mailSender;
+
+    <span class="hljs-meta">@Value(&quot;$&#123;spring.mail.username&#125;&quot;)</span>
+    <span class="hljs-keyword">private</span> String mailFrom;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sendMail</span><span class="hljs-params">(String mailTo, String title, String content)</span></span>&#123;
+
+        <span class="hljs-keyword">try</span> &#123;
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = <span class="hljs-keyword">new</span> MimeMessageHelper(mimeMessage);
+            helper.setFrom(mailFrom);
+            helper.setTo(mailTo);
+            helper.setSubject(title);
+            helper.setText(content,<span class="hljs-keyword">true</span>);
+
+            mailSender.send(helper.getMimeMessage());
+        &#125; <span class="hljs-keyword">catch</span> (MessagingException e) &#123;
+            logger.error(<span class="hljs-string">&quot;邮件发送失败：&quot;</span>+e.getMessage());
+        &#125;
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>测试 (省略，请查看test包下的MailTest)</p>
+</li>
+</ol>
+<h2 id="开放注册功能"><a href="#开放注册功能" class="headerlink" title="开放注册功能"></a>开放注册功能</h2><ul>
+<li>访问注册页面<ul>
+<li>点击顶部区域内的链接，打开注册页面</li>
+</ul>
+</li>
+<li>提交注册数据<ul>
+<li>通过表单提交数据</li>
+<li>服务端验证账号是否已存在、邮箱是否已注册。</li>
+<li>服务端发送激活邮件。</li>
+</ul>
+</li>
+<li>激活注册账号<ul>
+<li>点击邮件中的链接，访问服务端的激活服务。</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发流程概括-2"><a href="#开发流程概括-2" class="headerlink" title="开发流程概括"></a>开发流程概括</h3><ol>
+<li><p>跳转注册页面</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoginController</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
+  
+    <span class="hljs-meta">@RequestMapping(path = &quot;/register&quot;,method = RequestMethod.GET)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getRegisterPage</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/register&quot;</span>;
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>修改主页模版引擎</p>
+<pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;nav-item ml-3 btn-group-vertical&quot;</span> <span class="hljs-attr">th:if</span>=<span class="hljs-string">&quot;$&#123;loginUser==null&#125;&quot;</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;nav-link&quot;</span> <span class="hljs-attr">th:href</span>=<span class="hljs-string">&quot;@&#123;/register&#125;&quot;</span>&gt;</span>注册<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></code></pre>
+</li>
+<li><p>配置激活邮箱发送时附带的激活链接和Commonslang包</p>
+<pre><code class="hljs yaml"><span class="hljs-comment"># community</span>
+<span class="hljs-attr">community:</span>
+  <span class="hljs-attr">path:</span>
+    <span class="hljs-attr">domain:</span> <span class="hljs-string">http://localhost:8080</span>
+    <span class="hljs-attr">upload:</span> <span class="hljs-string">/Users/qiuke/Desktop/nowcoder_source/work/picture</span></code></pre>
+
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--    空值比较    --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.commons<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>commons-lang3<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+</li>
+<li><p>编写MD5、UUID工具类</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CommunityUtil</span> </span>&#123;
+
+    <span class="hljs-comment">// 生成随机字符串</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">generateUUID</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> UUID.randomUUID().toString().replaceAll(<span class="hljs-string">&quot;-&quot;</span>,<span class="hljs-string">&quot;&quot;</span>);
+    &#125;
+
+    <span class="hljs-comment">// md5加密 key为pwd+salt</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">md5</span><span class="hljs-params">(String key)</span></span>&#123;
+        <span class="hljs-keyword">if</span> (StringUtils.isBlank(key))&#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+        &#125;
+        <span class="hljs-keyword">return</span> DigestUtils.md5DigestAsHex(key.getBytes());
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>编写UserService</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
+<span class="hljs-keyword">private</span> MailClient mailClient;
+
+<span class="hljs-meta">@Autowired</span>
+<span class="hljs-keyword">private</span> TemplateEngine templateEngine;
+
+<span class="hljs-meta">@Value(&quot;$&#123;community.path.domain&#125;&quot;)</span>
+<span class="hljs-keyword">private</span> String domain;
+
+<span class="hljs-meta">@Value(&quot;$&#123;server.servlet.context-path&#125;&quot;)</span>
+<span class="hljs-keyword">private</span> String contextPath;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> Map&lt;String, Object&gt; <span class="hljs-title">register</span><span class="hljs-params">(User user)</span></span>&#123;
+        Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+
+        <span class="hljs-comment">// 空值处理</span>
+        <span class="hljs-keyword">if</span> (user == <span class="hljs-keyword">null</span>)&#123;
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;User参数不能为空&quot;</span>);
+        &#125;
+
+        <span class="hljs-keyword">if</span> (StringUtils.isBlank(user.getUsername()))&#123;
+            map.put(<span class="hljs-string">&quot;usernameMsg&quot;</span>,<span class="hljs-string">&quot;账号不能为空&quot;</span>);
+            <span class="hljs-keyword">return</span> map;
+        &#125;
+        <span class="hljs-keyword">if</span> (StringUtils.isBlank(user.getPassword()))&#123;
+            map.put(<span class="hljs-string">&quot;passwordMsg&quot;</span>,<span class="hljs-string">&quot;密码不能为空&quot;</span>);
+            <span class="hljs-keyword">return</span> map;
+        &#125;
+        <span class="hljs-keyword">if</span> (StringUtils.isBlank(user.getEmail()))&#123;
+            map.put(<span class="hljs-string">&quot;emailMsg&quot;</span>,<span class="hljs-string">&quot;邮箱不能为空&quot;</span>);
+            <span class="hljs-keyword">return</span> map;
+        &#125;
+
+        User u = userMapper.selectByName(user.getUsername());
+        <span class="hljs-keyword">if</span> (u != <span class="hljs-keyword">null</span>)&#123;
+            map.put(<span class="hljs-string">&quot;usernameMsg&quot;</span>,<span class="hljs-string">&quot;该账号已存在&quot;</span>);
+            <span class="hljs-keyword">return</span> map;
+        &#125;
+        u = userMapper.selectByEmail(user.getEmail());
+        <span class="hljs-keyword">if</span> (u != <span class="hljs-keyword">null</span>)&#123;
+            map.put(<span class="hljs-string">&quot;emailMsg&quot;</span>,<span class="hljs-string">&quot;该邮箱已存在&quot;</span>);
+            <span class="hljs-keyword">return</span> map;
+        &#125;
+
+        <span class="hljs-comment">// 注册用户</span>
+        user.setSalt(CommunityUtil.generateUUID().substring(<span class="hljs-number">0</span>,<span class="hljs-number">6</span>));
+        user.setPassword(CommunityUtil.md5(user.getPassword()+user.getSalt()));
+        user.setType(<span class="hljs-number">0</span>); <span class="hljs-comment">// 普通用户</span>
+        user.setStatus(<span class="hljs-number">0</span>); <span class="hljs-comment">// 未激活</span>
+        user.setActivationCode(CommunityUtil.generateUUID()); <span class="hljs-comment">// 邮箱激活码</span>
+        user.setHeaderUrl(String.format(<span class="hljs-string">&quot;http://images.nowcoder.com/head/%dt.png&quot;</span>, <span class="hljs-keyword">new</span> Random().nextInt(<span class="hljs-number">1000</span>))); <span class="hljs-comment">// 牛客网的随机头像</span>
+        user.setCreateTime(<span class="hljs-keyword">new</span> Date());
+
+        userMapper.insertUser(user);
+
+        <span class="hljs-comment">// 激活邮件</span>
+        Context context = <span class="hljs-keyword">new</span> Context();
+        context.setVariable(<span class="hljs-string">&quot;email&quot;</span>, user.getEmail());
+        <span class="hljs-comment">// 请求格式为：http://localhost:8080/community/activation/id/code</span>
+        <span class="hljs-comment">// 设置了mybatis.configuration.useGeneratedKeys=true,user主键id会自动赋值自增</span>
+        String url = domain + contextPath + <span class="hljs-string">&quot;/activation/&quot;</span>  + user.getId() + <span class="hljs-string">&quot;/&quot;</span> + user.getActivationCode();
+        context.setVariable(<span class="hljs-string">&quot;url&quot;</span>, url);
+        <span class="hljs-comment">// /mail/activation为HTML格式的邮件所在路径</span>
+        String process = templateEngine.process(<span class="hljs-string">&quot;/mail/activation&quot;</span>, context);
+
+        mailClient.sendMail(user.getEmail(), <span class="hljs-string">&quot;激活邮件&quot;</span>, process);
+
+        <span class="hljs-keyword">return</span> map;
+&#125;</code></pre>
+</li>
+<li><p>修改模版引擎</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219175018.png" srcset="/img/loading.gif" alt="模版引擎"></p>
+</li>
+<li><p>写LoginController</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/register&quot;,method = RequestMethod.POST)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">register</span><span class="hljs-params">(Model model, User user)</span></span>&#123;
+    Map&lt;String, Object&gt; map = userService.register(user);
+    <span class="hljs-keyword">if</span> (map == <span class="hljs-keyword">null</span> || map.isEmpty())&#123;
+        model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>, <span class="hljs-string">&quot;注册成功,我们已经向您的邮箱发送了一封激活邮件,请尽快激活！&quot;</span>);
+        <span class="hljs-comment">// 点击跳转回首页</span>
+        model.addAttribute(<span class="hljs-string">&quot;target&quot;</span>,<span class="hljs-string">&quot;/index&quot;</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/operate-result&quot;</span>;
+    &#125; <span class="hljs-keyword">else</span> &#123;
+        model.addAttribute(<span class="hljs-string">&quot;usernameMsg&quot;</span>, map.get(<span class="hljs-string">&quot;usernameMsg&quot;</span>));
+        model.addAttribute(<span class="hljs-string">&quot;passwordMsg&quot;</span>, map.get(<span class="hljs-string">&quot;passwordMsg&quot;</span>));
+        model.addAttribute(<span class="hljs-string">&quot;emailMsg&quot;</span>, map.get(<span class="hljs-string">&quot;emailMsg&quot;</span>));
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/register&quot;</span>;
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>修改operate-result模版引擎</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219175509.png" srcset="/img/loading.gif" alt="模版引擎"></p>
+</li>
+<li><p>修改register模版引擎(省略，请查看源代码)</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219175654.png" srcset="/img/loading.gif" alt="模版引擎"></p>
+</li>
+<li><p>编写常量接口</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 激活成功</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-keyword">int</span> ACTIVATION_SUCCESS = <span class="hljs-number">1</span>;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 激活失败</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-keyword">int</span> ACTIVATION_FAILURE = -<span class="hljs-number">1</span>;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 重复激活</span>
+<span class="hljs-comment">     */</span>
+
+    <span class="hljs-keyword">int</span> ACTIVATION_REPEAT = <span class="hljs-number">0</span>;
+&#125;</code></pre>
+</li>
+<li><p>编写activation 激活函数</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">activation</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String code)</span></span>&#123;
+    User user = userMapper.selectById(userId);
+    <span class="hljs-keyword">if</span> (user.getStatus() == <span class="hljs-number">1</span>)&#123;
+        <span class="hljs-keyword">return</span> ACTIVATION_REPEAT;
+    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (user.getActivationCode().equals(code))&#123;
+        userMapper.updateStatus(userId,<span class="hljs-number">1</span>);
+        clearCache(userId);
+        <span class="hljs-keyword">return</span> ACTIVATION_SUCCESS;
+    &#125; <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-keyword">return</span> ACTIVATION_FAILURE;
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>编写LoginController</p>
+<pre><code class="hljs java"><span class="hljs-comment">// http://localhost:8080/community/activation/id/code</span>
+<span class="hljs-meta">@RequestMapping(path = &quot;/activation/&#123;userId&#125;/&#123;code&#125;&quot;, method = RequestMethod.GET)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">activation</span><span class="hljs-params">(Model model, <span class="hljs-meta">@PathVariable(&quot;userId&quot;)</span> <span class="hljs-keyword">int</span> userId, <span class="hljs-meta">@PathVariable(&quot;code&quot;)</span> String code)</span></span>&#123;
+    <span class="hljs-keyword">int</span> activation_code = userService.activation(userId, code);
+
+    <span class="hljs-keyword">if</span> (activation_code == ACTIVATION_SUCCESS)&#123;
+        model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>, <span class="hljs-string">&quot;激活成功,您的账号已经可以正常使用了！&quot;</span>);
+        <span class="hljs-comment">// 点击跳转回首页</span>
+        model.addAttribute(<span class="hljs-string">&quot;target&quot;</span>,<span class="hljs-string">&quot;/login&quot;</span>);
+    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (activation_code == ACTIVATION_REPEAT)&#123;
+        model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>, <span class="hljs-string">&quot;激活无效,您的账号已经激活过了！&quot;</span>);
+        <span class="hljs-comment">// 点击跳转回首页</span>
+        model.addAttribute(<span class="hljs-string">&quot;target&quot;</span>,<span class="hljs-string">&quot;/index&quot;</span>);
+    &#125;<span class="hljs-keyword">else</span> &#123;
+        model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>, <span class="hljs-string">&quot;激活失败,您提供的激活码不正确&quot;</span>);
+        <span class="hljs-comment">// 点击跳转回首页</span>
+        model.addAttribute(<span class="hljs-string">&quot;target&quot;</span>,<span class="hljs-string">&quot;/index&quot;</span>);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/operate-result&quot;</span>;
+&#125;    
+
+<span class="hljs-meta">@RequestMapping(path = &quot;/login&quot;,method = RequestMethod.GET)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getLoginPage</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/login&quot;</span>;
+&#125;</code></pre>
+</li>
+<li><p>修改index可以点击注册</p>
+</li>
+</ol>
+<h3 id="流程概括图"><a href="#流程概括图" class="headerlink" title="流程概括图"></a>流程概括图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219181942.png" srcset="/img/loading.gif" alt="注册流程"></p>
+<h2 id="生成验证码功能"><a href="#生成验证码功能" class="headerlink" title="生成验证码功能"></a>生成验证码功能</h2><blockquote>
+<p>先存session后，后续redis更改项目时，存入redis</p>
+</blockquote>
+<ul>
+<li><p>Kaptcha</p>
+<ul>
+<li>导入jar包</li>
+<li>编写Kaptcha配置类</li>
+<li>生成随机字符、生成图片</li>
+</ul>
+</li>
+<li><p>kaptcha手册 <a href="https//code.google.com/archive/p/kaptcha">手册</a></p>
+</li>
+</ul>
+<h3 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
+<li><p>Maven导入</p>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--    验证码工具    --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.github.penggle<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>kaptcha<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.3.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+</li>
+<li><p>编写Kaptcha配置类</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">KaptchaConfig</span> </span>&#123;
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Producer <span class="hljs-title">kaptchaProducer</span><span class="hljs-params">()</span></span>&#123;
+        Properties properties = <span class="hljs-keyword">new</span> Properties();
+        properties.setProperty(<span class="hljs-string">&quot;kaptcha.image.width&quot;</span>, <span class="hljs-string">&quot;100&quot;</span>);
+        properties.setProperty(<span class="hljs-string">&quot;kaptcha.image.height&quot;</span>, <span class="hljs-string">&quot;40&quot;</span>);
+        properties.setProperty(<span class="hljs-string">&quot;kaptcha.textproducer.font.size&quot;</span>, <span class="hljs-string">&quot;32&quot;</span>);
+        properties.setProperty(<span class="hljs-string">&quot;kaptcha.textproducer.font.color&quot;</span>, <span class="hljs-string">&quot;0,0,0&quot;</span>);
+        properties.setProperty(<span class="hljs-string">&quot;kaptcha.textproducer.char.string&quot;</span>, <span class="hljs-string">&quot;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;</span>);
+        properties.setProperty(<span class="hljs-string">&quot;kaptcha.textproducer.char.length&quot;</span>, <span class="hljs-string">&quot;4&quot;</span>);
+        properties.setProperty(<span class="hljs-string">&quot;kaptcha.textproducer.noise.impl&quot;</span>, <span class="hljs-string">&quot;com.google.code.kaptcha.impl.NoNoise&quot;</span>);
+
+        <span class="hljs-comment">// 建议另建properties</span>
+
+        DefaultKaptcha kaptcha = <span class="hljs-keyword">new</span> DefaultKaptcha();
+        Config config = <span class="hljs-keyword">new</span> Config(properties);
+        kaptcha.setConfig(config);
+        <span class="hljs-keyword">return</span> kaptcha;
+    &#125;
+
+&#125;</code></pre>
+</li>
+<li><p>编写LoginController</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/kaptcha&quot;,method = RequestMethod.GET)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getKaptcha</span><span class="hljs-params">(HttpServletResponse response, HttpSession session)</span></span>&#123;
+    <span class="hljs-comment">// 生成验证码</span>
+    String text = kaptchProducer.createText();
+    BufferedImage image = kaptchProducer.createImage(text);
+
+    <span class="hljs-comment">// 验证码文字存入session</span>
+    session.setAttribute(<span class="hljs-string">&quot;kaptcha&quot;</span>,text);
+
+    <span class="hljs-comment">// 将图片输出给浏览器</span>
+    response.setContentType(<span class="hljs-string">&quot;image/png&quot;</span>);
+    <span class="hljs-keyword">try</span> &#123;
+        OutputStream os = response.getOutputStream();
+        ImageIO.write(image, <span class="hljs-string">&quot;png&quot;</span>, os);
+    &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;
+        logger.error(<span class="hljs-string">&quot;验证码响应失败：&quot;</span> + e.getMessage());
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>修改login页面模版引擎路径</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219183214.png" srcset="/img/loading.gif" alt="模版引擎"></p>
+<pre><code class="hljs js">&lt;script&gt;
+   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">refresh_kaptcha</span>(<span class="hljs-params"></span>) </span>&#123;
+      <span class="hljs-keyword">var</span> path = CONTEXT_PATH + <span class="hljs-string">&quot;/kaptcha?p=&quot;</span> + <span class="hljs-built_in">Math</span>.random();
+      $(<span class="hljs-string">&quot;#kaptcha&quot;</span>).attr(<span class="hljs-string">&quot;src&quot;</span>, path);
+   &#125;
+&lt;/script&gt;</code></pre>
+
+</li>
+</ol>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219183831.png" srcset="/img/loading.gif" alt="流程图"></p>
+<h2 id="登录退出功能"><a href="#登录退出功能" class="headerlink" title="登录退出功能"></a>登录退出功能</h2><ul>
+<li>访问登录页面<ul>
+<li>点击顶部区域内的链接，打开登录页面。</li>
+</ul>
+</li>
+<li>登录<ul>
+<li>验证账号、密码、验证码。</li>
+<li>成功时，生成登录凭证，发给客户端。</li>
+<li>失败时，跳转回登录页面。</li>
+</ul>
+</li>
+<li>退出<ul>
+<li>将登录凭证修改为失效状态。</li>
+<li>跳转至网站首页。</li>
+</ul>
+</li>
+</ul>
+<h1 id="帖子模块"><a href="#帖子模块" class="headerlink" title="帖子模块"></a>帖子模块</h1><h1 id="评论私信模块"><a href="#评论私信模块" class="headerlink" title="评论私信模块"></a>评论私信模块</h1><h1 id="项目管理模块"><a href="#项目管理模块" class="headerlink" title="项目管理模块"></a>项目管理模块</h1><h1 id="点赞关注模块"><a href="#点赞关注模块" class="headerlink" title="点赞关注模块"></a>点赞关注模块</h1><h1 id="缓存与消息队列模块"><a href="#缓存与消息队列模块" class="headerlink" title="缓存与消息队列模块"></a>缓存与消息队列模块</h1><h1 id="ES与Security模块"><a href="#ES与Security模块" class="headerlink" title="ES与Security模块"></a>ES与Security模块</h1><h1 id="额外功能丰富模块"><a href="#额外功能丰富模块" class="headerlink" title="额外功能丰富模块"></a>额外功能丰富模块</h1><h1 id="优化与压力测试模块"><a href="#优化与压力测试模块" class="headerlink" title="优化与压力测试模块"></a>优化与压力测试模块</h1>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%A1%B9%E7%9B%AE/">项目</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/02/JVM%E8%A7%A3%E5%AF%86/">
+                        <span class="hidden-mobile">JVM解密</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
