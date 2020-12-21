@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      32.2k 字
+      38.2k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      462
+      544
        分钟
     </span>
   
@@ -5065,6 +5065,694 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 
 
 
+<h2 id="从左往右的尝试模型1"><a href="#从左往右的尝试模型1" class="headerlink" title="从左往右的尝试模型1"></a>从左往右的尝试模型1</h2><h2 id="从左往右的尝试模型2"><a href="#从左往右的尝试模型2" class="headerlink" title="从左往右的尝试模型2"></a>从左往右的尝试模型2</h2><h2 id="范围上尝试的模型"><a href="#范围上尝试的模型" class="headerlink" title="范围上尝试的模型"></a>范围上尝试的模型</h2><h2 id="人过河问题"><a href="#人过河问题" class="headerlink" title="人过河问题"></a>人过河问题</h2><p>假设河里有鳄鱼，吃人后非常虚弱，虚弱后同时也会被其他鳄鱼吃，考虑人是否应该过河。假设鱼都绝顶聪明。</p>
+<p>当鱼 <strong>偶数</strong> 时，可以过河；</p>
+<p>鱼为 <strong>奇数</strong> 时，不能过河；</p>
+<h2 id="海盗分硬币问题思考"><a href="#海盗分硬币问题思考" class="headerlink" title="海盗分硬币问题思考"></a>海盗分硬币问题思考</h2><p>假设有 100 个硬币， ABCDE五人分并依次提议，当赞成数大于等于一半时，提议成功，否则会被杀死。</p>
+<p>思考：</p>
+<p>如果只有 <strong>E一个人</strong> ，一百个硬币全部归 E；</p>
+<p>如果只有 <strong>DE</strong> 两个人，只要E投反对票，D就会被杀死，所以100硬币全部归E；</p>
+<p>如果只有 <strong>CDE三个人</strong>， 只要C被投死，D也一定死，所以D为了存活只能投C，C获得100硬币；</p>
+<p>如果只有 <strong>BCDE四个人</strong>， B知道D、E没有硬币，所以给D、E各一个，自己98个，就能拉到票；</p>
+<p>当 <strong>ABCDE</strong> 时，A知道C没有，给c一个，知道D、E只有一个，只需要给一个人两个硬币就行，所以自己97个；</p>
+<h2 id="欧拉信封问题"><a href="#欧拉信封问题" class="headerlink" title="欧拉信封问题"></a>欧拉信封问题</h2><p>一个村子有N个人，每个人能寄出一封信，也能收到一封信，但不能是自己，问有多少种方法寄收。</p>
+<p>当只有 1 个人时，寄收方法为0；</p>
+<p>当有 2 个人时，寄收方法为1；</p>
+<p>当有 3 个人时，ABC，如果A寄给B，B只能寄给C，一种；A寄给C，C只能寄给B，一种；一共 2 种方法；</p>
+<p>当有 5 个人时，ABCDE，假设是B寄给E，如果E寄给B，剩下三个人玩欧拉信封问题，就有f(3)；假设E不寄给B，EB就可以看为一个整体，一条出度，一条入度，变成四个人玩欧拉信封问题，就有f(4)；</p>
+<p>B一共能寄给4种，所以 4 * ( f(3) + f(4) )</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218104738.png" srcset="/img/loading.gif" alt="N = 5"></p>
+<p>结果为 f(n) = (n - 1) * ( f(n - 2) + f(n - 1) )</p>
+<h2 id="N皇后"><a href="#N皇后" class="headerlink" title="N皇后"></a>N皇后</h2><p>N皇后问题是指在 *<em>N</em>N的棋盘上** 要 <strong>摆N个</strong> 皇后，<br>要求任何两个皇后不同行、不同列， 也不在同一条斜线上<br>给定一个整数n，返回n皇后的摆法有多少种。n=1，返回1<br>n=2或3，2皇后和3皇后问题无论怎么摆都不行，返回0<br>n=8，返回92</p>
+<p> <strong>每行放一个，不会存在行上攻击问题</strong> ，</p>
+<p> <strong>判断下一行与其它行斜线是否合法</strong>： 如果点分别为(a, b) (c, d) 判断 <strong>|a-c| == |b-d|</strong> </p>
+<p>Code1:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">num1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (n &lt; <span class="hljs-number">1</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+   &#125;
+   <span class="hljs-comment">// record[0] ?  record[1]  ?  record[2]</span>
+   <span class="hljs-keyword">int</span>[] record = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[n]; <span class="hljs-comment">// record[i] -&gt; i行的皇后，放在了第几列</span>
+   <span class="hljs-keyword">return</span> process1(<span class="hljs-number">0</span>, record, n);
+&#125;
+
+<span class="hljs-comment">// 潜台词：record[0..i-1]的皇后，任何两个皇后一定都不共行、不共列，不共斜线</span>
+<span class="hljs-comment">// 目前来到了第i行</span>
+<span class="hljs-comment">// record[0..i-1]表示之前的行，放了的皇后位置，index可以描述行数，value为列树</span>
+<span class="hljs-comment">// n代表整体一共有多少行</span>
+<span class="hljs-comment">// 返回值是，摆完所有的皇后，合理的摆法有多少种</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">process1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> i, <span class="hljs-keyword">int</span>[] record, <span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (i == n) &#123; <span class="hljs-comment">// 终止行，行数从0开始算</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+   &#125;
+   <span class="hljs-keyword">int</span> res = <span class="hljs-number">0</span>;
+   <span class="hljs-comment">// j为列</span>
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; n; j++) &#123; <span class="hljs-comment">// 当前行在i行，尝试i行所有的列  -&gt; j</span>
+
+      <span class="hljs-comment">// 判断当前i行的皇后，放在j列，会不会和之前(0..i-1)的皇后，不共行共列或者共斜线，</span>
+      <span class="hljs-comment">// 如果是，认为有效</span>
+      <span class="hljs-comment">// 如果不是，认为无效</span>
+      <span class="hljs-keyword">if</span> (isValid(record, i, j)) &#123;
+         <span class="hljs-comment">// record不用还原，数组可以直接覆盖</span>
+         record[i] = j;
+         res += process1(i + <span class="hljs-number">1</span>, record, n);
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> res;
+&#125;
+
+<span class="hljs-comment">// record[0..i-1]你需要看，record[i...]不需要看</span>
+<span class="hljs-comment">// 返回i行皇后，放在了j列，是否有效</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isValid</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] record, <span class="hljs-keyword">int</span> i, <span class="hljs-keyword">int</span> j)</span> </span>&#123;
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> k = <span class="hljs-number">0</span>; k &lt; i; k++) &#123; <span class="hljs-comment">// 之前的某个k行的皇后</span>
+      <span class="hljs-comment">// (k, record[k])  现在的 (i, j)</span>
+      <span class="hljs-keyword">if</span> (j == record[k] || Math.abs(record[k] - j) == Math.abs(i - k)) &#123;
+         <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+&#125;</code></pre>
+
+
+
+<blockquote>
+<p>可以进行 <strong>常数项</strong> 优化</p>
+</blockquote>
+<p>初始变量:</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218113922.png" srcset="/img/loading.gif" alt="初始变量"></p>
+<p>如果放第一个：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218114358.png" srcset="/img/loading.gif" alt="放第一个到0位置"></p>
+<p>如果放第一个到4位置：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218114723.png" srcset="/img/loading.gif" alt="放4位置"></p>
+<p> <strong>把三个limit 或运算，就是下一行能够放的位置</strong> </p>
+<p> 如果第一行放4位置，第二行放1位置，限制变成</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218135309.png" srcset="/img/loading.gif" alt="放第二个到1位置"></p>
+<p>左limit对比第一次，就是先在第一个位置放皇后，01010000后，左移一位，变成10100000</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218135531.png" srcset="/img/loading.gif" alt="放第二个后的右限制"></p>
+<p>右limit对比第一次，就是先在第一个位置放皇后，01000100后，右移一位，变成00100010；</p>
+<p>下次皇后位置，就为三个limit或起来：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218135851.png" srcset="/img/loading.gif" alt="下次可放位置"></p>
+<p>Code2:</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 请不要超过32皇后问题</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">num2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (n &lt; <span class="hljs-number">1</span> || n &gt; <span class="hljs-number">32</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+   &#125;
+   <span class="hljs-comment">// n皇后问题，limit后面有多少个1</span>
+   <span class="hljs-comment">// 比如8皇后问题，1左移8位 8个0， 减1后 8个1</span>
+   <span class="hljs-keyword">int</span> limit = n == <span class="hljs-number">32</span> ? -<span class="hljs-number">1</span> : (<span class="hljs-number">1</span> &lt;&lt; n) - <span class="hljs-number">1</span>;
+
+
+   <span class="hljs-keyword">return</span> process2(limit, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+&#125;
+
+<span class="hljs-comment">// limit划定问题规模 永远不变</span>
+
+<span class="hljs-comment">// colLim 列的限制，1的位置不能放皇后，0的位置可以</span>
+<span class="hljs-comment">// leftDiaLim 左斜线的限制，1的位置不能放皇后，0的位置可以</span>
+<span class="hljs-comment">// rightDiaLim 右斜线的限制，1的位置不能放皇后，0的位置可以</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">process2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> limit, </span></span>
+<span class="hljs-function"><span class="hljs-params">      <span class="hljs-keyword">int</span> colLim, </span></span>
+<span class="hljs-function"><span class="hljs-params">      <span class="hljs-keyword">int</span> leftDiaLim,</span></span>
+<span class="hljs-function"><span class="hljs-params">      <span class="hljs-keyword">int</span> rightDiaLim)</span> </span>&#123;
+
+   <span class="hljs-keyword">if</span> (colLim == limit) &#123; <span class="hljs-comment">// base case</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+   &#125;
+
+   <span class="hljs-comment">// 所有候选皇后的位置，都在pos上</span>
+   <span class="hljs-comment">// colLim | leftDiaLim | rightDiaLim -&gt; 总限制</span>
+   <span class="hljs-comment">// ~(colLim | leftDiaLim | rightDiaLim)右边为1可摆，但前面都是1</span>
+   <span class="hljs-comment">// limit &amp; 让左侧变为0，也可以让左移超边界的1限制变0，防止干扰</span>
+   <span class="hljs-keyword">int</span> pos = limit &amp; (~(colLim | leftDiaLim | rightDiaLim));
+   <span class="hljs-keyword">int</span> mostRightOne = <span class="hljs-number">0</span>;
+   <span class="hljs-keyword">int</span> res = <span class="hljs-number">0</span>;
+   <span class="hljs-comment">// pos为0 表示没有位置放了</span>
+   <span class="hljs-keyword">while</span> (pos != <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-comment">// 找最右边的1</span>
+      mostRightOne = pos &amp; (~pos + <span class="hljs-number">1</span>);
+      pos = pos - mostRightOne;
+      res += process2(limit, 
+            colLim | mostRightOne,
+            (leftDiaLim | mostRightOne) &lt;&lt; <span class="hljs-number">1</span>,
+            (rightDiaLim | mostRightOne) &gt;&gt;&gt; <span class="hljs-number">1</span>);
+   &#125;
+   <span class="hljs-keyword">return</span> res;
+&#125;</code></pre>
+
+<p>![如何找到能放皇后的位置，且代表1] (<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218140919.png" srcset="/img/loading.gif" alt="image-20201218140916545">)</p>
+<h3 id="如果要输出怎么办？"><a href="#如果要输出怎么办？" class="headerlink" title="如果要输出怎么办？"></a>如果要输出怎么办？</h3><p>leetcode原题：</p>
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> </span>&#123;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;List&lt;String&gt;&gt; solveNQueens(<span class="hljs-keyword">int</span> n) &#123;
+        <span class="hljs-keyword">char</span>[][] chess = <span class="hljs-keyword">new</span> <span class="hljs-keyword">char</span>[n][n];
+        <span class="hljs-comment">//初始化数组</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; n; j++)
+                chess[i][j] = <span class="hljs-string">&#x27;.&#x27;</span>;
+        List&lt;List&lt;String&gt;&gt; res = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+        solve(res, chess, <span class="hljs-number">0</span>);
+        <span class="hljs-keyword">return</span> res;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">solve</span><span class="hljs-params">(List&lt;List&lt;String&gt;&gt; res, <span class="hljs-keyword">char</span>[][] chess, <span class="hljs-keyword">int</span> row)</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (row == chess.length) &#123;
+            System.out.println(chess.length);
+            res.add(construct(chess));
+            <span class="hljs-keyword">return</span>;
+        &#125;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> col = <span class="hljs-number">0</span>; col &lt; chess.length; col++) &#123;
+            <span class="hljs-keyword">if</span> (valid(chess, row, col)) &#123;
+                chess[row][col] = <span class="hljs-string">&#x27;Q&#x27;</span>;
+                solve(res, chess, row + <span class="hljs-number">1</span>);
+                chess[row][col] = <span class="hljs-string">&#x27;.&#x27;</span>;
+            &#125;
+        &#125;
+    &#125;
+
+    <span class="hljs-comment">//row表示第几行，col表示第几列</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">valid</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[][] chess, <span class="hljs-keyword">int</span> row, <span class="hljs-keyword">int</span> col)</span> </span>&#123;
+        <span class="hljs-comment">//判断当前列有没有皇后,因为他是一行一行往下走的，</span>
+        <span class="hljs-comment">//我们只需要检查走过的行数即可，通俗一点就是判断当前</span>
+        <span class="hljs-comment">//坐标位置的上面有没有皇后</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; row; i++) &#123;
+            <span class="hljs-keyword">if</span> (chess[i][col] == <span class="hljs-string">&#x27;Q&#x27;</span>) &#123;
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+            &#125;
+        &#125;
+        <span class="hljs-comment">//判断当前坐标的右上角有没有皇后</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = row - <span class="hljs-number">1</span>, j = col + <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span> &amp;&amp; j &lt; chess.length; i--, j++) &#123;
+            <span class="hljs-keyword">if</span> (chess[i][j] == <span class="hljs-string">&#x27;Q&#x27;</span>) &#123;
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+            &#125;
+        &#125;
+        <span class="hljs-comment">//判断当前坐标的左上角有没有皇后</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = row - <span class="hljs-number">1</span>, j = col - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span> &amp;&amp; j &gt;= <span class="hljs-number">0</span>; i--, j--) &#123;
+            <span class="hljs-keyword">if</span> (chess[i][j] == <span class="hljs-string">&#x27;Q&#x27;</span>) &#123;
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+            &#125;
+        &#125;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+    &#125;
+
+    <span class="hljs-comment">//把数组转为list</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> List&lt;String&gt; <span class="hljs-title">construct</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[][] chess)</span> </span>&#123;
+        List&lt;String&gt; path = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; chess.length; i++) &#123;
+            path.add(<span class="hljs-keyword">new</span> String(chess[i]));
+        &#125;
+        <span class="hljs-keyword">return</span> path;
+    &#125;
+&#125;</code></pre>
+
+
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218151905.png" srcset="/img/loading.gif" alt="暴力递归存在的问题"></p>
+<p>有很多重复过程</p>
+<p>你可以用一个数组，记录数列前几项，类似于 <strong>缓存</strong> 。</p>
+<h2 id="暴力到动态规划-题目一"><a href="#暴力到动态规划-题目一" class="headerlink" title="暴力到动态规划(题目一)"></a>暴力到动态规划(题目一)</h2><p>假设有排成一行的N个位置，记为1<del>N，N 一定大于或等于 2<br>开始时机器人在其中的M位置上(M 一定是 1</del>N 中的一个)<br>如果机器人来到1位置，那么下一步只能往右来到2位置；<br>如果机器人来到N位置，那么下一步只能往左来到 N-1 位置；<br>如果机器人来到中间位置，那么下一步可以往左走或者往右走；<br>规定机器人必须走 K 步，最终能来到P位置(P也是1~N中的一个)的方法有多少种<br>给定四个参数 N、M、K、P，返回方法数。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219132935.png" srcset="/img/loading.gif" alt="流程"></p>
+<blockquote>
+<p>暴力代码</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">ways1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> M, <span class="hljs-keyword">int</span> K, <span class="hljs-keyword">int</span> P)</span> </span>&#123;
+   <span class="hljs-comment">// 参数无效直接返回0</span>
+   <span class="hljs-keyword">if</span> (N &lt; <span class="hljs-number">2</span> || K &lt; <span class="hljs-number">1</span> || M &lt; <span class="hljs-number">1</span> || M &gt; N || P &lt; <span class="hljs-number">1</span> || P &gt; N) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+   &#125;
+   <span class="hljs-comment">// 总共N个位置，从M点出发，还剩K步，返回最终能达到P的方法数</span>
+   <span class="hljs-keyword">return</span> walk(N, M, K, P);
+&#125;
+
+<span class="hljs-comment">// N : 位置为1 ~ N，固定参数</span>
+<span class="hljs-comment">// cur : 当前在cur位置，可变参数</span>
+<span class="hljs-comment">// rest : 还剩res步没有走，可变参数</span>
+<span class="hljs-comment">// P : 最终目标位置是P，固定参数</span>
+<span class="hljs-comment">// 该函数的含义：只能在1~N这些位置上移动，当前在cur位置，走完rest步之后，停在P位置的方法数作为返回值返回</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">walk</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> cur, <span class="hljs-keyword">int</span> rest, <span class="hljs-keyword">int</span> P)</span> </span>&#123;
+   <span class="hljs-comment">// 如果没有剩余步数了，当前的cur位置就是最后的位置</span>
+   <span class="hljs-comment">// 如果最后的位置停在P上，那么之前做的移动是有效的</span>
+   <span class="hljs-comment">// 如果最后的位置没在P上，那么之前做的移动是无效的</span>
+   <span class="hljs-keyword">if</span> (rest == <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-keyword">return</span> cur == P ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+   &#125;
+   <span class="hljs-comment">// 如果还有rest步要走，而当前的cur位置在1位置上，那么当前这步只能从1走向2</span>
+   <span class="hljs-comment">// 后续的过程就是，来到2位置上，还剩rest-1步要走</span>
+   <span class="hljs-keyword">if</span> (cur == <span class="hljs-number">1</span>) &#123;
+      <span class="hljs-keyword">return</span> walk(N, <span class="hljs-number">2</span>, rest - <span class="hljs-number">1</span>, P);
+   &#125;
+   <span class="hljs-comment">// 如果还有rest步要走，而当前的cur位置在N位置上，那么当前这步只能从N走向N-1</span>
+   <span class="hljs-comment">// 后续的过程就是，来到N-1位置上，还剩rest-1步要走</span>
+   <span class="hljs-keyword">if</span> (cur == N) &#123;
+      <span class="hljs-keyword">return</span> walk(N, N - <span class="hljs-number">1</span>, rest - <span class="hljs-number">1</span>, P);
+   &#125;
+   <span class="hljs-comment">// 如果还有rest步要走，而当前的cur位置在中间位置上，那么当前这步可以走向左，也可以走向右</span>
+   <span class="hljs-comment">// 走向左之后，后续的过程就是，来到cur-1位置上，还剩rest-1步要走</span>
+   <span class="hljs-comment">// 走向右之后，后续的过程就是，来到cur+1位置上，还剩rest-1步要走</span>
+   <span class="hljs-comment">// 走向左、走向右是截然不同的方法，所以总方法数要都算上</span>
+   <span class="hljs-keyword">return</span> walk(N, cur + <span class="hljs-number">1</span>, rest - <span class="hljs-number">1</span>, P) + walk(N, cur - <span class="hljs-number">1</span>, rest - <span class="hljs-number">1</span>, P);
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219150216.png" srcset="/img/loading.gif" alt="有重复过程"></p>
+<blockquote>
+<p>缓存式(记忆化搜索) 动态规划代码</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">waysCache</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> M, <span class="hljs-keyword">int</span> K, <span class="hljs-keyword">int</span> P)</span> </span>&#123;
+
+   <span class="hljs-keyword">if</span> (N &lt; <span class="hljs-number">2</span> || K &lt; <span class="hljs-number">1</span> || M &lt; <span class="hljs-number">1</span> || M &gt; N || P &lt; <span class="hljs-number">1</span> || P &gt; N) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+   &#125;
+   <span class="hljs-keyword">int</span>[][] dp = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[N + <span class="hljs-number">1</span>][K + <span class="hljs-number">1</span>];
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> row = <span class="hljs-number">0</span>; row &lt;= N; row++)&#123;
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> col = <span class="hljs-number">0</span>; col &lt;= N; col++)&#123;
+         dp[row][col] = -<span class="hljs-number">1</span>;
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> walkCache(N, M, K, P, dp);
+&#125;
+
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">walkCache</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> cur, <span class="hljs-keyword">int</span> rest, <span class="hljs-keyword">int</span> P, <span class="hljs-keyword">int</span>[][] dp)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (dp[cur][rest] != -<span class="hljs-number">1</span>)&#123;
+      <span class="hljs-keyword">return</span> d[cur][rest];
+   &#125;
+   
+   <span class="hljs-keyword">if</span> (rest == <span class="hljs-number">0</span>) &#123;
+      dp[cur][rest] = cur == P ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+      <span class="hljs-keyword">return</span> dp[cur][rest];
+   &#125;
+   <span class="hljs-keyword">if</span> (cur == <span class="hljs-number">1</span>) &#123;
+      dp[cur][rest] = walkCache(N, <span class="hljs-number">2</span>, rest - <span class="hljs-number">1</span>, P, dp);
+      <span class="hljs-keyword">return</span> dp[cur][rest];
+   &#125;
+   <span class="hljs-keyword">if</span> (cur == N) &#123;
+      dp[cur][rest] = walkCache(N, N - <span class="hljs-number">1</span>, rest - <span class="hljs-number">1</span>, P, dp);
+      <span class="hljs-keyword">return</span> dp[cur][rest]
+   &#125;
+   dp[cur][rest] =  walkCache(N, cur + <span class="hljs-number">1</span>, rest - <span class="hljs-number">1</span>, P, dp) + walkCache(N, cur - <span class="hljs-number">1</span>, rest - <span class="hljs-number">1</span>, P, dp);
+   <span class="hljs-keyword">return</span> dp[cur][rest];
+&#125;</code></pre>
+
+<blockquote>
+<p>依赖关系猜想</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219152445.png" srcset="/img/loading.gif" alt="依赖过程"></p>
+<p>可见每个普通位置都依赖左上和左下，由下方暴力代码猜想而来：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219152543.png" srcset="/img/loading.gif" alt="暴力代码依赖性"></p>
+<p>最后直接靠 <strong>依赖</strong> 就能得到结果：</p>
+<p>![依赖]（<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219152752.png" srcset="/img/loading.gif" alt="image-20201219152743937"></p>
+<h1 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h1><blockquote>
+<p>暴力递归中有重复运算过程，才建议改为动态规划</p>
+</blockquote>
+<h2 id="什么暴力递归可以继续优化？"><a href="#什么暴力递归可以继续优化？" class="headerlink" title="什么暴力递归可以继续优化？"></a>什么暴力递归可以继续优化？</h2><p>有重复调用同一个子问题的解，这种递归可以优化<br>如果每一个子问题都是不同的解，无法优化也不用优化</p>
+<h2 id="暴力递归和动态规划的关系"><a href="#暴力递归和动态规划的关系" class="headerlink" title="暴力递归和动态规划的关系"></a>暴力递归和动态规划的关系</h2><p>某一个暴力递归，有解的重复调用，就可以把这个暴力递归优化成动态规划</p>
+<p>任何动态规划问题，都一定对应着某一个有解的重复调用的暴力递归</p>
+<p>但不是所有的暴力递归，都一定对应着动态规划</p>
+<h2 id="面试题和动态规划的关系"><a href="#面试题和动态规划的关系" class="headerlink" title="面试题和动态规划的关系"></a>面试题和动态规划的关系</h2><p>解决一个问题，可能有很多尝试方法</p>
+<p>可能在很多尝试方法中，又有若干个尝试方法有动态规划的方式</p>
+<p>一个问题   可能有   若干种动态规划的解法</p>
+<h2 id="如何找到某个问题的动态规划方式？"><a href="#如何找到某个问题的动态规划方式？" class="headerlink" title="如何找到某个问题的动态规划方式？"></a>如何找到某个问题的动态规划方式？</h2><p>1）设计暴力递归：重要原则+4种常见尝试模型！重点！</p>
+<p>2）分析有没有重复解：套路解决</p>
+<p>3）用记忆化搜索 -&gt; 用严格表结构实现动态规划：套路解决</p>
+<p>4）看看能否继续优化：套路解决</p>
+<h2 id="面试中设计暴力递归过程的原则"><a href="#面试中设计暴力递归过程的原则" class="headerlink" title="面试中设计暴力递归过程的原则"></a>面试中设计暴力递归过程的原则</h2><p>1）每一个可变参数的类型，一定不要比int类型更加复杂</p>
+<p>​   一个int可变参数，dp一维表；</p>
+<p>​   两个int可变参数，dp二维表；</p>
+<p>​   ……</p>
+<p>2）原则1）可以违反，让类型突破到一维线性结构，那必须是单一可变参数（如贴纸拼接问题用到字符串）</p>
+<p>3）如果发现原则1）被违反，但不违反原则2），只需要做到记忆化搜索即可（如贴纸拼接问题不写dp）</p>
+<p>4）可变参数的个数，能少则少</p>
+<h2 id="常见的4种尝试模型"><a href="#常见的4种尝试模型" class="headerlink" title="常见的4种尝试模型"></a>常见的4种尝试模型</h2><p>1）从左往右的尝试模型</p>
+<p>2）范围上的尝试模型</p>
+<p>3）多样本位置全对应的尝试模型</p>
+<p>4）寻找业务限制的尝试模型</p>
+<h2 id="暴力递归到动态规划的套路"><a href="#暴力递归到动态规划的套路" class="headerlink" title="暴力递归到动态规划的套路"></a>暴力递归到动态规划的套路</h2><p>1）你已经有了一个不违反原则的暴力递归，而且的确存在解的重复调用<br>2）找到哪些参数的变化会影响返回值，对每一个列出变化范围<br>3）参数间的所有的组合数量，意味着表大小<br>4）记忆化搜索的方法就是傻缓存，非常容易得到<br>5）规定好严格表的大小，分析位置的依赖顺序，然后从基础填写到最终解<br>6）对于有枚举行为的决策过程，进一步优化</p>
+<h2 id="知道了面试中设计暴力递归过程的原则，然后呢？"><a href="#知道了面试中设计暴力递归过程的原则，然后呢？" class="headerlink" title="知道了面试中设计暴力递归过程的原则，然后呢？"></a>知道了面试中设计暴力递归过程的原则，然后呢？</h2><p>一定要逼自己找到不违反原则情况下的暴力尝试！</p>
+<p>如果你找到的暴力尝试，不符合原则，马上舍弃！找新的！</p>
+<p>如果某个题目突破了设计原则，一定极难极难，面试中出现概率低于5%！</p>
+<h2 id="背包问题"><a href="#背包问题" class="headerlink" title="背包问题"></a>背包问题</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220141419.png" srcset="/img/loading.gif" alt="暴力代码"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220141827.png" srcset="/img/loading.gif" alt="例子"></p>
+<p>选1,2不选3和选3不选1,2最后都会再算一遍f(3, 17)</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220142425.png" srcset="/img/loading.gif" alt="初始位置"></p>
+<p>函数调用(0, bag) 即(0, restMax)</p>
+<p>由暴力递归得 rest&lt;0,无效；index == w.len, 为0</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220143712.png" srcset="/img/loading.gif" alt="更改过程"></p>
+<p>code:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">dpWay</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] w, <span class="hljs-keyword">int</span>[] v, <span class="hljs-keyword">int</span> bag)</span> </span>&#123;
+   <span class="hljs-keyword">int</span> N = w.length;
+   <span class="hljs-keyword">int</span>[][] dp = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[N + <span class="hljs-number">1</span>][bag + <span class="hljs-number">1</span>];
+   <span class="hljs-comment">// dp[N][...] = 0,本来初始化就为0</span>
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> index = N - <span class="hljs-number">1</span>; index &gt;= <span class="hljs-number">0</span>; index--) &#123;
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> rest = <span class="hljs-number">1</span>; rest &lt;= bag; rest++) &#123;
+         dp[index][rest] = dp[index + <span class="hljs-number">1</span>][rest];
+         <span class="hljs-keyword">if</span> (rest &gt;= w[index]) &#123;
+            dp[index][rest] = Math.max(dp[index][rest], v[index] + dp[index + <span class="hljs-number">1</span>][rest - w[index]]);
+         &#125;
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> dp[<span class="hljs-number">0</span>][bag];
+&#125;</code></pre>
+
+
+
+<h2 id="数字转化字符串问题"><a href="#数字转化字符串问题" class="headerlink" title="数字转化字符串问题"></a>数字转化字符串问题</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220145024.png" srcset="/img/loading.gif" alt="原code"></p>
+<p>搭框架</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220145312.png" srcset="/img/loading.gif" alt="框架"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220145223.png" srcset="/img/loading.gif" alt="return"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220145438.png" srcset="/img/loading.gif" alt="填"></p>
+<p>code:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">dpWays</span><span class="hljs-params">(String s)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (s == <span class="hljs-keyword">null</span> || s.length() == <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+   &#125;
+   <span class="hljs-keyword">char</span>[] str = s.toCharArray();
+   <span class="hljs-keyword">int</span> N = str.length;
+   <span class="hljs-keyword">int</span>[] dp = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[N + <span class="hljs-number">1</span>];
+   dp[N] = <span class="hljs-number">1</span>;
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = N - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;
+      <span class="hljs-keyword">if</span> (str[i] == <span class="hljs-string">&#x27;0&#x27;</span>) &#123;
+         dp[i] = <span class="hljs-number">0</span>;
+      &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (str[i] == <span class="hljs-string">&#x27;1&#x27;</span>) &#123;
+         dp[i] = dp[i + <span class="hljs-number">1</span>];
+         <span class="hljs-keyword">if</span> (i + <span class="hljs-number">1</span> &lt; N) &#123;
+            dp[i] += dp[i + <span class="hljs-number">2</span>];
+         &#125;
+      &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (str[i] == <span class="hljs-string">&#x27;2&#x27;</span>) &#123;
+         dp[i] = dp[i + <span class="hljs-number">1</span>]; 
+         <span class="hljs-keyword">if</span> (i + <span class="hljs-number">1</span> &lt; str.length &amp;&amp; (str[i + <span class="hljs-number">1</span>] &gt;= <span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; str[i + <span class="hljs-number">1</span>] &lt;= <span class="hljs-string">&#x27;6&#x27;</span>)) &#123;
+            dp[i] += dp[i + <span class="hljs-number">2</span>];
+         &#125;
+      &#125; <span class="hljs-keyword">else</span> &#123;
+         dp[i] = dp[i + <span class="hljs-number">1</span>];
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> dp[<span class="hljs-number">0</span>];
+&#125;</code></pre>
+
+
+
+<h2 id="AB取卡牌问题"><a href="#AB取卡牌问题" class="headerlink" title="AB取卡牌问题"></a>AB取卡牌问题</h2><p>原code:</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220150438.png" srcset="/img/loading.gif" alt="image-20201220150436084"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220151842.png" srcset="/img/loading.gif" alt="由暴力递归得"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220152133.png" srcset="/img/loading.gif" alt="由暴力递归得到关系图"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220152246.png" srcset="/img/loading.gif" alt="依赖推出"></p>
+<p>code:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">windp</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length == <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+   &#125;
+   <span class="hljs-keyword">int</span> N = arr.length;
+   <span class="hljs-keyword">int</span>[][] f = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[N][N];
+   <span class="hljs-keyword">int</span>[][] s = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[N][N];
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; N; i++) &#123;
+      f[i][i] = arr[i];
+   &#125;
+   <span class="hljs-comment">// 0,0 右下方移动</span>
+   <span class="hljs-comment">// 0,1</span>
+   <span class="hljs-comment">// 0,2</span>
+   <span class="hljs-comment">// 0,N-1</span>
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> col = <span class="hljs-number">1</span>; col &lt; N; col++) &#123;
+      <span class="hljs-comment">// 对角线出发位置(0,col)</span>
+      <span class="hljs-keyword">int</span> L = <span class="hljs-number">0</span>;
+      <span class="hljs-keyword">int</span> R = col;
+      <span class="hljs-keyword">while</span> (L &lt; N &amp;&amp; R &lt; N) &#123;
+         f[L][R] = Math.max(arr[L] + s[L + <span class="hljs-number">1</span>][R], arr[R] + s[L][R - <span class="hljs-number">1</span>]);
+         s[L][R] = Math.min(f[L + <span class="hljs-number">1</span>][R], f[L][R - <span class="hljs-number">1</span>]);
+         L++;
+         R++;
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> Math.max(f[<span class="hljs-number">0</span>][N - <span class="hljs-number">1</span>], s[<span class="hljs-number">0</span>][N - <span class="hljs-number">1</span>]);
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220153643.png" srcset="/img/loading.gif" alt="动态规划"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220154023.png" srcset="/img/loading.gif" alt="动态规划时间复杂度"></p>
+<blockquote>
+<p>对于记忆化搜索：</p>
+</blockquote>
+<p>如果一个问题依赖的子状态是有限个，不用枚举，时间复杂度和经典动态规划是一致的。</p>
+<p>如果有枚举问题，应该改为经典动态规划。</p>
+<h2 id="货币数组问题"><a href="#货币数组问题" class="headerlink" title="货币数组问题"></a>货币数组问题</h2><p>一个arr中都是正数，无重复值，arr中对应货币面值，给你一个num，用arr中组成num的方法数。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220154742.png" srcset="/img/loading.gif" alt="问题"></p>
+<p>递归定义：f(i, rest) 表示arr[i]之后的面值随意使用，搞定rest</p>
+<pre><code class="hljs java"><span class="hljs-comment">// arr中都是正数且无重复值，返回组成aim的方法数</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">ways</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> aim)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length == <span class="hljs-number">0</span> || aim &lt; <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+   &#125;
+   <span class="hljs-keyword">return</span> process(arr, <span class="hljs-number">0</span>, aim);
+&#125;
+
+<span class="hljs-comment">// 如果自由使用arr[index...]的面值，组成rest这么多钱，返回方法数 （1 , 6）</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">process</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> index, <span class="hljs-keyword">int</span> rest)</span> </span>&#123;
+   <span class="hljs-comment">// 下面的if在process中保证了rest不会小于0</span>
+  
+   <span class="hljs-comment">//if (rest &lt;0)&#123;</span>
+   <span class="hljs-comment">//   return 0;</span>
+   <span class="hljs-comment">//&#125;</span>
+   <span class="hljs-keyword">if</span> (index == arr.length) &#123; <span class="hljs-comment">// 无面值的时候</span>
+      <span class="hljs-keyword">return</span> rest == <span class="hljs-number">0</span> ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+   &#125;
+   <span class="hljs-comment">// 有面值的时候</span>
+   <span class="hljs-keyword">int</span> ways = <span class="hljs-number">0</span>;
+   <span class="hljs-comment">// arr[index] 当钱面值</span>
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> zhang = <span class="hljs-number">0</span>; zhang * arr[index] &lt;= rest; zhang++) &#123;
+      ways += process(arr, index + <span class="hljs-number">1</span>, rest - zhang * arr[index]);
+   &#125;
+   <span class="hljs-keyword">return</span> ways;
+&#125;</code></pre>
+
+
+
+<blockquote>
+<p>记忆划搜索</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220164211.png" srcset="/img/loading.gif" alt="code"></p>
+<blockquote>
+<p>经典动态规划</p>
+</blockquote>
+<p>普通由记忆化搜索改的动态规划：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220172428.png" srcset="/img/loading.gif" alt="普通方法"></p>
+<p> <strong>有枚举行为</strong> </p>
+<p>再次查看依赖关系：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220173132.png" srcset="/img/loading.gif" alt="依赖关系"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220173312.png" srcset="/img/loading.gif" alt="依赖"></p>
+<p>星号值依赖b、c…. </p>
+<p>问号值依赖a、b、c…..</p>
+<p>但求问好值，要先求星号值，优化后就是当前 = 左边 加 下面</p>
+<p>优化的dp：</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">waysdp</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> aim)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length == <span class="hljs-number">0</span> || aim &lt; <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+   &#125;
+   <span class="hljs-keyword">int</span> N = arr.length;
+   <span class="hljs-keyword">int</span>[][] dp = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[N + <span class="hljs-number">1</span>][aim + <span class="hljs-number">1</span>];
+   dp[N][<span class="hljs-number">0</span>] = <span class="hljs-number">1</span>;
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = N - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123; <span class="hljs-comment">// 大顺序 从下往上</span>
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> rest = <span class="hljs-number">0</span>; rest &lt;= aim; rest++) &#123;
+         dp[i][rest] = dp[i + <span class="hljs-number">1</span>][rest];
+         <span class="hljs-keyword">if</span> (rest - arr[i] &gt;= <span class="hljs-number">0</span>) &#123;
+            <span class="hljs-comment">// 加左 加下</span>
+            dp[i][rest] += dp[i][rest - arr[i]];
+         &#125;
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> dp[<span class="hljs-number">0</span>][aim];
+&#125;</code></pre>
+
+
+
+<p>如果所有钞票都是百位数，建议记忆化搜索，因为dp是细粒度的记录（比如上述rest循环中，rest &lt;= aim 对每个都遍历）。</p>
+<h2 id="贴纸字符串问题-题目二"><a href="#贴纸字符串问题-题目二" class="headerlink" title="贴纸字符串问题(题目二)"></a>贴纸字符串问题(题目二)</h2><p>给定一个字符串str，给定一个字符串类型的数组arr。<br>arr里的每一个字符串，代表一张贴纸，你可以把单个字符剪开使用，目的是拼出str来。<br>返回需要至少多少张贴纸可以完成这个任务。<br>例子：str= “babac”，arr = {“ba”,”c”,”abcd”}<br>至少需要两张贴纸”ba”和”abcd”，因为使用这两张贴纸，把每一个字符单独剪开，含有2个a、2个b、1个c。是可以拼出str的。所以返回2。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221085330.png" srcset="/img/loading.gif" alt="暴力枚举"></p>
+<blockquote>
+<p>解题思路一</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221085853.png" srcset="/img/loading.gif" alt="暴力法"></p>
+<p>还需要 <strong>过滤</strong> 判断字符是否全在arr，也要 <strong>过滤</strong> 没有出现在rest中的字符，被arr选中，无限递归。</p>
+<p>用二维数组存储贴纸</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221090644.png" srcset="/img/loading.gif" alt="存储格式"></p>
+<p>“baabk”代表第一个贴纸，则arr[0]表示完整字符串，index0表示a出现的次数。</p>
+<p>Code1:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">minStickers1</span><span class="hljs-params">(String[] stickers, String target)</span> </span>&#123;
+   <span class="hljs-keyword">int</span> n = stickers.length;
+   <span class="hljs-keyword">int</span>[][] map = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[n][<span class="hljs-number">26</span>];
+
+   <span class="hljs-comment">// 傻缓存</span>
+   HashMap&lt;String, Integer&gt; dp = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+
+   <span class="hljs-comment">// 生成每张贴纸的词频统计</span>
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) &#123;
+      <span class="hljs-keyword">char</span>[] str = stickers[i].toCharArray();
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">char</span> c : str) &#123;
+         map[i][c - <span class="hljs-string">&#x27;a&#x27;</span>]++;
+      &#125;
+   &#125;
+   dp.put(<span class="hljs-string">&quot;&quot;</span>, <span class="hljs-number">0</span>);
+   <span class="hljs-keyword">return</span> process1(dp, map, target);
+&#125;
+
+<span class="hljs-comment">// dp 傻缓存，如果t已经算过了，直接返回dp中的值</span>
+<span class="hljs-comment">// t 剩余的目标</span>
+<span class="hljs-comment">// 0..N每一个字符串所含字符的词频统计</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">process1</span><span class="hljs-params">(HashMap&lt;String, Integer&gt; dp, <span class="hljs-keyword">int</span>[][] map, String rest)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (dp.containsKey(rest)) &#123;
+      <span class="hljs-keyword">return</span> dp.get(rest);
+   &#125;
+   <span class="hljs-keyword">int</span> ans = Integer.MAX_VALUE; <span class="hljs-comment">// 使用贴纸数</span>
+   <span class="hljs-keyword">int</span> n = map.length; <span class="hljs-comment">// n种贴纸</span>
+
+   <span class="hljs-comment">// rest词频统计</span>
+   <span class="hljs-keyword">int</span>[] tmap = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[<span class="hljs-number">26</span>];
+   <span class="hljs-keyword">char</span>[] target = rest.toCharArray();
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">char</span> c : target) &#123;
+      tmap[c - <span class="hljs-string">&#x27;a&#x27;</span>]++;
+   &#125;
+
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) &#123;
+
+      <span class="hljs-comment">// 找到第一个共同字符词频</span>
+      <span class="hljs-keyword">if</span> (map[i][target[<span class="hljs-number">0</span>] - <span class="hljs-string">&#x27;a&#x27;</span>] == <span class="hljs-number">0</span>) &#123;
+         <span class="hljs-keyword">continue</span>;
+      &#125;
+
+      StringBuilder sb = <span class="hljs-keyword">new</span> StringBuilder();
+      <span class="hljs-comment">// 来到第i个贴纸，j枚举从贴纸里面的变化</span>
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">26</span>; j++) &#123;
+         <span class="hljs-comment">// 关于j这个字符，target词频数目大于0</span>
+         <span class="hljs-keyword">if</span> (tmap[j] &gt; <span class="hljs-number">0</span>) &#123; <span class="hljs-comment">// j这个字符是target需要的</span>
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> k = <span class="hljs-number">0</span>; k &lt; Math.max(<span class="hljs-number">0</span>, tmap[j] - map[i][j]); k++) &#123;
+               <span class="hljs-comment">// 剪掉贴纸该字符的词频，还剩余多少，存到StringBuilder里面</span>
+               sb.append((<span class="hljs-keyword">char</span>) (<span class="hljs-string">&#x27;a&#x27;</span> + j));
+            &#125;
+         &#125;
+      &#125;
+      String s = sb.toString();
+      <span class="hljs-keyword">int</span> tmp = process1(dp, map, s);
+      <span class="hljs-keyword">if</span> (tmp != -<span class="hljs-number">1</span>) &#123;
+         ans = Math.min(ans, <span class="hljs-number">1</span> + tmp);
+      &#125;
+   &#125;
+   dp.put(rest, ans == Integer.MAX_VALUE ? -<span class="hljs-number">1</span> : ans);
+   <span class="hljs-keyword">return</span> dp.get(rest);
+&#125;</code></pre>
+
+
+
+<blockquote>
+<p>解题思路二</p>
+</blockquote>
+<p>每次选择不选择全部，先把第一个贴纸用N张，再第二张….类似于货币数组问题</p>
+<p> <strong>不推荐</strong> 可变参数多，可变参数少的， <strong>缓存</strong> 命中率高。</p>
+<h2 id="两个字符串的最长公共子序列问题（第三种模型）"><a href="#两个字符串的最长公共子序列问题（第三种模型）" class="headerlink" title="两个字符串的最长公共子序列问题（第三种模型）"></a>两个字符串的最长公共子序列问题（第三种模型）</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221121850.png" srcset="/img/loading.gif" alt="猜想"></p>
+<p>我们首先认为 dp[i] [j]为str1[0 ~ i]和str2[0 ~ j]的最长公共子序列</p>
+<p>最后求 <strong>右下角</strong></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221123945.png" srcset="/img/loading.gif" alt="求解过程"></p>
+<p>取str1的第一个和后面依次对比</p>
+<p>更改测试用例str2为 12dea3f</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221124306.png" srcset="/img/loading.gif" alt="结果"></p>
+<p>因为str1只拿出一个字符，只要出现了a，后面全是 1</p>
+<p>再改第一列</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221124459.png" srcset="/img/loading.gif" alt="第一列"></p>
+<blockquote>
+<p>第一种情况</p>
+</blockquote>
+<p>既不以str1[i]结尾也不以str2[j]结尾，与i，j无关</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221124659.png" srcset="/img/loading.gif" alt="可能1"></p>
+<p>就是str[i-1] [j-1], 来自于左上角。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221125134.png" srcset="/img/loading.gif" alt="对应"></p>
+<p> <strong>dp[i - 1] [j - 1]</strong> </p>
+<blockquote>
+<p>第二种情况</p>
+</blockquote>
+<p>以str1[i]结尾但不以str2[j]结尾</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221125249.png" srcset="/img/loading.gif" alt="例子"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221125350.png" srcset="/img/loading.gif" alt="结果"></p>
+<p> <strong>dp[i] [j - 1]</strong></p>
+<blockquote>
+<p>第三种情况</p>
+</blockquote>
+<p>不以str1[i]结尾但以str2[j]结尾</p>
+<p> <strong>dp[i - 1] [j ]</strong></p>
+<blockquote>
+<p>第四种情况</p>
+</blockquote>
+<p>以str1[i]结尾又以str2[j]结尾</p>
+<p>可能条件只有 str1[i] == str2[j]</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221125724.png" srcset="/img/loading.gif" alt="结果"></p>
+<p> <strong>1 + dp[i - 1] [j - 1]</strong></p>
+<p>code:</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">lcse</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[] str1, <span class="hljs-keyword">char</span>[] str2)</span> </span>&#123;
+   <span class="hljs-keyword">int</span>[][] dp = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[str1.length][str2.length];
+
+   <span class="hljs-comment">// 第一个字符是否相等</span>
+   dp[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] = str1[<span class="hljs-number">0</span>] == str2[<span class="hljs-number">0</span>] ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+
+   <span class="hljs-comment">// 做第0列</span>
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; str1.length; i++) &#123;
+      dp[i][<span class="hljs-number">0</span>] = Math.max(dp[i - <span class="hljs-number">1</span>][<span class="hljs-number">0</span>], str1[i] == str2[<span class="hljs-number">0</span>] ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>);
+   &#125;
+   <span class="hljs-comment">// 做第0行</span>
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">1</span>; j &lt; str2.length; j++) &#123;
+      dp[<span class="hljs-number">0</span>][j] = Math.max(dp[<span class="hljs-number">0</span>][j - <span class="hljs-number">1</span>], str1[<span class="hljs-number">0</span>] == str2[j] ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>);
+   &#125;
+
+   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; str1.length; i++) &#123;
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">1</span>; j &lt; str2.length; j++) &#123;
+         dp[i][j] = Math.max(dp[i - <span class="hljs-number">1</span>][j], dp[i][j - <span class="hljs-number">1</span>]);
+         <span class="hljs-comment">// 最后在i也在j</span>
+         <span class="hljs-keyword">if</span> (str1[i] == str2[j]) &#123;
+            dp[i][j] = Math.max(dp[i][j], dp[i - <span class="hljs-number">1</span>][j - <span class="hljs-number">1</span>] + <span class="hljs-number">1</span>);
+            <span class="hljs-comment">// 既不在i也不在j</span>
+         &#125;<span class="hljs-keyword">else</span> &#123;
+            dp[i][j] = Math.max(dp[i][j], dp[i - <span class="hljs-number">1</span>][j - <span class="hljs-number">1</span>]);
+         &#125;
+      &#125;
+   &#125;
+   <span class="hljs-keyword">return</span> dp[str1.length - <span class="hljs-number">1</span>][str2.length - <span class="hljs-number">1</span>];
+&#125;</code></pre>
+
+
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221130629.png" srcset="/img/loading.gif" alt="结果"></p>
+<p>可能性2一定比1大，所以else是可以取出的</p>
+<h2 id="咖啡刷杯子问题（第四种模型）"><a href="#咖啡刷杯子问题（第四种模型）" class="headerlink" title="咖啡刷杯子问题（第四种模型）"></a>咖啡刷杯子问题（第四种模型）</h2><p>给定一个数组，代表每个人喝完咖啡准备刷杯子的时间<br>只有一台咖啡机，一次只能洗一个杯子，时间耗费a，洗完才能洗下一杯<br>每个咖啡杯也可以自己挥发干净，时间耗费b，咖啡杯可以并行挥发<br>返回让所有咖啡杯变干净的最早完成时间<br>三个参数：int[] arr、int a、int b</p>
+<pre><code class="hljs java"><span class="hljs-comment">// a 洗咖啡机所需时间</span>
+<span class="hljs-comment">// b 自然挥发时间</span>
+<span class="hljs-comment">// drinks每一个员工喝完咖啡时间</span>
+<span class="hljs-comment">// drinks[0...index - 1] 已经洗完</span>
+<span class="hljs-comment">// washLine机器什么时候可用</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">process</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] drinks, <span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b, <span class="hljs-keyword">int</span> index, <span class="hljs-keyword">int</span> washLine)</span> </span>&#123;
+   <span class="hljs-keyword">if</span> (index == drinks.length - <span class="hljs-number">1</span>) &#123;
+      <span class="hljs-keyword">return</span> Math.min(
+            <span class="hljs-comment">// （咖啡机有空时间点 和 我喝完时间点） 的最大值 + 机器洗完</span>
+            Math.max(washLine, drinks[index]) + a,
+            <span class="hljs-comment">// 喝完时间点 + 挥发完时间</span>
+            drinks[index] + b);
+   &#125;
+
+   <span class="hljs-comment">// wash是我当前的咖啡杯，洗完的时间</span>
+   <span class="hljs-keyword">int</span> wash = Math.max(washLine, drinks[index]) + a;
+   <span class="hljs-comment">// 让index + 1以及后面所有咖啡杯变干净的最早时间</span>
+   <span class="hljs-keyword">int</span> next1 = process(drinks, a, b, index + <span class="hljs-number">1</span>, wash);
+   <span class="hljs-comment">// 既要自己洗完 也要其他都洗完 才能整体都完</span>
+   <span class="hljs-keyword">int</span> p1 = Math.max(wash, next1);
+
+
+   <span class="hljs-comment">// 去挥发</span>
+   <span class="hljs-keyword">int</span> dry = drinks[index] + b;
+   <span class="hljs-keyword">int</span> next2 = process(drinks, a, b, index + <span class="hljs-number">1</span>, washLine);
+   <span class="hljs-keyword">int</span> p2 = Math.max(dry, next2);
+
+
+   <span class="hljs-keyword">return</span> Math.min(p1, p2);
+&#125;</code></pre>
+
+<p>改为动态规划：</p>
+<p>int washLine寻求最夸张的值（全洗）</p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221144225.png" srcset="/img/loading.gif" alt="初始化dp" style="zoom:50%;" />
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221144423.png" srcset="/img/loading.gif" alt="定数"></p>
 
             </div>
             <hr>
