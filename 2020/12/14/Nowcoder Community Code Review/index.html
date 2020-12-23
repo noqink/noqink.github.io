@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      12.1k 字
+      17.6k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      202
+      293
        分钟
     </span>
   
@@ -3045,7 +3045,1335 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre>
 </ol>
 <h3 id="业务流程图-3"><a href="#业务流程图-3" class="headerlink" title="业务流程图"></a>业务流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201222183920.png" srcset="/img/loading.gif" alt="流程图"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201222184215.png" srcset="/img/loading.gif" alt="redisKey"></p>
-<h1 id="缓存与消息队列模块"><a href="#缓存与消息队列模块" class="headerlink" title="缓存与消息队列模块"></a>缓存与消息队列模块</h1><h1 id="ES与Security模块"><a href="#ES与Security模块" class="headerlink" title="ES与Security模块"></a>ES与Security模块</h1><h1 id="额外功能丰富模块"><a href="#额外功能丰富模块" class="headerlink" title="额外功能丰富模块"></a>额外功能丰富模块</h1><h1 id="优化与压力测试模块"><a href="#优化与压力测试模块" class="headerlink" title="优化与压力测试模块"></a>优化与压力测试模块</h1><h1 id="ES与Security模块-1"><a href="#ES与Security模块-1" class="headerlink" title="ES与Security模块"></a>ES与Security模块</h1><h1 id="额外功能丰富模块-1"><a href="#额外功能丰富模块-1" class="headerlink" title="额外功能丰富模块"></a>额外功能丰富模块</h1><h1 id="优化与压力测试模块-1"><a href="#优化与压力测试模块-1" class="headerlink" title="优化与压力测试模块"></a>优化与压力测试模块</h1>
+<h1 id="缓存与消息队列模块"><a href="#缓存与消息队列模块" class="headerlink" title="缓存与消息队列模块"></a>缓存与消息队列模块</h1><ul>
+<li>使用Redis存储验证码<ul>
+<li>验证码需要频繁的访问与刷新,对性能要求较高。</li>
+<li>验证码不需永久保存，通常在很短的时间后就会失效。</li>
+<li>分布式部署时，存在Session共享的问题</li>
+</ul>
+</li>
+<li>使用Redis存储登录凭证<ul>
+<li>处理每次请求时，都要查询用户的登录凭证，访问的频率非常高。</li>
+</ul>
+</li>
+<li>使用Redis缓存用户信息<ul>
+<li>处理每次请求时，都要根据凭证查询用户信息，访问的频率非常高。</li>
+</ul>
+</li>
+</ul>
+<h2 id="储存验证码"><a href="#储存验证码" class="headerlink" title="储存验证码"></a>储存验证码</h2><h3 id="储存验证码开发流程"><a href="#储存验证码开发流程" class="headerlink" title="储存验证码开发流程"></a>储存验证码开发流程</h3><ol>
+<li><p>编写RedisKeyUtil</p>
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String KAPTCHA = <span class="hljs-string">&quot;kaptcha&quot;</span>;
+ <span class="hljs-comment">// 登录验证码</span>
+ <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getKaptchaKey</span><span class="hljs-params">(String owner)</span></span>&#123;
+     <span class="hljs-keyword">return</span> KAPTCHA + SPILIT + owner;
+ &#125;</code></pre>
+</li>
+<li><p>修改LoginController中/kaptcha请求</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/kaptcha&quot;,method = RequestMethod.GET)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getKaptcha</span><span class="hljs-params">(HttpServletResponse response)</span></span>&#123;
+    <span class="hljs-comment">// 生成验证码</span>
+    String text = kaptchProducer.createText();
+    BufferedImage image = kaptchProducer.createImage(text);
+
+    <span class="hljs-comment">// 验证码的归属者</span>
+    String kaptchaOwner = CommunityUtil.generateUUID();
+    <span class="hljs-comment">// 存入cookie</span>
+    Cookie cookie = <span class="hljs-keyword">new</span> Cookie(<span class="hljs-string">&quot;kaptchaOwner&quot;</span>, kaptchaOwner);
+    cookie.setMaxAge(<span class="hljs-number">60</span>);
+    cookie.setPath(contextPath);
+    response.addCookie(cookie);
+
+    <span class="hljs-comment">// 验证码文字存入redis</span>
+    String kaptchaKey = RedisKeyUtil.getKaptchaKey(kaptchaOwner);
+    redisTemplate.opsForValue().set(kaptchaKey, text, <span class="hljs-number">60</span> , TimeUnit.SECONDS);
+
+    <span class="hljs-comment">// 将图片输出给浏览器</span>
+    response.setContentType(<span class="hljs-string">&quot;image/png&quot;</span>);
+    <span class="hljs-keyword">try</span> &#123;
+        OutputStream os = response.getOutputStream();
+        ImageIO.write(image, <span class="hljs-string">&quot;png&quot;</span>, os);
+    &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;
+        logger.error(<span class="hljs-string">&quot;验证码响应失败：&quot;</span> + e.getMessage());
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>修改LoginController中/login请求</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223090056.png" srcset="/img/loading.gif" alt="redis存验证码"></p>
+</li>
+</ol>
+<h3 id="开发流程图-4"><a href="#开发流程图-4" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223095133.png" srcset="/img/loading.gif" alt="开发流程图"></p>
+<h2 id="存储登录凭证"><a href="#存储登录凭证" class="headerlink" title="存储登录凭证"></a>存储登录凭证</h2><h3 id="存储登录凭证开发流程"><a href="#存储登录凭证开发流程" class="headerlink" title="存储登录凭证开发流程"></a>存储登录凭证开发流程</h3><ol>
+<li><p>编写redisKeyUtil</p>
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_TICKET = <span class="hljs-string">&quot;ticket&quot;</span>;
+ <span class="hljs-comment">// 登录凭证</span>
+ <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getTicketKey</span><span class="hljs-params">(String ticket)</span></span>&#123;
+     <span class="hljs-keyword">return</span> PREFIX_TICKET + SPILIT + ticket;
+ &#125;</code></pre>
+</li>
+<li><p>废弃LoginTicketMapper(不再MySql存储登录凭证)</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223090329.png" srcset="/img/loading.gif" alt="废弃"></p>
+</li>
+<li><p>修改UserService login方法</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223090538.png" srcset="/img/loading.gif" alt="redis"></p>
+</li>
+<li><p>修改UserService logout方法</p>
+<pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">logout</span><span class="hljs-params">(String ticket)</span></span>&#123;
+<span class="hljs-comment">//        loginTicketMapper.updateStatus(ticket,1);</span>
+        String redisKey = RedisKeyUtil.getTicketKey(ticket);
+        LoginTicket loginTicket =(LoginTicket) redisTemplate.opsForValue().get(redisKey);
+        loginTicket.setStatus(<span class="hljs-number">1</span>);
+        redisTemplate.opsForValue().set(redisKey, loginTicket);
+
+    &#125;</code></pre>
+</li>
+<li><p>修改findLoginTicket方法</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> LoginTicket <span class="hljs-title">findLoginTicket</span><span class="hljs-params">(String ticket)</span></span>&#123;
+    String redisKey = RedisKeyUtil.getTicketKey(ticket);
+    <span class="hljs-keyword">return</span> (LoginTicket) redisTemplate.opsForValue().get(redisKey);
+&#125;</code></pre>
+
+<p>这样拦截器能通过redis找到</p>
+</li>
+</ol>
+<h3 id="开发流程图-5"><a href="#开发流程图-5" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223095906.png" srcset="/img/loading.gif" alt="流程图"></p>
+<h2 id="存储用户信息"><a href="#存储用户信息" class="headerlink" title="存储用户信息"></a>存储用户信息</h2><h3 id="存储用户信息开发流程"><a href="#存储用户信息开发流程" class="headerlink" title="存储用户信息开发流程"></a>存储用户信息开发流程</h3><ol>
+<li><p>编写RedisKeyUtil</p>
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_USER = <span class="hljs-string">&quot;user&quot;</span>;
+<span class="hljs-comment">// 用户</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getUserKey</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
+    <span class="hljs-keyword">return</span> PREFIX_USER + SPILIT + userId;
+&#125;</code></pre>
+</li>
+<li><p>修改UserService</p>
+<pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> User <span class="hljs-title">findUserById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>&#123;
+<span class="hljs-comment">//        return userMapper.selectById(id);</span>
+        User user = getCache(id);
+        <span class="hljs-keyword">if</span> (user == <span class="hljs-keyword">null</span>)&#123;
+            <span class="hljs-comment">// 初始化</span>
+            user = initCache(id);
+        &#125;
+
+        <span class="hljs-keyword">return</span> user;
+    &#125;
+    <span class="hljs-comment">// 缓存管理用户信息:</span>
+    <span class="hljs-comment">// 1. 优先从缓存中取值</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> User <span class="hljs-title">getCache</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
+        String redisKey = RedisKeyUtil.getUserKey(userId);
+        <span class="hljs-keyword">return</span> (User) redisTemplate.opsForValue().get(redisKey);
+    &#125;
+
+    <span class="hljs-comment">// 2. 取不到时初始化缓存数据</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> User <span class="hljs-title">initCache</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
+        User user = userMapper.selectById(userId);
+        String redisKey = RedisKeyUtil.getUserKey(userId);
+        redisTemplate.opsForValue().set(redisKey, user, <span class="hljs-number">36000</span>, TimeUnit.SECONDS);
+        <span class="hljs-keyword">return</span> user;
+    &#125;
+
+    <span class="hljs-comment">// 3. 数据变更时清楚缓存</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">clearCache</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
+        String redisKey = RedisKeyUtil.getUserKey(userId);
+        redisTemplate.delete(redisKey);
+    &#125;</code></pre>
+</li>
+<li><p>给相应方法添加清除缓存</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223091454.png" srcset="/img/loading.gif" alt="activation"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223091512.png" srcset="/img/loading.gif" alt="pwd"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223091535.png" srcset="/img/loading.gif" alt="headerUrl"></p>
+</li>
+</ol>
+<h3 id="开发流程图-6"><a href="#开发流程图-6" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223100648.png" srcset="/img/loading.gif" alt="开发流程图"></p>
+<h2 id="Spring整合Kafka"><a href="#Spring整合Kafka" class="headerlink" title="Spring整合Kafka"></a>Spring整合Kafka</h2><ul>
+<li>引入依赖<ul>
+<li>spring-kafka</li>
+</ul>
+</li>
+<li>配置kafka<ul>
+<li>配置server、consumer</li>
+</ul>
+</li>
+<li>访问kafka<ul>
+<li>生产者</li>
+<li>消费者</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发流程-11"><a href="#开发流程-11" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
+<li><p>Maven</p>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--    kafka    --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.kafka<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-kafka<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+</li>
+<li><p>配置kafka</p>
+<pre><code class="hljs properties"><span class="hljs-comment"># KafkaProperties</span>
+<span class="hljs-meta">spring.kafka.bootstrap-servers</span>=<span class="hljs-string">localhost:9092</span>
+<span class="hljs-meta">spring.kafka.consumer.group-id</span>=<span class="hljs-string">test</span>
+<span class="hljs-meta">spring.kafka.consumer.enable-auto-commit</span>=<span class="hljs-string">true</span>
+<span class="hljs-meta">spring.kafka.consumer.auto-commit-interval</span>=<span class="hljs-string">3000</span>
+<span class="hljs-meta">spring.kafka.listener.missing-topics-fatal</span>=<span class="hljs-string">false</span>
+<span class="hljs-comment">#如果无主题会报错 选择false</span></code></pre>
+</li>
+<li><p>检查kafka本地配置</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223101350.png" srcset="/img/loading.gif" alt="kafka"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223101442.png" srcset="/img/loading.gif" alt="与properties对应"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223101528.png" srcset="/img/loading.gif" alt="开端口"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223101557.png" srcset="/img/loading.gif" alt="开端口"></p>
+</li>
+</ol>
+<ol start="4">
+<li><p>编写测试类</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RunWith(SpringRunner.class)</span>
+<span class="hljs-meta">@SpringBootTest</span>
+<span class="hljs-meta">@ContextConfiguration(classes = CommunityApplication.class)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">KafkaTest</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> KafkaProducer kafkaProducer;
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testKafka</span><span class="hljs-params">()</span> </span>&#123;
+        kafkaProducer.sendMessage(<span class="hljs-string">&quot;test&quot;</span>, <span class="hljs-string">&quot;你好&quot;</span>);
+        System.out.println(<span class="hljs-number">1</span>);
+        kafkaProducer.sendMessage(<span class="hljs-string">&quot;test&quot;</span>, <span class="hljs-string">&quot;在吗&quot;</span>);
+
+        <span class="hljs-keyword">try</span> &#123;
+            Thread.sleep(<span class="hljs-number">1000</span>);
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+
+&#125;
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">KafkaProducer</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> KafkaTemplate kafkaTemplate;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sendMessage</span><span class="hljs-params">(String topic, String content)</span> </span>&#123;
+        kafkaTemplate.send(topic, content);
+    &#125;
+&#125;
+
+<span class="hljs-meta">@Component</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">KafkaConsumer</span> </span>&#123;
+
+    <span class="hljs-meta">@KafkaListener(topics = &#123;&quot;test&quot;&#125;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">handleMessage</span><span class="hljs-params">(ConsumerRecord record)</span> </span>&#123;
+        System.out.println(record.value()
+        );
+    &#125;
+&#125;</code></pre>
+
+<p>单元测试源文件已给出</p>
+</li>
+</ol>
+<h2 id="发送系统通知"><a href="#发送系统通知" class="headerlink" title="发送系统通知"></a>发送系统通知</h2><ul>
+<li>触发事件<ul>
+<li>评论后，发布通知</li>
+<li>点赞后，发布通知</li>
+<li>关注后，发布通知</li>
+</ul>
+</li>
+<li>处理事件<ul>
+<li>封装事件对象</li>
+<li>开发事件的生产者</li>
+<li>开发事件的消费者</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发原理"><a href="#开发原理" class="headerlink" title="开发原理"></a>开发原理</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223102514.png" srcset="/img/loading.gif" alt="原理"></p>
+<h3 id="开发流程-12"><a href="#开发流程-12" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
+<li><p>创建事件对象</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Event</span> </span>&#123;
+     <span class="hljs-comment">// return this的原因是让其可以链式编程</span>
+    <span class="hljs-keyword">private</span> String topic;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> userId;
+    <span class="hljs-comment">// type为1 id为帖子id type为2 id为评论表当前回复的id</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> entityType;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> entityId;
+    <span class="hljs-comment">// 发布帖子/发表评论的人</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> entityUserId;
+    <span class="hljs-comment">// 拓展其他业务</span>
+    <span class="hljs-keyword">private</span> Map&lt;String, Object&gt; data = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getTopic</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> topic;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Event <span class="hljs-title">setTopic</span><span class="hljs-params">(String topic)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.topic = topic;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getUserId</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> userId;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Event <span class="hljs-title">setUserId</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.userId = userId;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getEntityType</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> entityType;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Event <span class="hljs-title">setEntityType</span><span class="hljs-params">(<span class="hljs-keyword">int</span> entityType)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.entityType = entityType;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getEntityId</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> entityId;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Event <span class="hljs-title">setEntityId</span><span class="hljs-params">(<span class="hljs-keyword">int</span> entityId)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.entityId = entityId;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getEntityUserId</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> entityUserId;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Event <span class="hljs-title">setEntityUserId</span><span class="hljs-params">(<span class="hljs-keyword">int</span> entityUserId)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.entityUserId = entityUserId;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Map&lt;String, Object&gt; <span class="hljs-title">getData</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> data;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Event <span class="hljs-title">setData</span><span class="hljs-params">(String key, Object value)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.data.put(key, value);
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>业务层角度创建事件生产者</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EventProducer</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> KafkaTemplate kafkaTemplate;
+
+    <span class="hljs-comment">// 处理事件</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">fireEvent</span><span class="hljs-params">(Event event)</span></span>&#123;
+        <span class="hljs-comment">// 将事件发送指定主题</span>
+        kafkaTemplate.send(event.getTopic(), JSONObject.toJSONString(event));
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>创建事件消费者</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EventConsumer</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(EventConsumer.class);
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> MessageService messageService;
+
+    <span class="hljs-meta">@KafkaListener(topics = &#123;TOPIC_COMMENT, TOPIC_LIKE, TOPIC_FOLLOW&#125;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">handleEventMessage</span><span class="hljs-params">(ConsumerRecord record)</span></span>&#123;
+        <span class="hljs-keyword">if</span> (record == <span class="hljs-keyword">null</span> || record.value() == <span class="hljs-keyword">null</span>)&#123;
+            <span class="hljs-comment">// 空消息</span>
+            logger.error(<span class="hljs-string">&quot;消息内容为空！&quot;</span>);
+            <span class="hljs-keyword">return</span>;
+        &#125;
+        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+        <span class="hljs-keyword">if</span> (event == <span class="hljs-keyword">null</span>)&#123;
+            logger.error(<span class="hljs-string">&quot;消息格式为空！&quot;</span>);
+            <span class="hljs-keyword">return</span>;
+        &#125;
+
+        <span class="hljs-comment">// 发送站内通知</span>
+        Message message = <span class="hljs-keyword">new</span> Message();
+        message.setFromId(SYSTEM_USERID);
+        message.setToId(event.getEntityUserId());
+        message.setConversationId(event.getTopic());
+        message.setCreateTime(<span class="hljs-keyword">new</span> Date());
+
+        Map&lt;String, Object&gt; content = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+        content.put(<span class="hljs-string">&quot;userId&quot;</span>, event.getUserId());
+        content.put(<span class="hljs-string">&quot;entityType&quot;</span>, event.getEntityType());
+        content.put(<span class="hljs-string">&quot;entityId&quot;</span>, event.getEntityId());
+        <span class="hljs-comment">// 额外date</span>
+        <span class="hljs-keyword">if</span> (!event.getData().isEmpty())&#123;
+            <span class="hljs-keyword">for</span> (Map.Entry&lt;String, Object&gt; entry:event.getData().entrySet())&#123;
+                content.put(entry.getKey(), entry.getValue());
+            &#125;
+        &#125;
+        message.setContent(JSONObject.toJSONString(content));
+
+        messageService.insertLetter(message);
+
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>修改常量接口</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 主题:评论</span>
+<span class="hljs-comment"> */</span>
+String TOPIC_COMMENT = <span class="hljs-string">&quot;comment&quot;</span>;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 主题:点赞</span>
+<span class="hljs-comment"> */</span>
+String TOPIC_LIKE = <span class="hljs-string">&quot;like&quot;</span>;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 主题:关注</span>
+<span class="hljs-comment"> */</span>
+String TOPIC_FOLLOW = <span class="hljs-string">&quot;follow&quot;</span>;</code></pre>
+</li>
+<li><p>修改评论、点赞、关注Controller</p>
+</li>
+<li><p>评论事件</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 触发评论事件</span>
+<span class="hljs-comment">// type为1 id为帖子id</span>
+<span class="hljs-comment">// type为2 id为评论的id</span>
+Event event = <span class="hljs-keyword">new</span> Event()
+        .setTopic(TOPIC_COMMENT)
+        .setUserId(hostHolder.getUsers().getId())
+        .setEntityType(comment.getEntityType())
+        .setEntityId(comment.getEntityId())
+        .setData(<span class="hljs-string">&quot;postId&quot;</span>, discussPostId);
+<span class="hljs-keyword">if</span> (comment.getEntityType() == ENTITY_TYPE_POST)&#123;
+    <span class="hljs-comment">// EntityUserId 存帖子作者id 给作者发消息</span>
+    DiscussPost target = discussPostService.findDiscussPostById(comment.getEntityId());
+    event.setEntityUserId(target.getUserId());
+&#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (comment.getEntityType() == ENTITY_TYPE_COMMENT)&#123;
+    <span class="hljs-comment">// EntityUserId 存当前评论的id 给评论作者发消息</span>
+    Comment target = commentService.findCommentById(comment.getEntityId());
+    event.setEntityUserId(target.getUserId());
+&#125;
+
+eventProducer.fireEvent(event);</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223103720.png" srcset="/img/loading.gif" alt="评论事件"></p>
+</li>
+<li><p>点赞事件</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 触发点赞事件</span>
+<span class="hljs-keyword">if</span> (likeStatus == <span class="hljs-number">1</span>)&#123;
+    Event event = <span class="hljs-keyword">new</span> Event()
+            .setTopic(TOPIC_LIKE)
+            .setUserId(user.getId())
+            .setEntityType(entityType)
+            .setEntityId(entityId)
+            .setEntityUserId(entityUserId)
+            .setData(<span class="hljs-string">&quot;postId&quot;</span>, postId);
+
+    eventProducer.fireEvent(event);
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223103905.png" srcset="/img/loading.gif" alt="点赞事件"></p>
+</li>
+<li><p>关注事件</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 触发关注事件</span>
+Event event = <span class="hljs-keyword">new</span> Event()
+        .setTopic(TOPIC_FOLLOW)
+        .setUserId(user.getId())
+        .setEntityType(entityType)
+        .setEntityId(entityId)
+        .setEntityUserId(entityId);
+
+eventProducer.fireEvent(event);</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223103952.png" srcset="/img/loading.gif" alt="image-20201223103949547"></p>
+</li>
+</ol>
+<h3 id="开发流程图-7"><a href="#开发流程图-7" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223110623.png" srcset="/img/loading.gif" alt="流程图"></p>
+<h2 id="显示系统消息"><a href="#显示系统消息" class="headerlink" title="显示系统消息"></a>显示系统消息</h2><ul>
+<li>通知列表<ul>
+<li>显示评论、点赞、关注三种类型通知</li>
+</ul>
+</li>
+<li>通知详情<ul>
+<li>分页显示某一类主题通知</li>
+</ul>
+</li>
+<li>未读<ul>
+<li>页面头部显示所有未读消息</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发流程-13"><a href="#开发流程-13" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
+<li><p>编写MessageMapper和mapper.xml</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 查询某个主题下最新的通知</span>
+<span class="hljs-function">Message <span class="hljs-title">selectLatestNotice</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>;
+<span class="hljs-comment">// 查询某个主题包含通知数量</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">selectNoticeCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>;
+<span class="hljs-comment">// 查询未读通知数量</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">selectNoticeUnreadCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>;
+
+<span class="hljs-comment">// 查询某个主题所有的通知</span>
+<span class="hljs-function">List&lt;Message&gt; <span class="hljs-title">selectNotices</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic, <span class="hljs-keyword">int</span> offset, <span class="hljs-keyword">int</span> limit)</span></span>;</code></pre>
+
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectLatestNotice&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;Message&quot;</span>&gt;</span>
+    select <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+    from message
+    where id in (
+    select max(id) from message
+    where status != 2
+    and from_id = 1
+    and to_id = #&#123;userId&#125;
+    and conversation_id = #&#123;topic&#125;
+    )
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectNoticeCount&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;int&quot;</span>&gt;</span>
+    select count(id) from message
+    where status != 2
+    and from_id = 1
+    and to_id = #&#123;userId&#125;
+    and conversation_id = #&#123;topic&#125;
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectNoticeUnreadCount&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;int&quot;</span>&gt;</span>
+    select count(id) from message
+    where status = 0
+    and from_id = 1
+    and to_id = #&#123;userId&#125;
+    <span class="hljs-tag">&lt;<span class="hljs-name">if</span> <span class="hljs-attr">test</span>=<span class="hljs-string">&quot;topic!=null&quot;</span>&gt;</span>
+        and conversation_id = #&#123;topic&#125;
+    <span class="hljs-tag">&lt;/<span class="hljs-name">if</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectNotices&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;Message&quot;</span>&gt;</span>
+    select <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+    from message
+    where status != 2
+    and from_id = 1
+    and to_id = #&#123;userId&#125;
+    and conversation_id = #&#123;topic&#125;
+    order by create_time desc
+    limit #&#123;offset&#125;, #&#123;limit&#125;
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span></code></pre>
+</li>
+<li><p>编写MessageService</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> Message <span class="hljs-title">findLatestNotice</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>&#123;
+    <span class="hljs-keyword">return</span> messageMapper.selectLatestNotice(userId, topic);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findNoticeCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>&#123;
+    <span class="hljs-keyword">return</span> messageMapper.selectNoticeCount(userId, topic);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findNoticeUnreadCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>&#123;
+    <span class="hljs-keyword">return</span> messageMapper.selectNoticeUnreadCount(userId, topic);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Message&gt; <span class="hljs-title">findNotices</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic, <span class="hljs-keyword">int</span> offset, <span class="hljs-keyword">int</span> limit)</span></span>&#123;
+    <span class="hljs-keyword">return</span> messageMapper.selectNotices(userId, topic, offset, limit);
+&#125;</code></pre>
+</li>
+<li><p>编写MessageController 显示消息主页</p>
+<pre><code class="hljs java">    <span class="hljs-meta">@RequestMapping(path = &quot;/notice/list&quot;, method = RequestMethod.GET)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getNoticeList</span><span class="hljs-params">(Model model)</span></span>&#123;
+        User user = hostHolder.getUsers();
+        <span class="hljs-comment">// 查询评论类通知</span>
+        Message message = messageService.findLatestNotice(user.getId(), TOPIC_COMMENT);
+        Map&lt;String, Object&gt; messageVo = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+        <span class="hljs-keyword">if</span> (message != <span class="hljs-keyword">null</span>)&#123;
+            messageVo.put(<span class="hljs-string">&quot;message&quot;</span>, message);
+            String content = HtmlUtils.htmlUnescape(message.getContent());
+            Map&lt;String, Object&gt; data = JSONObject.parseObject(content, HashMap.class);
+            messageVo.put(<span class="hljs-string">&quot;user&quot;</span>, userService.findUserById((Integer) data.get(<span class="hljs-string">&quot;userId&quot;</span>)));
+            messageVo.put(<span class="hljs-string">&quot;entityType&quot;</span>, data.get(<span class="hljs-string">&quot;entityType&quot;</span>));
+            messageVo.put(<span class="hljs-string">&quot;entityId&quot;</span>, data.get(<span class="hljs-string">&quot;entityId&quot;</span>));
+            messageVo.put(<span class="hljs-string">&quot;postId&quot;</span>, data.get(<span class="hljs-string">&quot;postid&quot;</span>));
+
+            <span class="hljs-keyword">int</span> count = messageService.findNoticeCount(user.getId(), TOPIC_COMMENT);
+            messageVo.put(<span class="hljs-string">&quot;count&quot;</span>, count);
+
+            <span class="hljs-keyword">int</span> unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_COMMENT);
+            messageVo.put(<span class="hljs-string">&quot;unread&quot;</span>, unread);
+        &#125;<span class="hljs-keyword">else</span> &#123;
+            messageVo.put(<span class="hljs-string">&quot;message&quot;</span>, <span class="hljs-keyword">null</span>);
+        &#125;
+        model.addAttribute(<span class="hljs-string">&quot;commentNotice&quot;</span>, messageVo);
+        <span class="hljs-comment">// 查询点赞类通知</span>
+        message = messageService.findLatestNotice(user.getId(), TOPIC_LIKE);
+        messageVo = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+        <span class="hljs-keyword">if</span> (message != <span class="hljs-keyword">null</span>)&#123;
+            messageVo.put(<span class="hljs-string">&quot;message&quot;</span>, message);
+            String content = HtmlUtils.htmlUnescape(message.getContent());
+            Map&lt;String, Object&gt; data = JSONObject.parseObject(content, HashMap.class);
+            messageVo.put(<span class="hljs-string">&quot;user&quot;</span>, userService.findUserById((Integer) data.get(<span class="hljs-string">&quot;userId&quot;</span>)));
+            messageVo.put(<span class="hljs-string">&quot;entityType&quot;</span>, data.get(<span class="hljs-string">&quot;entityType&quot;</span>));
+            messageVo.put(<span class="hljs-string">&quot;entityId&quot;</span>, data.get(<span class="hljs-string">&quot;entityId&quot;</span>));
+            messageVo.put(<span class="hljs-string">&quot;postId&quot;</span>, data.get(<span class="hljs-string">&quot;postid&quot;</span>));
+
+            <span class="hljs-keyword">int</span> count = messageService.findNoticeCount(user.getId(), TOPIC_LIKE);
+            messageVo.put(<span class="hljs-string">&quot;count&quot;</span>, count);
+
+            <span class="hljs-keyword">int</span> unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_LIKE);
+            messageVo.put(<span class="hljs-string">&quot;unread&quot;</span>, unread);
+        &#125;<span class="hljs-keyword">else</span> &#123;
+            messageVo.put(<span class="hljs-string">&quot;message&quot;</span>, <span class="hljs-keyword">null</span>);
+        &#125;
+        model.addAttribute(<span class="hljs-string">&quot;likeNotice&quot;</span>, messageVo);
+        <span class="hljs-comment">// 查询关注类通知</span>
+        message = messageService.findLatestNotice(user.getId(), TOPIC_FOLLOW);
+        messageVo = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+        <span class="hljs-keyword">if</span> (message != <span class="hljs-keyword">null</span>)&#123;
+            messageVo.put(<span class="hljs-string">&quot;message&quot;</span>, message);
+            String content = HtmlUtils.htmlUnescape(message.getContent());
+            Map&lt;String, Object&gt; data = JSONObject.parseObject(content, HashMap.class);
+            messageVo.put(<span class="hljs-string">&quot;user&quot;</span>, userService.findUserById((Integer) data.get(<span class="hljs-string">&quot;userId&quot;</span>)));
+            messageVo.put(<span class="hljs-string">&quot;entityType&quot;</span>, data.get(<span class="hljs-string">&quot;entityType&quot;</span>));
+            messageVo.put(<span class="hljs-string">&quot;entityId&quot;</span>, data.get(<span class="hljs-string">&quot;entityId&quot;</span>));
+<span class="hljs-comment">//            messageVo.put(&quot;postId&quot;, data.get(&quot;postid&quot;));</span>
+
+            <span class="hljs-keyword">int</span> count = messageService.findNoticeCount(user.getId(), TOPIC_FOLLOW);
+            messageVo.put(<span class="hljs-string">&quot;count&quot;</span>, count);
+
+            <span class="hljs-keyword">int</span> unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_FOLLOW);
+            messageVo.put(<span class="hljs-string">&quot;unread&quot;</span>, unread);
+        &#125;<span class="hljs-keyword">else</span> &#123;
+            messageVo.put(<span class="hljs-string">&quot;message&quot;</span>, <span class="hljs-keyword">null</span>);
+        &#125;
+        model.addAttribute(<span class="hljs-string">&quot;followNotice&quot;</span>, messageVo);
+        <span class="hljs-comment">// 查询未读消息数量</span>
+        <span class="hljs-keyword">int</span> letterUnreadCount = messageService.findeLetterUnreadCount(user.getId(), <span class="hljs-keyword">null</span>);
+        <span class="hljs-keyword">int</span> noticeUnreadCount = messageService.findNoticeUnreadCount(user.getId(), <span class="hljs-keyword">null</span>);
+        model.addAttribute(<span class="hljs-string">&quot;letterUnreadCount&quot;</span>, letterUnreadCount);
+        model.addAttribute(<span class="hljs-string">&quot;noticeUnreadCount&quot;</span>, noticeUnreadCount);
+
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/notice&quot;</span>;
+    &#125;</code></pre>
+</li>
+<li><p>编写MessageController 显示具体消息的全部页面</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/notice/detail/&#123;topic&#125;&quot;, method = RequestMethod.GET)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getNoticeDetail</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(&quot;topic&quot;)</span>String topic,Page page, Model model)</span></span>&#123;
+    User user = hostHolder.getUsers();
+
+    page.setLimit(<span class="hljs-number">5</span>);
+    page.setRows(messageService.findNoticeCount(user.getId(), topic));
+    page.setPath(<span class="hljs-string">&quot;/message/notice/detail/&quot;</span>+topic);
+
+    List&lt;Message&gt; noticeList = messageService.findNotices(user.getId(), topic, page.getOffset(), page.getLimit());
+    List&lt;Map&lt;String, Object&gt;&gt; noticeVoList = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+    <span class="hljs-keyword">if</span> (noticeList!=<span class="hljs-keyword">null</span>)&#123;
+        <span class="hljs-keyword">for</span> (Message notice: noticeList) &#123;
+            Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+            <span class="hljs-comment">// 通知</span>
+            map.put(<span class="hljs-string">&quot;notice&quot;</span>, notice);
+            <span class="hljs-comment">// 内容</span>
+            String content = HtmlUtils.htmlUnescape(notice.getContent());
+            Map&lt;String, Object&gt; data = JSONObject.parseObject(content, HashMap.class);
+            map.put(<span class="hljs-string">&quot;user&quot;</span>, userService.findUserById((Integer) data.get(<span class="hljs-string">&quot;userId&quot;</span>)));
+            map.put(<span class="hljs-string">&quot;entityType&quot;</span>, data.get(<span class="hljs-string">&quot;entityType&quot;</span>));
+            map.put(<span class="hljs-string">&quot;entityId&quot;</span>, data.get(<span class="hljs-string">&quot;entityId&quot;</span>));
+            map.put(<span class="hljs-string">&quot;postId&quot;</span>, data.get(<span class="hljs-string">&quot;postId&quot;</span>));
+            map.put(<span class="hljs-string">&quot;fromUser&quot;</span>, userService.findUserById(notice.getFromId()));
+            noticeVoList.add(map);
+        &#125;
+    &#125;
+    model.addAttribute(<span class="hljs-string">&quot;notices&quot;</span>, noticeVoList);
+
+    <span class="hljs-comment">// 设置已读</span>
+    List&lt;Integer&gt; ids = getMessageIds(noticeList);
+    <span class="hljs-keyword">if</span> (!ids.isEmpty())&#123;
+        messageService.readMessage(ids);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/notice-detail&quot;</span>;
+&#125;</code></pre>
+</li>
+<li><p>编写拦截器记录全局消息未读数</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MessageUnreadInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HandlerInterceptor</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> HostHolder hostHolder;
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> MessageService messageService;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">postHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+        User user = hostHolder.getUsers();
+        <span class="hljs-keyword">if</span> (user != <span class="hljs-keyword">null</span> &amp;&amp; modelAndView!=<span class="hljs-keyword">null</span>)&#123;
+            <span class="hljs-keyword">int</span> letterUnreadCount = messageService.findeLetterUnreadCount(user.getId(), <span class="hljs-keyword">null</span>);
+            <span class="hljs-keyword">int</span> noticeUnreadCount = messageService.findNoticeUnreadCount(user.getId(), <span class="hljs-keyword">null</span>);
+            modelAndView.addObject(<span class="hljs-string">&quot;unread&quot;</span>, letterUnreadCount + noticeUnreadCount);
+        &#125;
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>添加至WebMvcConfig</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
+<span class="hljs-keyword">private</span> MessageUnreadInterceptor messageUnreadInterceptor;
+
+    registry.addInterceptor(messageUnreadInterceptor)
+            .excludePathPatterns(<span class="hljs-string">&quot;/**/*.css&quot;</span>, <span class="hljs-string">&quot;/**/*.js&quot;</span>, <span class="hljs-string">&quot;/**/*.png&quot;</span>, <span class="hljs-string">&quot;/**/*.jpg&quot;</span>, <span class="hljs-string">&quot;/**/*.jpeg&quot;</span>);
+
+&#125;</code></pre>
+</li>
+<li><p>修改模版引擎（查看源文件）</p>
+</li>
+</ol>
+<h3 id="开发流程图-8"><a href="#开发流程图-8" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223111729.png" srcset="/img/loading.gif" alt="流程图"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223112157.png" srcset="/img/loading.gif" alt="拦截器"></p>
+<h1 id="ES与Security模块"><a href="#ES与Security模块" class="headerlink" title="ES与Security模块"></a>ES与Security模块</h1><h2 id="Spring-整合-Elastic-Search"><a href="#Spring-整合-Elastic-Search" class="headerlink" title="Spring 整合 Elastic Search"></a>Spring 整合 Elastic Search</h2><ul>
+<li>引入依赖<ul>
+<li>spirng-boot-starter-data-elastcsearch</li>
+</ul>
+</li>
+<li>配置Elasticsearch<ul>
+<li>cluster-name、cluster-nodes</li>
+</ul>
+</li>
+<li>Spring Data Elasticsearch<ul>
+<li>ElasticsearchTemplate</li>
+<li>ElasticsearchRepository</li>
+</ul>
+</li>
+</ul>
+<p>注意：Elasticsearch版本与Spring Boot版本必须严格遵循统一</p>
+<p>本项目使用elasticsearch 6.4.3</p>
+<h3 id="开发流程-14"><a href="#开发流程-14" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
+<li><p>Maven依赖</p>
+<pre><code class="hljs java">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-elasticsearch&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</li>
+<li><p>配置es</p>
+<pre><code class="hljs properties"><span class="hljs-comment"># ElasticSearchProperties</span>
+<span class="hljs-meta">spring.data.elasticsearch.cluster-name</span>=<span class="hljs-string">nowcoder</span>
+<span class="hljs-meta">spring.data.elasticsearch.cluster-nodes</span>=<span class="hljs-string">127.0.0.1:9300</span></code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223113939.png" srcset="/img/loading.gif" alt="配置本地"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223114002.png" srcset="/img/loading.gif" alt="与上面一致"></p>
+</li>
+</ol>
+<ol start="3">
+<li><p>解决es和redis同时占用netty问题</p>
+<pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CommunityApplication</span> </span>&#123;
+
+    <span class="hljs-meta">@PostConstruct</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-comment">// 解决redis和es同时使用NettyRuntime启动冲突问题</span>
+        <span class="hljs-comment">// Netty4Utils setAvailableProcessors</span>
+        System.setProperty(<span class="hljs-string">&quot;es.set.netty.runtime.available.processors&quot;</span>, <span class="hljs-string">&quot;false&quot;</span>);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        SpringApplication.run(CommunityApplication.class, args);
+    &#125;
+
+&#125;</code></pre>
+</li>
+<li><p>配置表对象和es存储对应的索引关系</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Data</span>
+<span class="hljs-meta">@AllArgsConstructor</span>
+<span class="hljs-meta">@NoArgsConstructor</span>
+<span class="hljs-meta">@Document(indexName = &quot;discusspost&quot;, type =&quot;_doc&quot;, shards = 6, replicas = 3)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DiscussPost</span> </span>&#123;
+
+    <span class="hljs-meta">@Id</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> id;
+
+    <span class="hljs-meta">@Field(type = FieldType.Integer)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> userId;
+
+    <span class="hljs-comment">// 往es存 互联网校招 analyzer把搜索的内容进行拆解最多单词 进行搜索匹配</span>
+    <span class="hljs-comment">// searchAnalyzer 把搜索条目拆解最少单词, searchAnalyzer = &quot;ik_smart&quot;</span>
+    <span class="hljs-meta">@Field(type = FieldType.Text, analyzer = &quot;ik_max_word&quot;, searchAnalyzer = &quot;ik_smart&quot;)</span>
+    <span class="hljs-keyword">private</span> String title;
+
+    <span class="hljs-meta">@Field(type = FieldType.Text, analyzer = &quot;ik_max_word&quot;, searchAnalyzer = &quot;ik_smart&quot;)</span>
+    <span class="hljs-keyword">private</span> String content;
+
+    <span class="hljs-meta">@Field(type = FieldType.Integer)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> type;
+
+    <span class="hljs-meta">@Field(type = FieldType.Integer)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> status;
+
+    <span class="hljs-meta">@Field(type = FieldType.Date)</span>
+    <span class="hljs-keyword">private</span> Date createTime;
+
+    <span class="hljs-meta">@Field(type = FieldType.Integer)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> commentCount;
+
+    <span class="hljs-meta">@Field(type = FieldType.Double)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">double</span> score;
+
+&#125;</code></pre>
+
+<p>其中es的ik插件请前往github下载对应版本 <a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-ik">ik</a></p>
+</li>
+<li><p>编写接口文件</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Repository</span>
+<span class="hljs-comment">// 声明主键类型</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">DiscussPostRepository</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ElasticsearchRepository</span>&lt;<span class="hljs-title">DiscussPost</span>, <span class="hljs-title">Integer</span>&gt; </span>&#123;
+
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223114530.png" srcset="/img/loading.gif" alt="es"></p>
+</li>
+<li><p>编写测试类（源文件给出）</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223114717.png" srcset="/img/loading.gif" alt="测试类"></p>
+</li>
+</ol>
+<h2 id="搜索功能"><a href="#搜索功能" class="headerlink" title="搜索功能"></a>搜索功能</h2><ul>
+<li>搜索服务<ul>
+<li>将帖子保存至Elasticsearch服务器。</li>
+<li>从Elasticsearch服务器删除帖子。</li>
+<li>从Elasticsearch服务器搜索帖子。</li>
+</ul>
+</li>
+<li>发布事件<ul>
+<li>发布帖子时，将帖子异步的提交到Elasticsearch服务器。</li>
+<li>增加评论时，将帖子异步的提交到Elasticsearch服务器。</li>
+<li>在消费组件中增加一个方法，消费帖子发布事件。</li>
+</ul>
+</li>
+<li>显示结果<ul>
+<li>在控制器中处理搜索请求，在HTML上显示搜索结果。</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发流程-15"><a href="#开发流程-15" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
+<li><p>编写ElasticsearchService</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ElasticSearchService</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> DiscussPostRepository discussPostRepository;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> ElasticsearchTemplate elasticTemplate;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">saveDiscussPost</span><span class="hljs-params">(DiscussPost discussPost)</span></span>&#123;
+        discussPostRepository.save(discussPost);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">deleteDiscussPost</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>&#123;
+        discussPostRepository.deleteById(id);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Page&lt;DiscussPost&gt; <span class="hljs-title">searchDiscussPost</span><span class="hljs-params">(String keywords, <span class="hljs-keyword">int</span> current, <span class="hljs-keyword">int</span> limit)</span></span>&#123;
+        SearchQuery searchQuery = <span class="hljs-keyword">new</span> NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.multiMatchQuery(keywords, <span class="hljs-string">&quot;title&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>))
+                .withSort(SortBuilders.fieldSort(<span class="hljs-string">&quot;type&quot;</span>).order(SortOrder.DESC))
+                .withSort(SortBuilders.fieldSort(<span class="hljs-string">&quot;score&quot;</span>).order(SortOrder.DESC))
+                .withSort(SortBuilders.fieldSort(<span class="hljs-string">&quot;createTime&quot;</span>).order(SortOrder.DESC))
+                .withPageable(PageRequest.of(current, limit))
+                .withHighlightFields(
+                        <span class="hljs-keyword">new</span> HighlightBuilder.Field(<span class="hljs-string">&quot;title&quot;</span>).preTags(<span class="hljs-string">&quot;&lt;em&gt;&quot;</span>).postTags(<span class="hljs-string">&quot;&lt;/em&gt;&quot;</span>),
+                        <span class="hljs-keyword">new</span> HighlightBuilder.Field(<span class="hljs-string">&quot;content&quot;</span>).preTags(<span class="hljs-string">&quot;&lt;em&gt;&quot;</span>).postTags(<span class="hljs-string">&quot;&lt;/em&gt;&quot;</span>)
+                ).build();
+
+        <span class="hljs-keyword">return</span> elasticTemplate.queryForPage(searchQuery, DiscussPost.class, <span class="hljs-keyword">new</span> SearchResultMapper() &#123;
+           
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-keyword">public</span> &lt;T&gt; <span class="hljs-function">AggregatedPage&lt;T&gt; <span class="hljs-title">mapResults</span><span class="hljs-params">(SearchResponse response, Class&lt;T&gt; aClass, Pageable pageable)</span> </span>&#123;
+                SearchHits hits = response.getHits();
+                <span class="hljs-keyword">if</span> (hits.getTotalHits() &lt;= <span class="hljs-number">0</span>) &#123;
+                    <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+                &#125;
+
+                List&lt;DiscussPost&gt; list = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+                <span class="hljs-keyword">for</span> (SearchHit hit : hits) &#123;
+                    DiscussPost post = <span class="hljs-keyword">new</span> DiscussPost();
+
+                    String id = hit.getSourceAsMap().get(<span class="hljs-string">&quot;id&quot;</span>).toString();
+                    post.setId(Integer.valueOf(id));
+
+                    String userId = hit.getSourceAsMap().get(<span class="hljs-string">&quot;userId&quot;</span>).toString();
+                    post.setUserId(Integer.valueOf(userId));
+
+                    String title = hit.getSourceAsMap().get(<span class="hljs-string">&quot;title&quot;</span>).toString();
+                    post.setTitle(title);
+
+                    String content = hit.getSourceAsMap().get(<span class="hljs-string">&quot;content&quot;</span>).toString();
+                    post.setContent(content);
+
+                    String status = hit.getSourceAsMap().get(<span class="hljs-string">&quot;status&quot;</span>).toString();
+                    post.setStatus(Integer.valueOf(status));
+
+                    String createTime = hit.getSourceAsMap().get(<span class="hljs-string">&quot;createTime&quot;</span>).toString();
+                    post.setCreateTime(<span class="hljs-keyword">new</span> Date(Long.valueOf(createTime)));
+
+                    String commentCount = hit.getSourceAsMap().get(<span class="hljs-string">&quot;commentCount&quot;</span>).toString();
+                    post.setCommentCount(Integer.valueOf(commentCount));
+
+                    <span class="hljs-comment">// 处理高亮显示的结果</span>
+                    HighlightField titleField = hit.getHighlightFields().get(<span class="hljs-string">&quot;title&quot;</span>);
+                    <span class="hljs-keyword">if</span> (titleField != <span class="hljs-keyword">null</span>) &#123;
+                        post.setTitle(titleField.getFragments()[<span class="hljs-number">0</span>].toString());
+                    &#125;
+
+                    HighlightField contentField = hit.getHighlightFields().get(<span class="hljs-string">&quot;content&quot;</span>);
+                    <span class="hljs-keyword">if</span> (contentField != <span class="hljs-keyword">null</span>) &#123;
+                        post.setContent(contentField.getFragments()[<span class="hljs-number">0</span>].toString());
+                    &#125;
+
+                    list.add(post);
+                &#125;
+
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> AggregatedPageImpl(list, pageable,
+                        hits.getTotalHits(), response.getAggregations(), response.getScrollId(), hits.getMaxScore());
+            &#125;
+
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-keyword">public</span> &lt;T&gt; <span class="hljs-function">T <span class="hljs-title">mapSearchHit</span><span class="hljs-params">(SearchHit searchHit, Class&lt;T&gt; aClass)</span> </span>&#123;
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+            &#125;
+
+        &#125;);
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>处理发帖事件</p>
+<p>常量接口添加：</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 主题:发帖</span>
+<span class="hljs-comment"> */</span>
+String TOPIC_PUBLISH = <span class="hljs-string">&quot;publish&quot;</span>;</code></pre>
+</li>
+<li><p>处理事件消费者</p>
+<pre><code class="hljs java"><span class="hljs-meta">@KafkaListener(topics = TOPIC_PUBLISH)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">handleEventPublish</span><span class="hljs-params">(ConsumerRecord record)</span></span>&#123;
+    <span class="hljs-keyword">if</span> (record == <span class="hljs-keyword">null</span> || record.value() == <span class="hljs-keyword">null</span>)&#123;
+        <span class="hljs-comment">// 空消息</span>
+        logger.error(<span class="hljs-string">&quot;消息内容为空！&quot;</span>);
+        <span class="hljs-keyword">return</span>;
+    &#125;
+    Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+    <span class="hljs-keyword">if</span> (event == <span class="hljs-keyword">null</span>)&#123;
+        logger.error(<span class="hljs-string">&quot;消息格式为空！&quot;</span>);
+        <span class="hljs-keyword">return</span>;
+    &#125;
+
+    DiscussPost post = discussPostService.findDiscussPostById(event.getEntityId());
+    elasticSearchService.saveDiscussPost(post);
+
+&#125;
+</code></pre>
+</li>
+<li><p>DiscusspostController处理发帖事件</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 触发发帖事件</span>
+Event event = <span class="hljs-keyword">new</span> Event()
+        .setTopic(TOPIC_PUBLISH)
+        .setUserId(user.getId())
+        .setEntityType(ENTITY_TYPE_POST)
+        .setEntityId(discussPost.getId());
+eventProducer.fireEvent(event);</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223140158.png" srcset="/img/loading.gif" alt="发帖事件"></p>
+</li>
+<li><p>CommentController 处理发帖事件</p>
+<pre><code class="hljs java"><span class="hljs-keyword">if</span> (comment.getEntityType() == ENTITY_TYPE_POST)&#123;
+    <span class="hljs-comment">// 触发发帖事件</span>
+    event = <span class="hljs-keyword">new</span> Event()
+            .setTopic(TOPIC_PUBLISH)
+            .setUserId(comment.getUserId())
+            .setEntityType(ENTITY_TYPE_POST)
+            <span class="hljs-comment">// 更新的是帖子</span>
+            .setEntityId(discussPostId);
+    eventProducer.fireEvent(event);
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223140313.png" srcset="/img/loading.gif" alt="发帖事件"></p>
+</li>
+<li><p>编写SearchController</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SearchController</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> UserService userService;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> ElasticSearchService elasticSearchService;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> LikeService likeService;
+
+    <span class="hljs-comment">//    /serach?keywords=</span>
+    <span class="hljs-meta">@RequestMapping(path = &quot;/search&quot;, method = RequestMethod.GET)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">search</span><span class="hljs-params">(String keywords, Page page, Model model)</span></span>&#123;
+        org.springframework.data.domain.Page&lt;DiscussPost&gt; discussPosts
+                = elasticSearchService.searchDiscussPost(keywords, page.getCurrent() - <span class="hljs-number">1</span>, page.getLimit());
+        List&lt;Map&lt;String, Object&gt;&gt; discussposts = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+        <span class="hljs-keyword">for</span> (DiscussPost post: discussPosts
+             ) &#123;
+            Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+            <span class="hljs-comment">// 帖子</span>
+            map.put(<span class="hljs-string">&quot;post&quot;</span>, post);
+            <span class="hljs-comment">// 作者</span>
+            map.put(<span class="hljs-string">&quot;user&quot;</span>, userService.findUserById(post.getUserId()));
+            <span class="hljs-comment">// 点赞</span>
+            map.put(<span class="hljs-string">&quot;likeCount&quot;</span>, likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId()));
+            discussposts.add(map);
+        &#125;
+        <span class="hljs-comment">// 分页信息</span>
+        page.setPath(<span class="hljs-string">&quot;/search?keywords=&quot;</span>+keywords);
+        page.setRows(discussPosts == <span class="hljs-keyword">null</span> ? <span class="hljs-number">0</span> : (<span class="hljs-keyword">int</span>) discussPosts.getTotalElements());
+
+        model.addAttribute(<span class="hljs-string">&quot;discussPosts&quot;</span>, discussposts);
+        model.addAttribute(<span class="hljs-string">&quot;keywords&quot;</span>, keywords);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/search&quot;</span>;
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>处理模版引擎</p>
+</li>
+</ol>
+<h3 id="开发流程图-9"><a href="#开发流程图-9" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223142518.png" srcset="/img/loading.gif" alt="流程图"></p>
+<h2 id="Spring-Security-权限管理"><a href="#Spring-Security-权限管理" class="headerlink" title="Spring Security 权限管理"></a>Spring Security 权限管理</h2><h3 id="Spring-Security原理大概"><a href="#Spring-Security原理大概" class="headerlink" title="Spring Security原理大概"></a>Spring Security原理大概</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223143326.png" srcset="/img/loading.gif" alt="原理"></p>
+<ul>
+<li>登录检查<ul>
+<li>之前采用拦截器实现了登录检查,这是简单的权限管理方案,现在将其废弃。</li>
+</ul>
+</li>
+<li>授权配置<ul>
+<li>对当前系统内包含的所有的请求，分配访问权限(普通用户、版主、管理员)。</li>
+</ul>
+</li>
+<li>认证方案<ul>
+<li>绕过Security认证流程, 采用系统原来的认证方案。</li>
+</ul>
+</li>
+<li>CSRF配置<ul>
+<li>防止CSRF攻击的基本原理，以及表单、AJAX相关的配置。</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发流程-16"><a href="#开发流程-16" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
+<li><p>Maven引入</p>
+<pre><code class="hljs java">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</li>
+<li><p>废弃之前的LoginRequired注解</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223143832.png" srcset="/img/loading.gif" alt="废弃"></p>
+</li>
+</ol>
+<ol start="3">
+<li><p>常量接口增加权限常量</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 普通用户</span>
+<span class="hljs-comment"> */</span>
+String AUTHORITY_USER = <span class="hljs-string">&quot;user&quot;</span>;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 管理员(删除)</span>
+<span class="hljs-comment"> */</span>
+String AUTHORITY_ADMIN = <span class="hljs-string">&quot;admin&quot;</span>;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 版主(置顶、加精)</span>
+<span class="hljs-comment"> */</span>
+String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</span>;</code></pre>
+</li>
+<li><p>SecurityConfig配置</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SpringSecurityConfig</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">WebSecurityConfigurerAdapter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">configure</span><span class="hljs-params">(WebSecurity web)</span> </span>&#123;
+        web.ignoring().antMatchers(<span class="hljs-string">&quot;/resources/**&quot;</span>);
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">configure</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+        http.authorizeRequests()
+                .antMatchers(
+                      <span class="hljs-string">&quot;/user/setting&quot;</span>,<span class="hljs-string">&quot;/user/upload&quot;</span>,<span class="hljs-string">&quot;/user/updatePassword&quot;</span>,<span class="hljs-string">&quot;/user/mypost&quot;</span>,<span class="hljs-string">&quot;/user/myreply&quot;</span>,
+                        <span class="hljs-string">&quot;/discuss/add&quot;</span>, <span class="hljs-string">&quot;/comment/add/**&quot;</span>, <span class="hljs-string">&quot;/message/**&quot;</span>,
+                        <span class="hljs-string">&quot;/like&quot;</span>, <span class="hljs-string">&quot;/follow&quot;</span>, <span class="hljs-string">&quot;/unfollow&quot;</span>
+                )
+                .hasAnyAuthority(
+                        AUTHORITY_USER, AUTHORITY_MODERATOR, AUTHORITY_ADMIN
+                )
+                .antMatchers(
+                        <span class="hljs-string">&quot;/discuss/top&quot;</span>,
+                        <span class="hljs-string">&quot;/discuss/wonderful&quot;</span>
+                )
+                .hasAnyAuthority(
+                        AUTHORITY_MODERATOR
+                )
+                .antMatchers(
+                        <span class="hljs-string">&quot;/data/**&quot;</span>,
+                        <span class="hljs-string">&quot;/discuss/delete&quot;</span>,
+                        <span class="hljs-string">&quot;/actuator/**&quot;</span>
+                )
+                .hasAnyAuthority(
+                        AUTHORITY_ADMIN
+                )
+                .anyRequest().permitAll()
+                .and().csrf().disable();
+
+        <span class="hljs-comment">// 权限冲突处理 普通请求(返回html)和异步请求(返回json)</span>
+        http.exceptionHandling()
+                <span class="hljs-comment">// 未登录处理</span>
+                .authenticationEntryPoint(<span class="hljs-keyword">new</span> AuthenticationEntryPoint() &#123;
+                    <span class="hljs-meta">@Override</span>
+                    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">commence</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)</span> <span class="hljs-keyword">throws</span> IOException, ServletException </span>&#123;
+                        <span class="hljs-comment">// 分普通和异步请求</span>
+                        String xRequestedWith = request.getHeader(<span class="hljs-string">&quot;x-requested-with&quot;</span>);
+                        <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;XMLHttpRequest&quot;</span>.equals(xRequestedWith))&#123;
+                            <span class="hljs-comment">// 异步请求</span>
+                            response.setContentType(<span class="hljs-string">&quot;application/plain;charset=utf-8&quot;</span>);
+                            PrintWriter writer = response.getWriter();
+                            writer.write(CommunityUtil.getJSONString(<span class="hljs-number">403</span>, <span class="hljs-string">&quot;用户未登录!&quot;</span>));
+                        &#125;<span class="hljs-keyword">else</span> &#123;
+                            response.sendRedirect(request.getContextPath() + <span class="hljs-string">&quot;/login&quot;</span>);
+                        &#125;
+                    &#125;
+                &#125;)
+                <span class="hljs-comment">// 登录处理</span>
+                .accessDeniedHandler(<span class="hljs-keyword">new</span> AccessDeniedHandler() &#123;
+                    <span class="hljs-meta">@Override</span>
+                    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">handle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e)</span> <span class="hljs-keyword">throws</span> IOException, ServletException </span>&#123;
+                        <span class="hljs-comment">// 分普通和异步请求</span>
+                        String xRequestedWith = request.getHeader(<span class="hljs-string">&quot;x-requested-with&quot;</span>);
+                        <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;XMLHttpRequest&quot;</span>.equals(xRequestedWith))&#123;
+                            <span class="hljs-comment">// 异步请求</span>
+                            response.setContentType(<span class="hljs-string">&quot;application/plain;charset=utf-8&quot;</span>);
+                            PrintWriter writer = response.getWriter();
+                            writer.write(CommunityUtil.getJSONString(<span class="hljs-number">403</span>, <span class="hljs-string">&quot;用户权限不足&quot;</span>));
+                        &#125;<span class="hljs-keyword">else</span> &#123;
+                            response.sendRedirect(request.getContextPath() + <span class="hljs-string">&quot;/denied&quot;</span>);
+                        &#125;
+                    &#125;
+                &#125;);
+        <span class="hljs-comment">// SpringSecurity底层默认拦截/logout请求,并运行其logout逻辑</span>
+        <span class="hljs-comment">// SpringSecurity为Filter filter在controller之前</span>
+        <span class="hljs-comment">// 想要运行自己的/logout 覆盖其默认逻辑 欺骗</span>
+        http.logout().logoutUrl(<span class="hljs-string">&quot;/securitylogout&quot;</span>);
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>UserService权限配置</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> Collection&lt;? extends GrantedAuthority&gt; getAuthorities(<span class="hljs-keyword">int</span> userId) &#123;
+    User user = userMapper.selectById(userId);
+    List&lt;GrantedAuthority&gt; list = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+    list.add(<span class="hljs-keyword">new</span> GrantedAuthority() &#123;
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getAuthority</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">switch</span> (user.getType()) &#123;
+                <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+                    <span class="hljs-keyword">return</span> AUTHORITY_ADMIN;
+                <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+                    <span class="hljs-keyword">return</span> AUTHORITY_MODERATOR;
+                    <span class="hljs-keyword">default</span>:
+                        <span class="hljs-keyword">return</span> AUTHORITY_USER;
+            &#125;
+        &#125;
+    &#125;);
+    <span class="hljs-keyword">return</span> list;
+&#125;</code></pre>
+</li>
+<li><p>拦截器预判断用户权限</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">preHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+
+    <span class="hljs-comment">// 从cookie中获取ticket</span>
+    String ticket = CookieUtil.getValue(request, <span class="hljs-string">&quot;ticket&quot;</span>);
+
+    <span class="hljs-keyword">if</span> (ticket != <span class="hljs-keyword">null</span>)&#123;
+        <span class="hljs-comment">// 查询</span>
+        LoginTicket loginTicket = userService.findLoginTicket(ticket);
+        <span class="hljs-comment">// 检测有效</span>
+        <span class="hljs-keyword">if</span> (loginTicket != <span class="hljs-keyword">null</span> &amp;&amp; loginTicket.getStatus() == <span class="hljs-number">0</span> &amp;&amp; loginTicket.getExpired().after(<span class="hljs-keyword">new</span> Date()))&#123;
+            <span class="hljs-comment">// 根据凭证找到用户</span>
+            User user = userService.findUserById(loginTicket.getUserId());
+            <span class="hljs-comment">// 在本次请求中持有用户</span>
+            hostHolder.setUsers(user);
+            <span class="hljs-comment">// 构建用户认证结果 存入SecurityContext 以便与security进行授权(越过了security认证 用了自己的认证 需要自己授权)</span>
+            Authentication authentication = <span class="hljs-keyword">new</span> UsernamePasswordAuthenticationToken(
+                    user, user.getPassword(), userService.getAuthorities(user.getId())
+            );
+            SecurityContextHolder.setContext(<span class="hljs-keyword">new</span> SecurityContextImpl(authentication));
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+&#125;</code></pre>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223144555.png" srcset="/img/loading.gif" alt="退出功能"></p>
+</li>
+</ol>
+<h2 id="置顶、加精、删除"><a href="#置顶、加精、删除" class="headerlink" title="置顶、加精、删除"></a>置顶、加精、删除</h2><ul>
+<li>功能实现<ul>
+<li>点击置顶，修改帖子的类型。</li>
+<li>点击“加精”、“删除”， 修改帖子的状态。</li>
+</ul>
+</li>
+<li>权限管理<ul>
+<li>版主可以执行“置顶”</li>
+<li>管理员可以执行“删除”操作。</li>
+</ul>
+</li>
+<li>按钮显示<ul>
+<li>版主可以看到“置顶”</li>
+<li>管理员可以看到“删除”按钮。</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发流程-17"><a href="#开发流程-17" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
+<li><p>Maven导入</p>
+<pre><code class="hljs java">&lt;dependency&gt;
+    &lt;groupId&gt;org.thymeleaf.extras&lt;/groupId&gt;
+    &lt;artifactId&gt;thymeleaf-extras-springsecurity5&lt;/artifactId&gt;
+    &lt;version&gt;3.0.4.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</li>
+<li><p>便DiscusspostMapper 和 mapper文件</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateType</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> type)</span></span>;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateStatus</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> status)</span></span>;</code></pre>
+
+<pre><code class="hljs java">&lt;update id=<span class="hljs-string">&quot;updateType&quot;</span>&gt;
+    update discuss_post set type = #&#123;type&#125;
+    where id = #&#123;id&#125;
+&lt;/update&gt;
+
+&lt;update id=<span class="hljs-string">&quot;updateStatus&quot;</span>&gt;
+    update discuss_post set status = #&#123;status&#125;
+    where id = #&#123;id&#125;
+&lt;/update&gt;</code></pre>
+</li>
+<li><p>编写DiscusspostService</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateType</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> type)</span></span>&#123;
+    <span class="hljs-keyword">return</span> discussPostMapper.updateType(id, type);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateStatus</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> status)</span></span>&#123;
+    <span class="hljs-keyword">return</span> discussPostMapper.updateStatus(id, status);
+&#125;</code></pre>
+</li>
+<li><p>编写DiscusspostController</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 置顶</span>
+<span class="hljs-meta">@RequestMapping(path = &quot;/top&quot;, method = RequestMethod.POST)</span>
+<span class="hljs-meta">@ResponseBody</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">setTop</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>&#123;
+    discussPostService.updateType(id, <span class="hljs-number">1</span>);
+
+    <span class="hljs-comment">// 触发发帖事件 ES更新</span>
+    Event event = <span class="hljs-keyword">new</span> Event()
+            .setTopic(TOPIC_PUBLISH)
+            .setUserId(hostHolder.getUsers().getId())
+            .setEntityType(ENTITY_TYPE_POST)
+            .setEntityId(id);
+    eventProducer.fireEvent(event);
+
+    <span class="hljs-keyword">return</span> CommunityUtil.getJSONString(<span class="hljs-number">0</span>, <span class="hljs-string">&quot;置顶成功！&quot;</span>);
+
+&#125;
+
+<span class="hljs-comment">// 加精</span>
+<span class="hljs-meta">@RequestMapping(path = &quot;/wonderful&quot;, method = RequestMethod.POST)</span>
+<span class="hljs-meta">@ResponseBody</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">setWonderful</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>&#123;
+    discussPostService.updateStatus(id, <span class="hljs-number">1</span>);
+
+    <span class="hljs-comment">// 触发发帖事件 ES更新</span>
+    Event event = <span class="hljs-keyword">new</span> Event()
+            .setTopic(TOPIC_PUBLISH)
+            .setUserId(hostHolder.getUsers().getId())
+            .setEntityType(ENTITY_TYPE_POST)
+            .setEntityId(id);
+    eventProducer.fireEvent(event);
+&#125;
+
+<span class="hljs-comment">// 删除</span>
+<span class="hljs-meta">@RequestMapping(path = &quot;/delete&quot;, method = RequestMethod.POST)</span>
+<span class="hljs-meta">@ResponseBody</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">setDelete</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>&#123;
+    discussPostService.updateStatus(id, <span class="hljs-number">2</span>);
+    <span class="hljs-comment">// ES删除帖 触发删帖事件</span>
+    Event event = <span class="hljs-keyword">new</span> Event()
+            .setTopic(TOPIC_DELETE)
+            .setUserId(hostHolder.getUsers().getId())
+            .setEntityType(ENTITY_TYPE_POST)
+            .setEntityId(id);
+    eventProducer.fireEvent(event);
+    <span class="hljs-keyword">return</span> CommunityUtil.getJSONString(<span class="hljs-number">0</span>, <span class="hljs-string">&quot;删除成功！&quot;</span>);
+&#125;</code></pre>
+</li>
+<li><p>编写js</p>
+<pre><code class="hljs js"><span class="hljs-comment">// 置顶</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setTop</span>(<span class="hljs-params"></span>) </span>&#123;
+    $.post(
+        CONTEXT_PATH + <span class="hljs-string">&quot;/discuss/top&quot;</span>,
+        &#123;<span class="hljs-string">&quot;id&quot;</span>:$(<span class="hljs-string">&quot;#postId&quot;</span>).val()&#125;,
+        <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>&#123;
+            data = $.parseJSON(data);
+            <span class="hljs-keyword">if</span>(data.code == <span class="hljs-number">0</span>) &#123;
+                $(<span class="hljs-string">&quot;#topBtn&quot;</span>).attr(<span class="hljs-string">&quot;disabled&quot;</span>, <span class="hljs-string">&quot;disabled&quot;</span>);
+            &#125; <span class="hljs-keyword">else</span> &#123;
+                alert(data.msg);
+            &#125;
+        &#125;
+    );
+&#125;
+
+<span class="hljs-comment">// 加精</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setWonderful</span>(<span class="hljs-params"></span>) </span>&#123;
+    $.post(
+        CONTEXT_PATH + <span class="hljs-string">&quot;/discuss/wonderful&quot;</span>,
+        &#123;<span class="hljs-string">&quot;id&quot;</span>:$(<span class="hljs-string">&quot;#postId&quot;</span>).val()&#125;,
+        <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>&#123;
+            data = $.parseJSON(data);
+            <span class="hljs-keyword">if</span>(data.code == <span class="hljs-number">0</span>) &#123;
+                $(<span class="hljs-string">&quot;#wonderfulBtn&quot;</span>).attr(<span class="hljs-string">&quot;disabled&quot;</span>, <span class="hljs-string">&quot;disabled&quot;</span>);
+            &#125; <span class="hljs-keyword">else</span> &#123;
+                alert(data.msg);
+            &#125;
+        &#125;
+    );
+&#125;
+
+<span class="hljs-comment">// 删除</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setDelete</span>(<span class="hljs-params"></span>) </span>&#123;
+    $.post(
+        CONTEXT_PATH + <span class="hljs-string">&quot;/discuss/delete&quot;</span>,
+        &#123;<span class="hljs-string">&quot;id&quot;</span>:$(<span class="hljs-string">&quot;#postId&quot;</span>).val()&#125;,
+        <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>&#123;
+            data = $.parseJSON(data);
+            <span class="hljs-keyword">if</span>(data.code == <span class="hljs-number">0</span>) &#123;
+                location.href = CONTEXT_PATH + <span class="hljs-string">&quot;/index&quot;</span>;
+            &#125; <span class="hljs-keyword">else</span> &#123;
+                alert(data.msg);
+            &#125;
+        &#125;
+    );
+&#125;</code></pre>
+</li>
+<li><p>修改模版引擎</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223145804.png" srcset="/img/loading.gif" alt="权限"></p>
+</li>
+<li><p>SecurityConfig配置权限 源码已给出</p>
+</li>
+</ol>
+<h3 id="开发流程图-10"><a href="#开发流程图-10" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223150722.png" srcset="/img/loading.gif" alt="流程图"></p>
+<h1 id="额外功能丰富模块"><a href="#额外功能丰富模块" class="headerlink" title="额外功能丰富模块"></a>额外功能丰富模块</h1><h2 id="网站数据统计"><a href="#网站数据统计" class="headerlink" title="网站数据统计"></a>网站数据统计</h2><ul>
+<li>UV (Unique Visitor)<ul>
+<li>独立访客，需通过用户IP排重统计数据。</li>
+<li>每次访问都要进行统计。</li>
+<li>HyperLogLog，性能好，且存储空间小。</li>
+</ul>
+</li>
+<li>DAU (Daily Active User)<ul>
+<li>日活跃用户，需通过用户ID排重统计数据。访问过一次， 则认为其活跃。</li>
+<li>Bitmap,性能好、且可以统计精确的结果</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发流程-18"><a href="#开发流程-18" class="headerlink" title="开发流程"></a>开发流程</h3><h1 id="优化与压力测试模块"><a href="#优化与压力测试模块" class="headerlink" title="优化与压力测试模块"></a>优化与压力测试模块</h1>
             </div>
             <hr>
             <div>
