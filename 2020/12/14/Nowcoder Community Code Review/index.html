@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      17.6k 字
+      20.2k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      293
+      338
        分钟
     </span>
   
@@ -4373,7 +4373,611 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
 </ul>
 </li>
 </ul>
-<h3 id="开发流程-18"><a href="#开发流程-18" class="headerlink" title="开发流程"></a>开发流程</h3><h1 id="优化与压力测试模块"><a href="#优化与压力测试模块" class="headerlink" title="优化与压力测试模块"></a>优化与压力测试模块</h1>
+<h3 id="开发流程-18"><a href="#开发流程-18" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
+<li><p>编写RedisKeyUtil</p>
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_UV = <span class="hljs-string">&quot;uv&quot;</span>;
+   
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_DAU = <span class="hljs-string">&quot;dau&quot;</span>;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getUVkey</span><span class="hljs-params">(String date)</span></span>&#123;
+    <span class="hljs-keyword">return</span> PREFIX_UV + SPILIT + date;
+&#125;
+   
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getUVkey</span><span class="hljs-params">(String startDate, String endDate)</span></span>&#123;
+    <span class="hljs-keyword">return</span> PREFIX_UV + SPILIT + startDate + SPILIT + endDate;
+&#125;
+   
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getDAUkey</span><span class="hljs-params">(String date)</span></span>&#123;
+    <span class="hljs-keyword">return</span> PREFIX_DAU + SPILIT + date;
+&#125;
+   
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getDAUkey</span><span class="hljs-params">(String startDate, String endDate)</span></span>&#123;
+    <span class="hljs-keyword">return</span> PREFIX_DAU + SPILIT + startDate + SPILIT + endDate;
+&#125;</code></pre>
+
+<p>看一天/多天的</p>
+</li>
+<li><p>编写DataService</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataService</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> RedisTemplate redisTemplate;
+
+    <span class="hljs-keyword">private</span> SimpleDateFormat df = <span class="hljs-keyword">new</span> SimpleDateFormat(<span class="hljs-string">&quot;yyyyMMdd&quot;</span>);
+
+    <span class="hljs-comment">// 将ip存入UV</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">recordUV</span><span class="hljs-params">(String ip)</span></span>&#123;
+        String redisKey = RedisKeyUtil.getUVkey(df.format(<span class="hljs-keyword">new</span> Date()));
+        redisTemplate.opsForHyperLogLog().add(redisKey, ip);
+    &#125;
+
+    <span class="hljs-comment">// 统计UV</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">long</span> <span class="hljs-title">calculateUV</span><span class="hljs-params">(Date start, Date end)</span></span>&#123;
+        <span class="hljs-keyword">if</span> (start == <span class="hljs-keyword">null</span> || end == <span class="hljs-keyword">null</span>)&#123;
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;参数异常&quot;</span>);
+        &#125;
+
+        String redisKey = RedisKeyUtil.getUVkey(df.format(start), df.format(end));
+        List&lt;String&gt; keys = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(start);
+        <span class="hljs-keyword">while</span> (!calendar.getTime().after(end))&#123;
+            String key = RedisKeyUtil.getUVkey(df.format(calendar.getTime()));
+            keys.add(key);
+            calendar.add(Calendar.DATE, <span class="hljs-number">1</span>);
+        &#125;
+        redisTemplate.opsForHyperLogLog().union(redisKey, keys.toArray());
+
+        <span class="hljs-keyword">return</span> redisTemplate.opsForHyperLogLog().size(redisKey);
+    &#125;
+
+    <span class="hljs-comment">// 将指定用户计入DAU</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">recordDAU</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
+        String redisKey = RedisKeyUtil.getDAUkey(df.format(<span class="hljs-keyword">new</span> Date()));
+        redisTemplate.opsForValue().setBit(redisKey, userId, <span class="hljs-keyword">true</span>);
+    &#125;
+
+    <span class="hljs-comment">// 统计DAU</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">long</span> <span class="hljs-title">calculateDAU</span><span class="hljs-params">(Date start, Date end)</span></span>&#123;
+        <span class="hljs-keyword">if</span> (start == <span class="hljs-keyword">null</span> || end == <span class="hljs-keyword">null</span>)&#123;
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;参数异常&quot;</span>);
+        &#125;
+
+        String redisKey = RedisKeyUtil.getDAUkey(df.format(start), df.format(end));
+        List&lt;<span class="hljs-keyword">byte</span>[]&gt; keys = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(start);
+        <span class="hljs-keyword">while</span> (!calendar.getTime().after(end))&#123;
+            String key = RedisKeyUtil.getDAUkey(df.format(calendar.getTime()));
+            keys.add(key.getBytes());
+            calendar.add(Calendar.DATE, <span class="hljs-number">1</span>);
+        &#125;
+        <span class="hljs-comment">// 进行OR运算</span>
+        <span class="hljs-keyword">return</span> (<span class="hljs-keyword">long</span>)redisTemplate.execute(<span class="hljs-keyword">new</span> RedisCallback() &#123;
+            <span class="hljs-meta">@Override</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">doInRedis</span><span class="hljs-params">(RedisConnection connection)</span> <span class="hljs-keyword">throws</span> DataAccessException </span>&#123;
+                connection.bitOp(RedisStringCommands.BitOperation.OR,
+                        redisKey.getBytes(), keys.toArray(<span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]));
+                <span class="hljs-keyword">return</span> connection.bitCount(redisKey.getBytes());
+            &#125;
+        &#125;);
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>编写data拦截器 统计并计入</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HandlerInterceptor</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> DataService dataService;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> HostHolder hostHolder;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">preHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+        <span class="hljs-comment">// 统计UV DAU</span>
+        <span class="hljs-comment">// UV:ip</span>
+        String ip = request.getRemoteHost();
+        dataService.recordUV(ip);
+
+        <span class="hljs-comment">// DAU:userId</span>
+        User user = hostHolder.getUsers();
+        <span class="hljs-keyword">if</span> (user!=<span class="hljs-keyword">null</span>)&#123;
+            dataService.recordDAU(user.getId());
+        &#125;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+    &#125;</code></pre>
+</li>
+<li><p>WebMvcConfig添加拦截器</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
+<span class="hljs-keyword">private</span> DataInterceptor dataInterceptor;
+
+<span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addInterceptors</span><span class="hljs-params">(InterceptorRegistry registry)</span> </span>&#123;
+    registry.addInterceptor(dataInterceptor)
+            .excludePathPatterns(<span class="hljs-string">&quot;/**/*.css&quot;</span>, <span class="hljs-string">&quot;/**/*.js&quot;</span>, <span class="hljs-string">&quot;/**/*.png&quot;</span>, <span class="hljs-string">&quot;/**/*.jpg&quot;</span>, <span class="hljs-string">&quot;/**/*.jpeg&quot;</span>);
+
+&#125;</code></pre>
+</li>
+<li><p>编写DataController</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataController</span> </span>&#123;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> DataService dataService;
+
+    <span class="hljs-comment">// 统计页面</span>
+    <span class="hljs-meta">@RequestMapping(path = &quot;/data&quot;, method = &#123;RequestMethod.GET, RequestMethod.POST&#125;)</span>
+    <span class="hljs-comment">// 后续用到转发 转发用的一个请求 后面为post</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getDataPage</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/admin/data&quot;</span>;
+    &#125;
+
+    <span class="hljs-comment">// 统计网站UV</span>
+    <span class="hljs-meta">@RequestMapping(path = &quot;/data/uv&quot;, method = RequestMethod.POST)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getUV</span><span class="hljs-params">(<span class="hljs-meta">@DateTimeFormat(pattern = &quot;yyyy-MM-dd&quot;)</span> Date start,</span></span>
+<span class="hljs-function"><span class="hljs-params">                        <span class="hljs-meta">@DateTimeFormat(pattern = &quot;yyyy-MM-dd&quot;)</span> Date end, Model model)</span> </span>&#123;
+        <span class="hljs-keyword">long</span> uv = dataService.calculateUV(start, end);
+        model.addAttribute(<span class="hljs-string">&quot;uvResult&quot;</span>, uv);
+        model.addAttribute(<span class="hljs-string">&quot;uvStartDate&quot;</span>, start);
+        model.addAttribute(<span class="hljs-string">&quot;uvEndDate&quot;</span>, end);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;forward:/data&quot;</span>;
+    &#125;
+
+    <span class="hljs-comment">// 统计活跃用户</span>
+    <span class="hljs-meta">@RequestMapping(path = &quot;/data/dau&quot;, method = RequestMethod.POST)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getDAU</span><span class="hljs-params">(<span class="hljs-meta">@DateTimeFormat(pattern = &quot;yyyy-MM-dd&quot;)</span> Date start,</span></span>
+<span class="hljs-function"><span class="hljs-params">                         <span class="hljs-meta">@DateTimeFormat(pattern = &quot;yyyy-MM-dd&quot;)</span> Date end, Model model)</span> </span>&#123;
+        <span class="hljs-keyword">long</span> dau = dataService.calculateDAU(start, end);
+        model.addAttribute(<span class="hljs-string">&quot;dauResult&quot;</span>, dau);
+        model.addAttribute(<span class="hljs-string">&quot;dauStartDate&quot;</span>, start);
+        model.addAttribute(<span class="hljs-string">&quot;dauEndDate&quot;</span>, end);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;forward:/data&quot;</span>;
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>处理模版引擎</p>
+</li>
+</ol>
+<h3 id="开发流程图-11"><a href="#开发流程图-11" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223161822.png" srcset="/img/loading.gif" alt="流程图"></p>
+<h2 id="热帖排行"><a href="#热帖排行" class="headerlink" title="热帖排行"></a>热帖排行</h2><ul>
+<li>JDK线程池<ul>
+<li>ExecutorService</li>
+<li>ScheduledExecutorService</li>
+</ul>
+</li>
+<li>Spring线程池<ul>
+<li>ThreadPoolTaskExecutor</li>
+<li>ThreadPoolTaskScheduler</li>
+</ul>
+</li>
+<li>分布式定时任务<ul>
+<li>Spring Quartz</li>
+</ul>
+</li>
+</ul>
+<p>JDK和Spring定时任务组件是基于内存的，配置参数基于内存，不同服务器内存不共享。</p>
+<p>Quartz参数存到数据库，可以实现共享。</p>
+<h3 id="Quartz原理"><a href="#Quartz原理" class="headerlink" title="Quartz原理"></a>Quartz原理</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223162549.png" srcset="/img/loading.gif" alt="原理图"></p>
+<h3 id="Spring-整合-Quartz"><a href="#Spring-整合-Quartz" class="headerlink" title="Spring 整合 Quartz"></a>Spring 整合 Quartz</h3><ol>
+<li><p>导入Quartz数据库</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223162756.png" srcset="/img/loading.gif" alt="Quartz_db"></p>
+</li>
+<li><p>Maven</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-quartz<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+</li>
+<li><p>配置</p>
+<pre><code class="hljs properties"><span class="hljs-comment"># QuartzProperties</span>
+<span class="hljs-meta">spring.quartz.job-store-type</span>=<span class="hljs-string">jdbc</span>
+<span class="hljs-meta">spring.quartz.scheduler-name</span>=<span class="hljs-string">communityScheduler</span>
+<span class="hljs-meta">spring.quartz.properties.org.quartz.scheduler.instanceId</span>=<span class="hljs-string">AUTO</span>
+<span class="hljs-meta">spring.quartz.properties.org.quartz.jobStore.class</span>=<span class="hljs-string">org.quartz.impl.jdbcjobstore.JobStoreTX</span>
+<span class="hljs-meta">spring.quartz.properties.org.quartz.jobStore.driverDelegateClass</span>=<span class="hljs-string">org.quartz.impl.jdbcjobstore.StdJDBCDelegate</span>
+<span class="hljs-meta">spring.quartz.properties.org.quartz.jobStore.isClustered</span>=<span class="hljs-string">true</span>
+<span class="hljs-meta">spring.quartz.properties.org.quartz.threadPool.class</span>=<span class="hljs-string">org.quartz.simpl.SimpleThreadPool</span>
+<span class="hljs-meta">spring.quartz.properties.org.quartz.threadPool.threadCount</span>=<span class="hljs-string">5</span></code></pre>
+
+
+
+</li>
+</ol>
+<h3 id="热帖开发流程"><a href="#热帖开发流程" class="headerlink" title="热帖开发流程"></a>热帖开发流程</h3><ol>
+<li><p>编写rediskey</p>
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_POST = <span class="hljs-string">&quot;post&quot;</span>;
+ <span class="hljs-comment">//帖子分数(点赞加精等操作 存入postId)</span>
+ <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getPostScoreKey</span><span class="hljs-params">()</span></span>&#123;
+     <span class="hljs-keyword">return</span> PREFIX_POST + SPILIT + <span class="hljs-string">&quot;score&quot;</span>;
+ &#125;</code></pre>
+</li>
+<li><p>编写DiscusspotsController</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223163417.png" srcset="/img/loading.gif" alt="1"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223163438.png" srcset="/img/loading.gif" alt="2"></p>
+</li>
+</ol>
+<ol start="3">
+<li><p>编写likeController</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223163525.png" srcset="/img/loading.gif" alt="like"></p>
+</li>
+<li><p>编写CommentController</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223163613.png" srcset="/img/loading.gif" alt="comment"></p>
+</li>
+<li><p>编写job（任务）</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PostScoreRefreshJob</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Job</span>, <span class="hljs-title">CommunityConstant</span> </span>&#123;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(PostScoreRefreshJob.class);
+
+    <span class="hljs-comment">// 牛客纪元</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Date epoch;
+
+    <span class="hljs-keyword">static</span> &#123;
+        <span class="hljs-keyword">try</span> &#123;
+            epoch = <span class="hljs-keyword">new</span> SimpleDateFormat(<span class="hljs-string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>).parse(<span class="hljs-string">&quot;2014-08-01 00:00:00&quot;</span>);
+        &#125; <span class="hljs-keyword">catch</span> (ParseException e) &#123;
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(<span class="hljs-string">&quot;初始化牛客纪元失败!&quot;</span>, e);
+        &#125;
+    &#125;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> RedisTemplate redisTemplate;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> DiscussPostService discussPostService;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> LikeService likeService;
+
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-keyword">private</span> ElasticSearchService elasticSearchService;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">execute</span><span class="hljs-params">(JobExecutionContext context)</span> <span class="hljs-keyword">throws</span> JobExecutionException </span>&#123;
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        BoundSetOperations operations = redisTemplate.boundSetOps(redisKey);
+
+        <span class="hljs-keyword">if</span> (operations.size() == <span class="hljs-number">0</span>) &#123;
+            logger.info(<span class="hljs-string">&quot;[任务取消] 没有需要刷新的帖子!&quot;</span>);
+            <span class="hljs-keyword">return</span>;
+        &#125;
+
+        logger.info(<span class="hljs-string">&quot;[任务开始] 正在刷新帖子分数: &quot;</span> + operations.size());
+        <span class="hljs-keyword">while</span> (operations.size() &gt; <span class="hljs-number">0</span>) &#123;
+            <span class="hljs-keyword">this</span>.refresh((Integer) operations.pop());
+        &#125;
+        logger.info(<span class="hljs-string">&quot;[任务结束] 帖子分数刷新完毕!&quot;</span>);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">refresh</span><span class="hljs-params">(<span class="hljs-keyword">int</span> postId)</span> </span>&#123;
+        DiscussPost post = discussPostService.findDiscussPostById(postId);
+
+        <span class="hljs-keyword">if</span> (post == <span class="hljs-keyword">null</span>) &#123;
+            logger.error(<span class="hljs-string">&quot;该帖子不存在: id = &quot;</span> + postId);
+            <span class="hljs-keyword">return</span>;
+        &#125;
+
+        <span class="hljs-comment">// 是否精华</span>
+        <span class="hljs-keyword">boolean</span> wonderful = post.getStatus() == <span class="hljs-number">1</span>;
+        <span class="hljs-comment">// 评论数量</span>
+        <span class="hljs-keyword">int</span> commentCount = post.getCommentCount();
+        <span class="hljs-comment">// 点赞数量</span>
+        <span class="hljs-keyword">long</span> likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, postId);
+
+        <span class="hljs-comment">// 计算权重</span>
+        <span class="hljs-keyword">double</span> w = (wonderful ? <span class="hljs-number">75</span> : <span class="hljs-number">0</span>) + commentCount * <span class="hljs-number">10</span> + likeCount * <span class="hljs-number">2</span>;
+        <span class="hljs-comment">// 分数 = 帖子权重 + 距离天数</span>
+        <span class="hljs-keyword">double</span> score = Math.log10(Math.max(w, <span class="hljs-number">1</span>))
+                + (post.getCreateTime().getTime() - epoch.getTime()) / (<span class="hljs-number">1000</span> * <span class="hljs-number">3600</span> * <span class="hljs-number">24</span>);
+        <span class="hljs-comment">// 更新帖子分数</span>
+        discussPostService.updateScore(postId, score);
+        <span class="hljs-comment">// 同步搜索数据</span>
+        post.setScore(score);
+        elasticSearchService.saveDiscussPost(post);
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>编写DiscusspostService</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateScore</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">double</span> score)</span></span>&#123;
+    <span class="hljs-keyword">return</span> discussPostMapper.updateScore(id, score);
+&#125;</code></pre>
+</li>
+<li><p>编写QuartzConfig</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<span class="hljs-comment">// 配置 -&gt; 数据库 -&gt; 访问db调度任务</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">QuartzConfig</span> </span>&#123;
+
+    <span class="hljs-comment">// BeanFactory 是IOC容器顶层接口</span>
+    <span class="hljs-comment">// FactoryBean 可简化Bean的实例化过程:</span>
+    <span class="hljs-comment">// 1.Spring通过FactoryBean封装了Bean的实例化过程</span>
+    <span class="hljs-comment">// 2.将FactoryBean装配到Spring容器中</span>
+    <span class="hljs-comment">// 3.将FactoryBean注入给其他的Bean</span>
+    <span class="hljs-comment">// 4.该Bean得到的是FactoryBean所管理的对象实例</span>
+
+    <span class="hljs-comment">// 配置JobDetail</span>
+    <span class="hljs-comment">//@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> JobDetailFactoryBean <span class="hljs-title">jobDetailTest</span><span class="hljs-params">()</span></span>&#123;
+        JobDetailFactoryBean jobDetailFactoryBean = <span class="hljs-keyword">new</span>  JobDetailFactoryBean();
+        jobDetailFactoryBean.setJobClass(JobTest.class);
+        jobDetailFactoryBean.setName(<span class="hljs-string">&quot;JobTest&quot;</span>);
+        jobDetailFactoryBean.setGroup(<span class="hljs-string">&quot;testJobGroup&quot;</span>);
+        <span class="hljs-comment">// 声明任务持久保存</span>
+        jobDetailFactoryBean.setDurability(<span class="hljs-keyword">true</span>);
+        <span class="hljs-comment">// 任务是否可恢复</span>
+        jobDetailFactoryBean.setRequestsRecovery(<span class="hljs-keyword">true</span>);
+        <span class="hljs-keyword">return</span> jobDetailFactoryBean;
+    &#125;
+
+    <span class="hljs-comment">// trigger 触发器 与 JobDetail有关系</span>
+    <span class="hljs-comment">// 配置Trigger(SimpleTriggerFactoryBean, CronTriggerFactoryBea(复杂,解决每个月月底何时xxx))</span>
+    <span class="hljs-comment">//@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> SimpleTriggerFactoryBean <span class="hljs-title">triggerTest</span><span class="hljs-params">(JobDetail jobDetailTest)</span></span>&#123;
+        SimpleTriggerFactoryBean factoryBean = <span class="hljs-keyword">new</span> SimpleTriggerFactoryBean();
+        factoryBean.setJobDetail(jobDetailTest);
+        factoryBean.setName(<span class="hljs-string">&quot;triggerTest&quot;</span>);
+        factoryBean.setGroup(<span class="hljs-string">&quot;testTriggerGroup&quot;</span>);
+        <span class="hljs-comment">// 执行频率</span>
+        factoryBean.setRepeatInterval(<span class="hljs-number">3000</span>);
+        <span class="hljs-comment">// trigger底层存储job状态</span>
+        factoryBean.setJobDataMap(<span class="hljs-keyword">new</span> JobDataMap());
+        <span class="hljs-keyword">return</span> factoryBean;
+    &#125;
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> JobDetailFactoryBean <span class="hljs-title">postScoreRefreshJobDetail</span><span class="hljs-params">()</span></span>&#123;
+        JobDetailFactoryBean jobDetailFactoryBean = <span class="hljs-keyword">new</span>  JobDetailFactoryBean();
+        jobDetailFactoryBean.setJobClass(PostScoreRefreshJob.class);
+        jobDetailFactoryBean.setName(<span class="hljs-string">&quot;postScoreRefreshJob&quot;</span>);
+        jobDetailFactoryBean.setGroup(<span class="hljs-string">&quot;communityJobGroup&quot;</span>);
+        <span class="hljs-comment">// 声明任务持久保存</span>
+        jobDetailFactoryBean.setDurability(<span class="hljs-keyword">true</span>);
+        <span class="hljs-comment">// 任务是否可恢复</span>
+        jobDetailFactoryBean.setRequestsRecovery(<span class="hljs-keyword">true</span>);
+        <span class="hljs-keyword">return</span> jobDetailFactoryBean;
+    &#125;
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> SimpleTriggerFactoryBean <span class="hljs-title">postScoreRefreshTrigger</span><span class="hljs-params">(JobDetail postScoreRefreshJobDetail)</span></span>&#123;
+        SimpleTriggerFactoryBean factoryBean = <span class="hljs-keyword">new</span> SimpleTriggerFactoryBean();
+        factoryBean.setJobDetail(postScoreRefreshJobDetail);
+        factoryBean.setName(<span class="hljs-string">&quot;postScoreRefreshTrigger&quot;</span>);
+        factoryBean.setGroup(<span class="hljs-string">&quot;communityTriggerGroup&quot;</span>);
+        <span class="hljs-comment">// 执行频率</span>
+        factoryBean.setRepeatInterval(<span class="hljs-number">1000</span> * <span class="hljs-number">60</span> * <span class="hljs-number">5</span>);
+        <span class="hljs-comment">// trigger底层存储job状态</span>
+        factoryBean.setJobDataMap(<span class="hljs-keyword">new</span> JobDataMap());
+        <span class="hljs-keyword">return</span> factoryBean;
+    &#125;
+&#125;</code></pre>
+
+
+
+</li>
+</ol>
+<h3 id="开发流程图-12"><a href="#开发流程图-12" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223164912.png" srcset="/img/loading.gif" alt="流程图"></p>
+<h2 id="头像上传七牛云"><a href="#头像上传七牛云" class="headerlink" title="头像上传七牛云"></a>头像上传七牛云</h2><h3 id="开发流程-19"><a href="#开发流程-19" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
+<li><p>Maven</p>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- https://mvnrepository.com/artifact/com.qiniu/qiniu-java-sdk --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.qiniu<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>qiniu-java-sdk<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>7.2.28<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+</li>
+<li><p>配置qini</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223165129.png" srcset="/img/loading.gif" alt="配置"></p>
+<p>具体依赖自己的qiniu配置</p>
+</li>
+<li><p>修改UserController</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Value(&quot;$&#123;qiniu.key.access&#125;&quot;)</span>
+<span class="hljs-keyword">private</span> String accessKey;
+   
+<span class="hljs-meta">@Value(&quot;$&#123;qiniu.key.secret&#125;&quot;)</span>
+<span class="hljs-keyword">private</span> String secretKey;
+   
+<span class="hljs-meta">@Value(&quot;$&#123;qiniu.bucket.header.name&#125;&quot;)</span>
+<span class="hljs-keyword">private</span> String headerBucketName;
+   
+<span class="hljs-meta">@Value(&quot;$&#123;qiniu.bucket.header.url&#125;&quot;)</span>
+<span class="hljs-keyword">private</span> String headerBucketUrl;
+   
+<span class="hljs-meta">@LoginRequired</span>
+<span class="hljs-meta">@RequestMapping(path = &quot;/setting&quot;, method = RequestMethod.GET)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getSettingPage</span><span class="hljs-params">(Model model)</span> </span>&#123;
+    <span class="hljs-comment">// 生成上传文件名称</span>
+    String fileName = CommunityUtil.generateUUID();
+    <span class="hljs-comment">// 设置响应信息</span>
+    StringMap policy = <span class="hljs-keyword">new</span> StringMap();
+    policy.put(<span class="hljs-string">&quot;returnBody&quot;</span>, CommunityUtil.getJSONString(<span class="hljs-number">0</span>));
+    <span class="hljs-comment">// 生成上传凭证</span>
+    Auth auth = Auth.create(accessKey, secretKey);
+    String uploadToken = auth.uploadToken(headerBucketName, fileName, <span class="hljs-number">3600</span>, policy);
+   
+    model.addAttribute(<span class="hljs-string">&quot;uploadToken&quot;</span>, uploadToken);
+    model.addAttribute(<span class="hljs-string">&quot;fileName&quot;</span>, fileName);
+   
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/setting&quot;</span>;
+&#125;
+   
+<span class="hljs-comment">// 更新头像路径 异步</span>
+<span class="hljs-meta">@RequestMapping(path = &quot;/header/url&quot;, method = RequestMethod.POST)</span>
+<span class="hljs-meta">@ResponseBody</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">updateHeader</span><span class="hljs-params">(String fileName)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (StringUtils.isBlank(fileName)) &#123;
+        <span class="hljs-keyword">return</span> CommunityUtil.getJSONString(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;文件名不能为空&quot;</span>);
+    &#125;
+   
+    String url = headerBucketUrl + <span class="hljs-string">&quot;/&quot;</span> + fileName;
+    userService.updateHeadUrl(hostHolder.getUsers().getId(), url);
+   
+    <span class="hljs-keyword">return</span> CommunityUtil.getJSONString(<span class="hljs-number">0</span>);
+&#125;</code></pre>
+</li>
+<li><p>更新前端表单</p>
+<pre><code class="hljs js">$(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;
+    $(<span class="hljs-string">&quot;#uploadForm&quot;</span>).submit(upload);
+&#125;);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">upload</span>(<span class="hljs-params"></span>) </span>&#123;
+    $.ajax(&#123;
+        url: <span class="hljs-string">&quot;http://upload-z2.qiniup.com&quot;</span>,
+        method: <span class="hljs-string">&quot;post&quot;</span>,
+        processData: <span class="hljs-literal">false</span>,
+        contentType: <span class="hljs-literal">false</span>,
+        data: <span class="hljs-keyword">new</span> FormData($(<span class="hljs-string">&quot;#uploadForm&quot;</span>)[<span class="hljs-number">0</span>]),
+        success: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>&#123;
+            <span class="hljs-keyword">if</span>(data &amp;&amp; data.code == <span class="hljs-number">0</span>) &#123;
+                <span class="hljs-comment">// 更新头像访问路径</span>
+                $.post(
+                    CONTEXT_PATH + <span class="hljs-string">&quot;/user/header/url&quot;</span>,
+                    &#123;<span class="hljs-string">&quot;fileName&quot;</span>:$(<span class="hljs-string">&quot;input[name=&#x27;key&#x27;]&quot;</span>).val()&#125;,
+                    <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>&#123;
+                        data = $.parseJSON(data);
+                        <span class="hljs-keyword">if</span>(data.code == <span class="hljs-number">0</span>) &#123;
+                            <span class="hljs-built_in">window</span>.location.reload();
+                        &#125; <span class="hljs-keyword">else</span> &#123;
+                            alert(data.msg);
+                        &#125;
+                    &#125;
+                );
+            &#125; <span class="hljs-keyword">else</span> &#123;
+                alert(<span class="hljs-string">&quot;上传失败!&quot;</span>);
+            &#125;
+        &#125;
+    &#125;);
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+&#125;
+</code></pre>
+</li>
+<li><p>更新表单</p>
+<pre><code class="hljs java">&lt;form <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;mt-5&quot;</span> id=<span class="hljs-string">&quot;uploadForm&quot;</span>&gt;
+   &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;form-group row mt-4&quot;</span>&gt;
+      &lt;label for=&quot;head-image&quot; class=&quot;col-sm-2 col-form-label text-right&quot;&gt;选择头像:&lt;/label&gt;
+      &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;col-sm-10&quot;</span>&gt;
+         &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;custom-file&quot;</span>&gt;
+            &lt;input type=<span class="hljs-string">&quot;hidden&quot;</span> name=<span class="hljs-string">&quot;token&quot;</span> th:value=<span class="hljs-string">&quot;$&#123;uploadToken&#125;&quot;</span>&gt;
+            &lt;input type=<span class="hljs-string">&quot;hidden&quot;</span> name=<span class="hljs-string">&quot;key&quot;</span> th:value=<span class="hljs-string">&quot;$&#123;fileName&#125;&quot;</span>&gt;
+            &lt;input type=<span class="hljs-string">&quot;file&quot;</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;custom-file-input&quot;</span> id=<span class="hljs-string">&quot;head-image&quot;</span> name=<span class="hljs-string">&quot;file&quot;</span> lang=<span class="hljs-string">&quot;es&quot;</span> required=<span class="hljs-string">&quot;&quot;</span>&gt;
+            &lt;label class=&quot;custom-file-label&quot; for=&quot;head-image&quot; data-browse=&quot;文件&quot;&gt;选择一张图片&lt;/label&gt;
+            &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;invalid-feedback&quot;</span>&gt;
+               该账号不存在!
+            &lt;/div&gt;
+         &lt;/div&gt;
+      &lt;/div&gt;
+   &lt;/div&gt;
+   &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;form-group row mt-4&quot;</span>&gt;
+      &lt;div class=&quot;col-sm-2&quot;&gt;&lt;/div&gt;
+      &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;col-sm-10 text-center&quot;</span>&gt;
+         &lt;button type=&quot;submit&quot; class=&quot;btn btn-info text-white form-control&quot;&gt;立即上传&lt;/button&gt;
+      &lt;/div&gt;
+   &lt;/div&gt;
+&lt;/form&gt;</code></pre>
+
+</li>
+</ol>
+<h3 id="开发流程图-13"><a href="#开发流程图-13" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223170535.png" srcset="/img/loading.gif" alt="流程图"></p>
+<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h2><ul>
+<li>本地缓存<ul>
+<li>将数据缓存在应用服务器上,性能最好。</li>
+<li>常用缓存工具: Ehcache、 Guava、 Caffeine等。</li>
+</ul>
+</li>
+<li>分布式缓存<ul>
+<li>将数据缓存在NoSQL数据库上，跨服务器。常用缓存工具: MemCache、Redis等。</li>
+</ul>
+</li>
+<li>多级缓存<ul>
+<li>一级缓存(本地缓存)&gt;二级缓存(分布式缓存)&gt;DB</li>
+</ul>
+</li>
+<li>避免缓存雪崩(缓存失效，大量请求直达DB )，提高系统的可用性。</li>
+</ul>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223171345.png" srcset="/img/loading.gif" alt="redis共享缓存"></p>
+<p>​       redis可以跨服务器</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223171726.png" srcset="/img/loading.gif" alt="redis单体"></p>
+<h3 id="caffeine-作缓存开发流程"><a href="#caffeine-作缓存开发流程" class="headerlink" title="caffeine 作缓存开发流程"></a>caffeine 作缓存开发流程</h3><ol>
+<li><p>Maven</p>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.github.ben-manes.caffeine<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>caffeine<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.8.4<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+</li>
+<li><p>配置caffeine</p>
+<pre><code class="hljs properties"><span class="hljs-comment"># caffeine 缓存热帖</span>
+<span class="hljs-meta">caffeine.posts.max-size</span>=<span class="hljs-string">15</span>
+<span class="hljs-comment"># 三分钟</span>
+<span class="hljs-meta">caffeine.posts.expire-seconds</span>=<span class="hljs-string">180</span></code></pre>
+</li>
+<li><p>编写DiscussPostService</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Value(&quot;$&#123;caffeine.posts.max-size&#125;&quot;)</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> maxSize;
+   
+<span class="hljs-meta">@Value(&quot;$&#123;caffeine.posts.expire-seconds&#125;&quot;)</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> expireSeconds;
+   
+<span class="hljs-comment">// caffeine 核心接口: Cache, LoadingCache, AsyncLoadingCache</span>
+   
+<span class="hljs-comment">// 缓存帖子列表</span>
+<span class="hljs-keyword">private</span> LoadingCache&lt;String, List&lt;DiscussPost&gt;&gt; postListCache;
+   
+<span class="hljs-comment">// 缓存帖子总数</span>
+<span class="hljs-keyword">private</span> LoadingCache&lt;Integer, Integer&gt; postRowsCache;
+   
+<span class="hljs-meta">@PostConstruct</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span></span>&#123;
+    <span class="hljs-comment">// 初始化缓存</span>
+    <span class="hljs-comment">// 帖子列表</span>
+    postListCache = Caffeine.newBuilder()
+            .maximumSize(maxSize)
+            .expireAfterWrite(expireSeconds, TimeUnit.SECONDS)
+            .build(<span class="hljs-keyword">new</span> CacheLoader&lt;String, List&lt;DiscussPost&gt;&gt;() &#123;
+                <span class="hljs-meta">@Nullable</span>
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;DiscussPost&gt; <span class="hljs-title">load</span><span class="hljs-params">(<span class="hljs-meta">@NonNull</span> String key)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+                    <span class="hljs-keyword">if</span> (key == <span class="hljs-keyword">null</span> || key.length() == <span class="hljs-number">0</span>)&#123;
+                        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;参数错误&quot;</span>);
+                    &#125;
+   
+                    String[] params = key.split(<span class="hljs-string">&quot;:&quot;</span>);
+                    <span class="hljs-keyword">if</span> (params == <span class="hljs-keyword">null</span> || params.length!=<span class="hljs-number">2</span>)&#123;
+                        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;参数错误&quot;</span>);
+                    &#125;
+                    <span class="hljs-keyword">int</span> offset = Integer.valueOf(params[<span class="hljs-number">0</span>]);
+                    <span class="hljs-keyword">int</span> limit = Integer.valueOf(params[<span class="hljs-number">1</span>]);
+                    <span class="hljs-comment">// 可以加入二级缓存:Redis -&gt; mysql</span>
+                    logger.debug(<span class="hljs-string">&quot;load post list from DB.&quot;</span>);
+                    <span class="hljs-keyword">return</span> discussPostMapper.selectDiscussPosts(<span class="hljs-number">0</span>, offset, limit, <span class="hljs-number">1</span>);
+                &#125;
+            &#125;);
+    <span class="hljs-comment">// 帖子总数</span>
+    postRowsCache = Caffeine.newBuilder()
+            .maximumSize(maxSize)
+            .expireAfterWrite(expireSeconds, TimeUnit.SECONDS)
+            .build(<span class="hljs-keyword">new</span> CacheLoader&lt;Integer, Integer&gt;() &#123;
+                <span class="hljs-meta">@Nullable</span>
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> Integer <span class="hljs-title">load</span><span class="hljs-params">(<span class="hljs-meta">@NonNull</span> Integer integer)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+                    logger.debug(<span class="hljs-string">&quot;load post rows from DB.&quot;</span>);
+                    <span class="hljs-keyword">return</span> discussPostMapper.selectDiscussPostRows(integer);
+                &#125;
+            &#125;);
+&#125;</code></pre>
+</li>
+<li><p>对find方法修改</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223172210.png" srcset="/img/loading.gif" alt="修改"></p>
+</li>
+</ol>
+<h3 id="caffeine缓存性能测试"><a href="#caffeine缓存性能测试" class="headerlink" title="caffeine缓存性能测试"></a>caffeine缓存性能测试</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223173220.png" srcset="/img/loading.gif" alt="添加缓存"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223173259.png" srcset="/img/loading.gif" alt="添加缓存"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223173344.png" srcset="/img/loading.gif" alt="优化去除后"></p>
+<p>再次测试</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223173436.png" srcset="/img/loading.gif" alt="吞吐量变化"></p>
+
             </div>
             <hr>
             <div>
