@@ -282,7 +282,7 @@
 <p>由此，Spring Cloud=分布式微服务架构的一站式解决方案，是多种微服务架构落地技术的集合体，俗称微服务全家桶。</p>
 </blockquote>
 <p><strong>“COORDINATE ANYTHING:DISTRIBUTED SYSTEMS SIMPLIFIED”</strong></p>
-<div class="hljs"><pre><code> `Spring Cloud` 就是微服务系统架构的一站式解决方案，在平时我们构建微服务的过程中需要做如 **服务发现注册** 、**配置中心** 、**消息总线** 、**负载均衡** 、**断路器** 、**数据监控** 等操作，而 Spring Cloud 为我们提供了一套简易的编程模型，使我们能在 Spring Boot 的基础上轻松地实现微服务项目的构建。</code></pre></div>
+<pre><code> `Spring Cloud` 就是微服务系统架构的一站式解决方案，在平时我们构建微服务的过程中需要做如 **服务发现注册** 、**配置中心** 、**消息总线** 、**负载均衡** 、**断路器** 、**数据监控** 等操作，而 Spring Cloud 为我们提供了一套简易的编程模型，使我们能在 Spring Boot 的基础上轻松地实现微服务项目的构建。</code></pre>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/imgimage-20201119163743535.png" srcset="/img/loading.gif" alt="spring cloud 蕴含技术栈"></p>
 <h3 id="1、Spring-Cloud版本选型"><a href="#1、Spring-Cloud版本选型" class="headerlink" title="1、Spring Cloud版本选型"></a>1、Spring Cloud版本选型</h3><blockquote>
 <p>SpringCloud采用了英国伦敦地铁站的名称来命名, 并由地铁站名称字母A-Z依次类推的形式来发布迭代版本。</p>
@@ -343,15 +343,15 @@
 
 
 <h3 id="2、构建cloud-provider-payment8001工程实现微服务提供者"><a href="#2、构建cloud-provider-payment8001工程实现微服务提供者" class="headerlink" title="2、构建cloud-provider-payment8001工程实现微服务提供者"></a>2、构建cloud-provider-payment8001工程实现微服务提供者</h3><p>由于cloud学习, 对于Spring Boot操作不过多阐述.该Module中主要提供create和get方法操作</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@NoArgsConstructor</span>
+<pre><code class="hljs java"><span class="hljs-meta">@NoArgsConstructor</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Payment</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Serializable</span> </span>&#123;
     <span class="hljs-keyword">private</span> Long id;
     <span class="hljs-keyword">private</span> String serial;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>相应dao、service层不过多阐述.</p>
 <p>controller层业务代码:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-meta">@Slf4j</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentController</span> </span>&#123;
 
@@ -381,22 +381,22 @@
             <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> CommonResult(<span class="hljs-number">444</span>, <span class="hljs-string">&quot;查询数据库失败&quot;</span> + id);
         &#125;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h3 id="3、构建cloud-consumer-order80工程实现客户端消费者"><a href="#3、构建cloud-consumer-order80工程实现客户端消费者" class="headerlink" title="3、构建cloud-consumer-order80工程实现客户端消费者"></a>3、构建cloud-consumer-order80工程实现客户端消费者</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121174959.png" srcset="/img/loading.gif" alt="项目结构"></p>
 <p>​    因为这里是消费者类, 主要是消费, 那么就没有service和dao, 需要调用pay模块的方法, 并且这里还没有微服务的远程调用, 那么如果要调用另外一个模块, 则需要使用基本的api调用.这里我们使用RestTemplate使得微服务消费者80调用微服务提供者8001.</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121175514.png" srcset="/img/loading.gif" alt="RestTemplate功能和使用"></p>
 <p>对应注入:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ApplicationContextConfig</span> </span>&#123;
     <span class="hljs-meta">@Bean</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> RestTemplate <span class="hljs-title">getRestTemplate</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RestTemplate();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>controller层业务代码:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-meta">@Slf4j</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderController</span> </span>&#123;
 
@@ -413,27 +413,27 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> CommonResult&lt;Payment&gt; <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id)</span></span>&#123;
         <span class="hljs-keyword">return</span> restTemplate.getForObject(PAYMENT_URL + <span class="hljs-string">&quot;/payment/get/&quot;</span> + id, CommonResult.class);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h3 id="4、entity实体类放入cloud-api-commons中"><a href="#4、entity实体类放入cloud-api-commons中" class="headerlink" title="4、entity实体类放入cloud-api-commons中"></a>4、entity实体类放入cloud-api-commons中</h3><p>其他工程加入即可</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.study.springcloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>cloud-api-commons<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>$&#123;project.version&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 <h1 id="服务注册与发现"><a href="#服务注册与发现" class="headerlink" title="服务注册与发现"></a>服务注册与发现</h1><h2 id="Eureka"><a href="#Eureka" class="headerlink" title="Eureka"></a>Eureka</h2><h3 id="1、Eureka基础知识"><a href="#1、Eureka基础知识" class="headerlink" title="1、Eureka基础知识"></a>1、Eureka基础知识</h3><p>​    前面我们没有服务注册中心, 也可以服务间调用,为什么还要服务注册?</p>
 <p>​    当服务很多时, 单靠代码手动管理是很麻烦的, 需要一个公共组件, 统一管理多服务, 包括服务是否正常运行等.Eureka用于<strong>服务注册</strong>, 目前官网<strong>已经停止更新</strong>.</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121194357.png" srcset="/img/loading.gif" alt="什么是服务治理?"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121194553.png" srcset="/img/loading.gif" alt="什么是服务注册与发现"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121195221.png" srcset="/img/loading.gif" alt="Eureka两个组件"></p>
-<h3 id="2、单机版Eureka构建"><a href="#2、单机版Eureka构建" class="headerlink" title="2、单机版Eureka构建"></a>2、单机版Eureka构建</h3><div class="hljs"><pre><code>#### a、 POM依赖</code></pre></div>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- eureka-server --&gt;</span>
+<h3 id="2、单机版Eureka构建"><a href="#2、单机版Eureka构建" class="headerlink" title="2、单机版Eureka构建"></a>2、单机版Eureka构建</h3><pre><code>#### a、 POM依赖</code></pre>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- eureka-server --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 
-<h4 id="b、yaml配置"><a href="#b、yaml配置" class="headerlink" title="b、yaml配置"></a>b、yaml配置</h4><div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+<h4 id="b、yaml配置"><a href="#b、yaml配置" class="headerlink" title="b、yaml配置"></a>b、yaml配置</h4><pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
   <span class="hljs-attr">port:</span> <span class="hljs-number">7001</span>
 
 <span class="hljs-attr">eureka:</span>
@@ -446,30 +446,30 @@
     <span class="hljs-attr">fetch-registry:</span> <span class="hljs-literal">false</span>
     <span class="hljs-attr">service-url:</span>
       <span class="hljs-comment">#设置与Eureka Server交互的地址查询服务和注册服务都需要依赖这个地址。</span>
-      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://$&#123;eureka.instance.hostname&#125;:$&#123;server.port&#125;/eureka/</span></code></pre></div>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://$&#123;eureka.instance.hostname&#125;:$&#123;server.port&#125;/eureka/</span></code></pre>
 
-<h4 id="c、主启动类"><a href="#c、主启动类" class="headerlink" title="c、主启动类"></a>c、主启动类</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@EnableEurekaServer</span></code></pre></div>
+<h4 id="c、主启动类"><a href="#c、主启动类" class="headerlink" title="c、主启动类"></a>c、主启动类</h4><pre><code class="hljs java"><span class="hljs-meta">@EnableEurekaServer</span></code></pre>
 
 <p>启动访问<a target="_blank" rel="noopener" href="http://localhost:7001/">http://localhost:7001/</a></p>
-<h4 id="d、服务入驻"><a href="#d、服务入驻" class="headerlink" title="d、服务入驻"></a>d、服务入驻</h4><div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--eureka client--&gt;</span>
+<h4 id="d、服务入驻"><a href="#d、服务入驻" class="headerlink" title="d、服务入驻"></a>d、服务入驻</h4><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--eureka client--&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 
 <p>​    添加至cloud-provider-payment8001</p>
 <p>修改yaml配置文件</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">eureka:</span>
+<pre><code class="hljs yaml"><span class="hljs-attr">eureka:</span>
   <span class="hljs-attr">client:</span>
     <span class="hljs-comment">#表示是否将自己注册进EurekaServer 默认为true</span>
     <span class="hljs-attr">register-with-eureka:</span> <span class="hljs-literal">true</span>
     <span class="hljs-comment">#是否从EurekaServer抓取已有的注册信息，默认为true。单节点无所谓，集群必须true才能配合ribbon负载均衡</span>
     <span class="hljs-attr">fetch-registry:</span> <span class="hljs-literal">true</span>
     <span class="hljs-attr">service-url:</span>
-      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://localhost:7001/eureka</span></code></pre></div>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://localhost:7001/eureka</span></code></pre>
 
 <p>主启动类添加</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@EnableEurekaClient</span></code></pre></div>
+<pre><code class="hljs java"><span class="hljs-meta">@EnableEurekaClient</span></code></pre>
 
 <p>对于cloud-consumer-order80工程一样处理</p>
 <h4 id="e、测试"><a href="#e、测试" class="headerlink" title="e、测试"></a>e、测试</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121202144.png" srcset="/img/loading.gif" alt="测试"></p>
@@ -488,7 +488,7 @@
 <h4 id="A、注册原理"><a href="#A、注册原理" class="headerlink" title="A、注册原理"></a>A、注册原理</h4><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121210334.png" srcset="/img/loading.gif" alt="互相注册, 相互守望" style="zoom:67%;" />
 
 <h5 id="a、创建"><a href="#a、创建" class="headerlink" title="a、创建"></a>a、创建</h5><h5 id="b、POM引入-写YML"><a href="#b、POM引入-写YML" class="headerlink" title="b、POM引入 写YML"></a>b、POM引入 写YML</h5><p>7001改yaml:</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
   <span class="hljs-attr">port:</span> <span class="hljs-number">7001</span>
 
 <span class="hljs-attr">eureka:</span>
@@ -501,10 +501,10 @@
     <span class="hljs-attr">fetch-registry:</span> <span class="hljs-literal">false</span>
     <span class="hljs-attr">service-url:</span>
       <span class="hljs-comment">#设置与Eureka Server交互的地址查询服务和注册服务都需要依赖这个地址。</span>
-      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://eureka7002.com:7002/eureka/</span></code></pre></div>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://eureka7002.com:7002/eureka/</span></code></pre>
 
 <p>7002:改yaml</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
   <span class="hljs-attr">port:</span> <span class="hljs-number">7002</span>
 
 <span class="hljs-attr">eureka:</span>
@@ -517,13 +517,13 @@
     <span class="hljs-attr">fetch-registry:</span> <span class="hljs-literal">false</span>
     <span class="hljs-attr">service-url:</span>
       <span class="hljs-comment">#设置与Eureka Server交互的地址查询服务和注册服务都需要依赖这个地址。</span>
-      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://eureka7001.com:7001/eureka/</span></code></pre></div>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://eureka7001.com:7001/eureka/</span></code></pre>
 
 <h5 id="c、修改Hosts配置文件模拟集群"><a href="#c、修改Hosts配置文件模拟集群" class="headerlink" title="c、修改Hosts配置文件模拟集群"></a>c、修改Hosts配置文件模拟集群</h5><p>sudo vim /etc/hosts</p>
 <p>#eureka<br>127.0.0.1       eureka7001.com<br>127.0.0.1       eureka7002.com</p>
 <h5 id="d、写主启动类"><a href="#d、写主启动类" class="headerlink" title="d、写主启动类"></a>d、写主启动类</h5><h5 id="e、测试-1"><a href="#e、测试-1" class="headerlink" title="e、测试"></a>e、测试</h5><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121212034.png" srcset="/img/loading.gif" alt="测试成功" style="zoom: 50%;" />
 
-<h4 id="B、订单支付微服务入驻Eureka集群"><a href="#B、订单支付微服务入驻Eureka集群" class="headerlink" title="B、订单支付微服务入驻Eureka集群"></a>B、订单支付微服务入驻Eureka集群</h4><div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka</span> <span class="hljs-comment">#集群版</span></code></pre></div>
+<h4 id="B、订单支付微服务入驻Eureka集群"><a href="#B、订单支付微服务入驻Eureka集群" class="headerlink" title="B、订单支付微服务入驻Eureka集群"></a>B、订单支付微服务入驻Eureka集群</h4><pre><code class="hljs yaml"><span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka</span> <span class="hljs-comment">#集群版</span></code></pre>
 
 <p>修改yaml文件即可, 测试:</p>
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121212825.png" srcset="/img/loading.gif" alt="test" style="zoom: 33%;" />
@@ -533,7 +533,7 @@
 <h3 id="4、将支付微服务集群配置"><a href="#4、将支付微服务集群配置" class="headerlink" title="4、将支付微服务集群配置"></a>4、将支付微服务集群配置</h3><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121220116.png" srcset="/img/loading.gif" alt="集群图" style="zoom: 25%;" />
 
 <h4 id="a、复制粘贴8001，改端口"><a href="#a、复制粘贴8001，改端口" class="headerlink" title="a、复制粘贴8001，改端口"></a>a、复制粘贴8001，改端口</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121214455.png" srcset="/img/loading.gif" alt="eureka显示"></p>
-<h4 id="b、修改80消费者controller调用时候的url"><a href="#b、修改80消费者controller调用时候的url" class="headerlink" title="b、修改80消费者controller调用时候的url"></a>b、修改80消费者controller调用时候的url</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<h4 id="b、修改80消费者controller调用时候的url"><a href="#b、修改80消费者controller调用时候的url" class="headerlink" title="b、修改80消费者controller调用时候的url"></a>b、修改80消费者controller调用时候的url</h4><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-meta">@Slf4j</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderController</span> </span>&#123;
 
@@ -551,27 +551,27 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> CommonResult&lt;Payment&gt; <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id)</span></span>&#123;
         <span class="hljs-keyword">return</span> restTemplate.getForObject(PAYMENT_URL + <span class="hljs-string">&quot;/payment/get/&quot;</span> + id, CommonResult.class);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121214634.png" srcset="/img/loading.gif" alt="8001与8002服务均启动" style="zoom:50%;" />
 
 <h4 id="c、开启负载均衡注解"><a href="#c、开启负载均衡注解" class="headerlink" title="c、开启负载均衡注解"></a>c、开启负载均衡注解</h4><p>需要让RestTemplate开启负载均衡注解, 还可以指定负载均衡算法, 默认<strong>轮询</strong>, 各自一次</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ApplicationContextConfig</span> </span>&#123;
     <span class="hljs-meta">@Bean</span>
     <span class="hljs-meta">@LoadBalanced</span> <span class="hljs-comment">// 负载均衡</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> RestTemplate <span class="hljs-title">getRestTemplate</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RestTemplate();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h4 id="d、修改服务主机名和ip在eureka的web上显示"><a href="#d、修改服务主机名和ip在eureka的web上显示" class="headerlink" title="d、修改服务主机名和ip在eureka的web上显示"></a>d、修改服务主机名和ip在eureka的web上显示</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121221649.png" srcset="/img/loading.gif" alt="yaml"></p>
 <h3 id="5、服务发现Discovery"><a href="#5、服务发现Discovery" class="headerlink" title="5、服务发现Discovery"></a>5、服务发现Discovery</h3><p>对于注册进Eureka里的微服务, 可以通过服务发现来获得该服务的信息</p>
 <p>以Payment8001为模版:</p>
-<h4 id="a、修改cloud-provider-payment8001的Controller"><a href="#a、修改cloud-provider-payment8001的Controller" class="headerlink" title="a、修改cloud-provider-payment8001的Controller"></a>a、修改cloud-provider-payment8001的Controller</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Resource</span>
-<span class="hljs-keyword">private</span> DiscoveryClient discoveryClient;</code></pre></div>
+<h4 id="a、修改cloud-provider-payment8001的Controller"><a href="#a、修改cloud-provider-payment8001的Controller" class="headerlink" title="a、修改cloud-provider-payment8001的Controller"></a>a、修改cloud-provider-payment8001的Controller</h4><pre><code class="hljs java"><span class="hljs-meta">@Resource</span>
+<span class="hljs-keyword">private</span> DiscoveryClient discoveryClient;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@GetMapping(value = &quot;/payment/discovery&quot;)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@GetMapping(value = &quot;/payment/discovery&quot;)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">discovery</span><span class="hljs-params">()</span> </span>&#123;
     <span class="hljs-comment">// 得到服务信息</span>
     List&lt;String&gt; services = discoveryClient.getServices();
@@ -587,9 +587,9 @@
         log.info(<span class="hljs-string">&quot;*****uri:&quot;</span>+instance.getUri());
     &#125;
     
-    <span class="hljs-keyword">return</span> discoveryClient;</code></pre></div>
+    <span class="hljs-keyword">return</span> discoveryClient;</code></pre>
 
-<h4 id="b、-修改主启动类"><a href="#b、-修改主启动类" class="headerlink" title="b、 修改主启动类"></a>b、 修改主启动类</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@EnableDiscoveryClient</span></code></pre></div>
+<h4 id="b、-修改主启动类"><a href="#b、-修改主启动类" class="headerlink" title="b、 修改主启动类"></a>b、 修改主启动类</h4><pre><code class="hljs java"><span class="hljs-meta">@EnableDiscoveryClient</span></code></pre>
 
 <h4 id="c、测试"><a href="#c、测试" class="headerlink" title="c、测试"></a>c、测试</h4><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201121222843.png" srcset="/img/loading.gif" alt="test" style="zoom: 50%;" />
 
@@ -602,21 +602,21 @@
 <h3 id="7、Eureka自我保护关闭"><a href="#7、Eureka自我保护关闭" class="headerlink" title="7、Eureka自我保护关闭"></a>7、Eureka自我保护关闭</h3><blockquote>
 <p>一般生产环境中不会禁止自我保护</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-comment"># 服务端配置</span>
+<pre><code class="hljs yaml"><span class="hljs-comment"># 服务端配置</span>
 <span class="hljs-attr">eureka:</span> 
   <span class="hljs-attr">server:</span>
     <span class="hljs-comment"># 关闭自我保护 </span>
     <span class="hljs-attr">enable-self-preservation:</span> <span class="hljs-literal">false</span>
     <span class="hljs-comment"># 接受心跳包时间间隔</span>
-    <span class="hljs-attr">eviction-interval-timer-in-ms:</span> <span class="hljs-number">2000</span></code></pre></div>
+    <span class="hljs-attr">eviction-interval-timer-in-ms:</span> <span class="hljs-number">2000</span></code></pre>
 
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-comment"># 客户端配置</span>
+<pre><code class="hljs yaml"><span class="hljs-comment"># 客户端配置</span>
 <span class="hljs-comment"># 心跳检测和续约时间</span>
 <span class="hljs-attr">instance:</span>
   <span class="hljs-comment"># Eureka客户端向服务端发送心跳的时间间隔, 单位为秒(默认30s)</span>
   <span class="hljs-attr">lease-renewal-interval-in-seconds:</span> <span class="hljs-number">30</span>
   <span class="hljs-comment"># Eureka服务端收到最后一次心跳等待服务时间上限, 默认90s, 超时则剔除服务</span>
-  <span class="hljs-attr">lease-expiration-duration-in-seconds:</span> <span class="hljs-number">90</span></code></pre></div>
+  <span class="hljs-attr">lease-expiration-duration-in-seconds:</span> <span class="hljs-number">90</span></code></pre>
 
 <h3 id="8、Eureka停更"><a href="#8、Eureka停更" class="headerlink" title="8、Eureka停更"></a>8、Eureka停更</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/Netflix/eureka/wiki">官网</a></p>
@@ -636,32 +636,32 @@
 <p>ifconfig | grep “inet “ | grep -v 127.0.0.1 mac查看自己ip </p>
 </blockquote>
 <h4 id="b、构建cloud-provider-payment8004工程"><a href="#b、构建cloud-provider-payment8004工程" class="headerlink" title="b、构建cloud-provider-payment8004工程"></a>b、构建cloud-provider-payment8004工程</h4><p>POM.xml:</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-zookeeper-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 
 <p>yaml:</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
   <span class="hljs-attr">port:</span> <span class="hljs-number">8004</span>
 <span class="hljs-attr">spring:</span>
   <span class="hljs-attr">application:</span>
     <span class="hljs-attr">name:</span> <span class="hljs-string">cloud-payment-service</span>
   <span class="hljs-attr">cloud:</span>
     <span class="hljs-attr">zookeeper:</span>
-      <span class="hljs-attr">connect-string:</span> <span class="hljs-number">101.37</span><span class="hljs-number">.162</span><span class="hljs-number">.1</span><span class="hljs-string">:2181</span></code></pre></div>
+      <span class="hljs-attr">connect-string:</span> <span class="hljs-number">101.37</span><span class="hljs-number">.162</span><span class="hljs-number">.1</span><span class="hljs-string">:2181</span></code></pre>
 
 <p>主启动类:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
+<pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
 <span class="hljs-meta">@EnableDiscoveryClient</span> <span class="hljs-comment">// 该注解用于向consul或者zookeeper作为注册中心时注册服务</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentMain8004</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         SpringApplication.run(PaymentMain8004.class, args);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>Controller:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-meta">@Slf4j</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentController</span> </span>&#123;
     <span class="hljs-meta">@Value(&quot;$&#123;server.port&#125;&quot;)</span>
@@ -671,13 +671,13 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">zk</span><span class="hljs-params">()</span> </span>&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;zookeeper:&quot;</span> + serverPort + UUID.randomUUID().toString();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>修改pom:</p>
 <blockquote>
 <p>解决jar包不一致问题</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--SpringBoot整合Zookeeper客户端--&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--SpringBoot整合Zookeeper客户端--&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-zookeeper-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
@@ -693,7 +693,7 @@
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.zookeeper<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>zookeeper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.4.14<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span></code></pre></div>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.4.14<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span></code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123153935.png" srcset="/img/loading.gif" alt="测试结果"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123154156.png" srcset="/img/loading.gif" alt="zookeeper前后变化"></p>
@@ -702,7 +702,7 @@
 <h3 id="2、思考"><a href="#2、思考" class="headerlink" title="2、思考"></a>2、思考</h3><p>我们把Zookeeper ls到底并get</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123154610.png" srcset="/img/loading.gif" alt="疑问"></p>
 <p>得到一份json字符串并解析:</p>
-<div class="hljs"><pre><code class="hljs json">&#123;
+<pre><code class="hljs json">&#123;
   <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;cloud-payment-service&quot;</span>,
   <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;ccf0aff6-d8d8-4730-acca-b035c7b424a4&quot;</span>,
   <span class="hljs-attr">&quot;address&quot;</span>: <span class="hljs-string">&quot;10.240.8.173&quot;</span>,
@@ -740,24 +740,24 @@
       &#125;
     ]
   &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h4 id="a、是临时节点还是持久节点"><a href="#a、是临时节点还是持久节点" class="headerlink" title="a、是临时节点还是持久节点?"></a>a、是临时节点还是持久节点?</h4><blockquote>
 <p>我们在zk上注册的node是临时节点, 当我们的服务一定时间内没有发送心跳, 那么zk就会将这个服务的node删除(只需停掉8004 再查看zk结点)</p>
 </blockquote>
 <h3 id="3、cloud-consumerzk-order80-入驻-zookeeper"><a href="#3、cloud-consumerzk-order80-入驻-zookeeper" class="headerlink" title="3、cloud-consumerzk-order80 入驻 zookeeper"></a>3、cloud-consumerzk-order80 入驻 zookeeper</h3><h4 id="a、构建cloud-consumerzk-order80工程"><a href="#a、构建cloud-consumerzk-order80工程" class="headerlink" title="a、构建cloud-consumerzk-order80工程"></a>a、构建cloud-consumerzk-order80工程</h4><p>POM.xml:如cloud-provider-payment8004一致</p>
 <p>yaml:</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
   <span class="hljs-attr">port:</span> <span class="hljs-number">80</span>
 <span class="hljs-attr">spring:</span>
   <span class="hljs-attr">application:</span>
     <span class="hljs-attr">name:</span> <span class="hljs-string">cloud-orderzk-service</span>
   <span class="hljs-attr">cloud:</span>
     <span class="hljs-attr">zookeeper:</span>
-      <span class="hljs-attr">connect-string:</span> <span class="hljs-number">10.240</span><span class="hljs-number">.8</span><span class="hljs-number">.173</span><span class="hljs-string">:2181</span></code></pre></div>
+      <span class="hljs-attr">connect-string:</span> <span class="hljs-number">10.240</span><span class="hljs-number">.8</span><span class="hljs-number">.173</span><span class="hljs-string">:2181</span></code></pre>
 
 <p>controller:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderController</span> </span>&#123;
 
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PAYMENT_URL = <span class="hljs-string">&quot;http://cloud-payment-service&quot;</span>;
@@ -768,7 +768,7 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">zk</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> restTemplate.getForObject(PAYMENT_URL + <span class="hljs-string">&quot;/payment/zk&quot;</span>, String.class);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h4 id="b、测试"><a href="#b、测试" class="headerlink" title="b、测试"></a>b、测试</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123161555.png" srcset="/img/loading.gif" alt="成功"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123161638.png" srcset="/img/loading.gif" alt="zk"></p>
@@ -788,14 +788,14 @@
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123171658.png" srcset="/img/loading.gif" alt="8500端口"></p>
 <h3 id="3、新建Module支付服务cloud-providerconsul-payment8006"><a href="#3、新建Module支付服务cloud-providerconsul-payment8006" class="headerlink" title="3、新建Module支付服务cloud-providerconsul-payment8006"></a>3、新建Module支付服务cloud-providerconsul-payment8006</h3><p>Pom.xml:</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--SpringCloud consul-server--&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--SpringCloud consul-server--&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-consul-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 
 <p>yaml:</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
   <span class="hljs-attr">port:</span> <span class="hljs-number">8006</span>
 <span class="hljs-attr">spring:</span>
   <span class="hljs-attr">application:</span>
@@ -806,10 +806,10 @@
       <span class="hljs-attr">port:</span> <span class="hljs-number">8500</span>
       <span class="hljs-attr">discovery:</span>
         <span class="hljs-comment">#hostname: 127.0.0.1</span>
-        <span class="hljs-attr">service-name:</span> <span class="hljs-string">$&#123;spring.application.name&#125;</span></code></pre></div>
+        <span class="hljs-attr">service-name:</span> <span class="hljs-string">$&#123;spring.application.name&#125;</span></code></pre>
 
 <p>Controller:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-meta">@Slf4j</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentController</span> </span>&#123;
     <span class="hljs-meta">@Value(&quot;$&#123;server.port&#125;&quot;)</span>
@@ -819,7 +819,7 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">consul</span><span class="hljs-params">()</span> </span>&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;consul:&quot;</span> + serverPort + UUID.randomUUID().toString();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>测试:</p>
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123191757.png" srcset="/img/loading.gif" alt="测试" style="zoom:50%;" />
@@ -827,7 +827,7 @@
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123192023.png" srcset="/img/loading.gif" alt="test"></p>
 <h3 id="4、新建Module消费服务cloud-consumerconsul-order80"><a href="#4、新建Module消费服务cloud-consumerconsul-order80" class="headerlink" title="4、新建Module消费服务cloud-consumerconsul-order80"></a>4、新建Module消费服务cloud-consumerconsul-order80</h3><p>​   pom与8006一致</p>
 <p>​   yml:</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
   <span class="hljs-attr">port:</span> <span class="hljs-number">80</span>
 
 <span class="hljs-attr">spring:</span>
@@ -839,10 +839,10 @@
       <span class="hljs-attr">port:</span> <span class="hljs-number">8500</span>
       <span class="hljs-attr">discovery:</span>
         <span class="hljs-comment">#hostname: 127.0.0.1</span>
-        <span class="hljs-attr">service-name:</span> <span class="hljs-string">$&#123;spring.application.name&#125;</span></code></pre></div>
+        <span class="hljs-attr">service-name:</span> <span class="hljs-string">$&#123;spring.application.name&#125;</span></code></pre>
 
 <p>Controller:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderController</span> </span>&#123;
 
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PAYMENT_URL = <span class="hljs-string">&quot;http://cloud-payment-service&quot;</span>;
@@ -853,7 +853,7 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">consul</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> restTemplate.getForObject(PAYMENT_URL + <span class="hljs-string">&quot;/payment/consul&quot;</span>, String.class);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>测试:</p>
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123192730.png" srcset="/img/loading.gif" alt="test" style="zoom: 50%;" />
@@ -884,10 +884,10 @@
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123201157.png" srcset="/img/loading.gif" alt="ribbon工作"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123201226.png" srcset="/img/loading.gif" alt="策略"></p>
-<h4 id="a、Eureka自动引入"><a href="#a、Eureka自动引入" class="headerlink" title="a、Eureka自动引入"></a>a、Eureka自动引入</h4><div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+<h4 id="a、Eureka自动引入"><a href="#a、Eureka自动引入" class="headerlink" title="a、Eureka自动引入"></a>a、Eureka自动引入</h4><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 
 <p><strong>Eureka新版本继承了Ribbon</strong></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201123201540.png" srcset="/img/loading.gif" alt="pom依赖"></p>
@@ -895,7 +895,7 @@
 <h4 id="c、二说RestTemplate的使用"><a href="#c、二说RestTemplate的使用" class="headerlink" title="c、二说RestTemplate的使用"></a>c、二说RestTemplate的使用</h4><blockquote>
 <p>ForObject与ForEntity区别     <a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/5.2.2.RELEASE/javadoc-api/org/springframework/web/client/RestTemplate.html">官网</a> </p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@GetMapping(&quot;/consumer/payment/get/&#123;id&#125;&quot;)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@GetMapping(&quot;/consumer/payment/get/&#123;id&#125;&quot;)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> CommonResult&lt;Payment&gt; <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id)</span></span>&#123;
     <span class="hljs-comment">// 返回对象为响应体中数据转化成的对象，基本上可以理解为Json</span>
     <span class="hljs-keyword">return</span> restTemplate.getForObject(PAYMENT_URL + <span class="hljs-string">&quot;/payment/get/&quot;</span> + id, CommonResult.class);
@@ -910,11 +910,11 @@
     &#125;<span class="hljs-keyword">else</span> &#123;
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> CommonResult&lt;&gt;(<span class="hljs-number">444</span>, <span class="hljs-string">&quot;失败&quot;</span>);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java">RestTemplate的:
+<pre><code class="hljs java">RestTemplate的:
         xxxForObject()方法,返回的是响应体中的数据
-    xxxForEntity()方法.返回的是entity对象,这个对象不仅仅包含响应体数据,还包含响应体信息(状态码等)</code></pre></div>
+    xxxForEntity()方法.返回的是entity对象,这个对象不仅仅包含响应体数据,还包含响应体信息(状态码等)</code></pre>
 
 <h3 id="3、Ribbon核心组件IRule"><a href="#3、Ribbon核心组件IRule" class="headerlink" title="3、Ribbon核心组件IRule"></a>3、Ribbon核心组件IRule</h3><blockquote>
 <p>IRule:根据特定算法从服务列表中选取一个要访问的服务</p>
@@ -925,24 +925,24 @@
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125101402.png" srcset="/img/loading.gif" alt="说明"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125101630.png" srcset="/img/loading.gif" alt="说明"></p>
 <p>在myrule下添加MySelfRule类</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MySelfRule</span> </span>&#123;
     
     <span class="hljs-meta">@Bean</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> IRule <span class="hljs-title">myRule</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RandomRule();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>主启动类添加:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RibbonClient</span></code></pre></div>
+<pre><code class="hljs java"><span class="hljs-meta">@RibbonClient</span></code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RibbonClient(name = &quot;CLOUD-PAYMENT-SERVICE&quot;, configuration = MySelfRule.class)</span></code></pre></div>
+<pre><code class="hljs java"><span class="hljs-meta">@RibbonClient(name = &quot;CLOUD-PAYMENT-SERVICE&quot;, configuration = MySelfRule.class)</span></code></pre>
 
 
 
 <h3 id="4、负载均衡算法"><a href="#4、负载均衡算法" class="headerlink" title="4、负载均衡算法"></a>4、负载均衡算法</h3><h4 id="a、轮询原理"><a href="#a、轮询原理" class="headerlink" title="a、轮询原理"></a>a、轮询原理</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125103222.png" srcset="/img/loading.gif" alt="原理"></p>
-<h4 id="b、轮询源码分析"><a href="#b、轮询源码分析" class="headerlink" title="b、轮询源码分析"></a>b、轮询源码分析</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RoundRobinRule</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractLoadBalancerRule</span> </span>&#123;
+<h4 id="b、轮询源码分析"><a href="#b、轮询源码分析" class="headerlink" title="b、轮询源码分析"></a>b、轮询源码分析</h4><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RoundRobinRule</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractLoadBalancerRule</span> </span>&#123;
     <span class="hljs-comment">// ... 省略</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RoundRobinRule</span><span class="hljs-params">()</span> </span>&#123;
         nextServerCyclicCounter = <span class="hljs-keyword">new</span> AtomicInteger(<span class="hljs-number">0</span>);
@@ -1003,7 +1003,7 @@
                 <span class="hljs-keyword">return</span> next;
         &#125;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h4 id="d、手写轮询算法"><a href="#d、手写轮询算法" class="headerlink" title="d、手写轮询算法"></a>d、手写轮询算法</h4><blockquote>
 <p>学完JUC再续…</p>
@@ -1025,37 +1025,37 @@
 <p>之前的服务间调用, 我们使用的是ribbon+RestTemplate, 现在改为使用Feign, 继承了Ribbon, 默认仍是轮询</p>
 </blockquote>
 <h4 id="a、创建cloud-consumer-feign-order80工程"><a href="#a、创建cloud-consumer-feign-order80工程" class="headerlink" title="a、创建cloud-consumer-feign-order80工程"></a>a、创建cloud-consumer-feign-order80工程</h4><p>Pom:</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- openfeign --&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- openfeign --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-openfeign<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 
 <p>yaml:</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+<pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
   <span class="hljs-attr">port:</span> <span class="hljs-number">80</span>
 <span class="hljs-attr">eureka:</span>
   <span class="hljs-attr">client:</span>
     <span class="hljs-attr">register-with-eureka:</span> <span class="hljs-literal">false</span>
     <span class="hljs-attr">service-url:</span>
       <span class="hljs-comment">#defaultZone: http://localhost:7001/eureka</span>
-      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka</span></code></pre></div>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka</span></code></pre>
 
 <p>主启动类:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@EnableFeignClients</span> <span class="hljs-comment">// 使用Feign, 激活并开启</span></code></pre></div>
+<pre><code class="hljs java"><span class="hljs-meta">@EnableFeignClients</span> <span class="hljs-comment">// 使用Feign, 激活并开启</span></code></pre>
 
-<h4 id="b、新建PaymentFeignService接口并新增注解-FeignClient"><a href="#b、新建PaymentFeignService接口并新增注解-FeignClient" class="headerlink" title="b、新建PaymentFeignService接口并新增注解@FeignClient:"></a>b、新建PaymentFeignService接口并新增注解@FeignClient:</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<h4 id="b、新建PaymentFeignService接口并新增注解-FeignClient"><a href="#b、新建PaymentFeignService接口并新增注解-FeignClient" class="headerlink" title="b、新建PaymentFeignService接口并新增注解@FeignClient:"></a>b、新建PaymentFeignService接口并新增注解@FeignClient:</h4><pre><code class="hljs java"><span class="hljs-meta">@Service</span>
 <span class="hljs-meta">@FeignClient(name = &quot;CLOUD-PAYMENT-SERVICE&quot;)</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">PaymentFeignService</span> </span>&#123;
     
     <span class="hljs-meta">@GetMapping(&quot;/payment/get/&#123;id&#125;&quot;)</span>
     <span class="hljs-function">CommonResult&lt;Payment&gt; <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(value = &quot;id&quot;)</span> Long id)</span></span>;
     
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
-<h4 id="c、写controller"><a href="#c、写controller" class="headerlink" title="c、写controller"></a>c、写controller</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<h4 id="c、写controller"><a href="#c、写controller" class="headerlink" title="c、写controller"></a>c、写controller</h4><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-meta">@Slf4j</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderController</span> </span>&#123;
     
@@ -1066,22 +1066,22 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> CommonResult&lt;Payment&gt; <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(value = &quot;id&quot;)</span> Long id)</span></span>&#123;
         <span class="hljs-keyword">return</span> paymentFeignService.get(id);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <blockquote>
 <p>注: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/huhuixin/p/7797850.html">Feign PathVariable annotation was empty on param 0.</a>报错, 需要在@PathVariable中添加Value = “”</p>
 </blockquote>
 <blockquote>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
+<pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
   <span class="hljs-attr">application:</span>
     <span class="hljs-attr">name:</span> <span class="hljs-string">CLOUD-PAYMENT-SERVICE</span>
-<span class="hljs-comment"># name与用到的地方务必统一大小写 c + shift + u</span></code></pre></div>
+<span class="hljs-comment"># name与用到的地方务必统一大小写 c + shift + u</span></code></pre>
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125140748.png" srcset="/img/loading.gif" alt="总览"></p>
 <h3 id="3、OpenFeign超时控制"><a href="#3、OpenFeign超时控制" class="headerlink" title="3、OpenFeign超时控制"></a>3、OpenFeign超时控制</h3><blockquote>
 <p>消费调用服务, 一定会存在一种<strong>超时现象</strong>, OpenFeign默认等待一秒钟, 超过后报错</p>
 </blockquote>
-<h4 id="a、在PaymentController中添加timeout接口"><a href="#a、在PaymentController中添加timeout接口" class="headerlink" title="a、在PaymentController中添加timeout接口"></a>a、在PaymentController中添加timeout接口</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<h4 id="a、在PaymentController中添加timeout接口"><a href="#a、在PaymentController中添加timeout接口" class="headerlink" title="a、在PaymentController中添加timeout接口"></a>a、在PaymentController中添加timeout接口</h4><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-meta">@Slf4j</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentController</span> </span>&#123;
     <span class="hljs-meta">@GetMapping(&quot;/payment/timeout&quot;)</span>
@@ -1093,47 +1093,47 @@
         &#125;
         <span class="hljs-keyword">return</span> serverPort;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<h4 id="b、在PaymentFeignService添加"><a href="#b、在PaymentFeignService添加" class="headerlink" title="b、在PaymentFeignService添加"></a>b、在PaymentFeignService添加</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<h4 id="b、在PaymentFeignService添加"><a href="#b、在PaymentFeignService添加" class="headerlink" title="b、在PaymentFeignService添加"></a>b、在PaymentFeignService添加</h4><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
 <span class="hljs-meta">@FeignClient(value = &quot;cloud-payment-service&quot;)</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">PaymentFeignService</span> </span>&#123;
     <span class="hljs-meta">@GetMapping(&quot;/payment/timeout&quot;)</span>
     <span class="hljs-function">String <span class="hljs-title">timeout</span><span class="hljs-params">()</span></span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<h4 id="c、OrderController中添加"><a href="#c、OrderController中添加" class="headerlink" title="c、OrderController中添加"></a>c、OrderController中添加</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
+<h4 id="c、OrderController中添加"><a href="#c、OrderController中添加" class="headerlink" title="c、OrderController中添加"></a>c、OrderController中添加</h4><pre><code class="hljs java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-meta">@Slf4j</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OrderController</span> </span>&#123;
     <span class="hljs-meta">@GetMapping(&quot;/consumer/payment/timeout&quot;)</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">timeout</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> paymentFeignService.timeout();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>​           <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125142929.png" srcset="/img/loading.gif" alt="测试结果"></p>
-<h4 id="d、超时控制"><a href="#d、超时控制" class="headerlink" title="d、超时控制"></a>d、超时控制</h4><div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">ribbon:</span>
+<h4 id="d、超时控制"><a href="#d、超时控制" class="headerlink" title="d、超时控制"></a>d、超时控制</h4><pre><code class="hljs yaml"><span class="hljs-attr">ribbon:</span>
   <span class="hljs-comment"># 建立连接时间</span>
   <span class="hljs-attr">ReadTimeout:</span> <span class="hljs-number">5000</span>
   <span class="hljs-comment"># 连接后从服务器读取到可用资源时间</span>
-  <span class="hljs-attr">ConnectTimeout:</span> <span class="hljs-number">5000</span></code></pre></div>
+  <span class="hljs-attr">ConnectTimeout:</span> <span class="hljs-number">5000</span></code></pre>
 
 <p>​       <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125143321.png" srcset="/img/loading.gif" alt="测试结果"></p>
 <h3 id="4、日志增强"><a href="#4、日志增强" class="headerlink" title="4、日志增强"></a>4、日志增强</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125143432.png" srcset="/img/loading.gif" alt="openfeign日志"></p>
 <p>写config:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FeignConfig</span> </span>&#123;
     
     <span class="hljs-meta">@Bean</span>
     Logger.<span class="hljs-function">Level <span class="hljs-title">feignLoggerLevel</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> Logger.Level.FULL;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>yaml开启:</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-attr">logging:</span>
+<pre><code class="hljs yaml"><span class="hljs-attr">logging:</span>
   <span class="hljs-attr">level:</span> 
-    <span class="hljs-attr">com.qiuke.springcloud.service.PaymentFeignService:</span> <span class="hljs-string">debug</span></code></pre></div>
+    <span class="hljs-attr">com.qiuke.springcloud.service.PaymentFeignService:</span> <span class="hljs-string">debug</span></code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125144229.png" srcset="/img/loading.gif" alt="日志"></p>
 <h1 id="服务降级"><a href="#服务降级" class="headerlink" title="服务降级"></a>服务降级</h1><h2 id="Hystrix-断路器"><a href="#Hystrix-断路器" class="headerlink" title="Hystrix 断路器"></a>Hystrix 断路器</h2><h3 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h3><h4 id="a、分布式面临的问题"><a href="#a、分布式面临的问题" class="headerlink" title="a、分布式面临的问题"></a>a、分布式面临的问题</h4><blockquote>

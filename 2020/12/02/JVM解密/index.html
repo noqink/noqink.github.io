@@ -251,10 +251,10 @@
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202203444.png" srcset="/img/loading.gif" alt="JVM种类"></p>
 <h1 id="内存结构"><a href="#内存结构" class="headerlink" title="内存结构"></a>内存结构</h1><h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202203747.png" srcset="/img/loading.gif" alt="整体架构"></p>
-<div class="hljs"><pre><code class="hljs mipsasm">ClassLoader为类加载器，<span class="hljs-keyword">java源代码编译为java二进制字节码后通过类加载器加载到JVM里运行，类放在方法区，</span>
+<pre><code class="hljs mipsasm">ClassLoader为类加载器，<span class="hljs-keyword">java源代码编译为java二进制字节码后通过类加载器加载到JVM里运行，类放在方法区，</span>
 <span class="hljs-keyword">创建的实例、对象放在堆里，其间所用到的方法放入虚拟机栈、程序计数器以及本地方法栈，方法执行时每行代码由</span>
 <span class="hljs-keyword">执行引擎解释器逐行执行，方法中的热点代码(频繁调用的代码)由JIT优化后执行，GC对堆中不再被引用的对象引用</span>
-<span class="hljs-keyword">回收。与操作系统打交道则需要本地方法接口调用</span></code></pre></div>
+<span class="hljs-keyword">回收。与操作系统打交道则需要本地方法接口调用</span></code></pre>
 
 <h2 id="1、程序计数器"><a href="#1、程序计数器" class="headerlink" title="1、程序计数器"></a>1、程序计数器</h2><h3 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h3><blockquote>
 <p>Program Counter Register 程序计数器(寄存器)</p>
@@ -288,7 +288,7 @@
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202210927.png" srcset="/img/loading.gif" alt="例子" style="zoom:50%;" />
 
 <h3 id="2-2-演示"><a href="#2-2-演示" class="headerlink" title="2.2 演示"></a>2.2 演示</h3><p>代码：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo_01</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo_01</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
         method1();
     &#125;
@@ -301,7 +301,7 @@
         <span class="hljs-keyword">int</span> c =  a + b;
         <span class="hljs-keyword">return</span> c;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202211143.png" srcset="/img/loading.gif" alt="图样" style="zoom:50%;" />
 
@@ -334,7 +334,7 @@
 </li>
 </ul>
 <p>  例子:</p>
-  <div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+  <pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 局部变量的线程安全问题</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo_01_18</span> </span>&#123;
@@ -347,7 +347,7 @@
         &#125;
         System.out.println(x);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>  x变量为方法内的局部变量，一个线程一个栈，每次方法调用都产生一个栈帧，分配局部变量。</p>
   <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201203183431.png" srcset="/img/loading.gif" alt="局部变量" style="zoom: 33%;" />
@@ -359,7 +359,7 @@
 
 
 <p>​    但如果例子为:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 局部变量的线程安全问题</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo_01_17</span> </span>&#123;
@@ -397,7 +397,7 @@
         sb.append(<span class="hljs-number">3</span>);
         <span class="hljs-keyword">return</span> sb;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -406,7 +406,7 @@
 </blockquote>
 <h4 id="发生原因"><a href="#发生原因" class="headerlink" title="发生原因"></a>发生原因</h4><ul>
 <li><p>虚拟机栈中， <strong>栈帧过多</strong>（无限递归）</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 演示栈内存溢出 java.lang.StackOverflowError</span>
 <span class="hljs-comment"> * -Xss256k</span>
 <span class="hljs-comment"> */</span>
@@ -426,7 +426,7 @@
         count++;
         method1();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201203185104.png" srcset="/img/loading.gif" alt="次数"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201203185225.png" srcset="/img/loading.gif" alt="修改栈内存"></p>
@@ -437,7 +437,7 @@
 <li>每个栈帧 <strong>所占用过大</strong></li>
 </ul>
 <p>​    引用的包导致栈溢出的例子:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * json 数据转换</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo_01_19</span> </span>&#123;
@@ -501,20 +501,20 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setEmps</span><span class="hljs-params">(List&lt;Emp&gt; emps)</span> </span>&#123;
         <span class="hljs-keyword">this</span>.emps = emps;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>Json转换时:{ name: ‘Market’, emps: [{ name:’zhang’, dept:{ name:’’, emps: [ {}]} },] }</p>
 <p>解决方案:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Emp</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Emp</span> </span>&#123;
     <span class="hljs-keyword">private</span> String name;
     <span class="hljs-meta">@JsonIgnore</span>
     <span class="hljs-keyword">private</span> Dept dept;
     <span class="hljs-comment">// ....</span>
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
-<h3 id="2-5-线程运行诊断"><a href="#2-5-线程运行诊断" class="headerlink" title="2.5 线程运行诊断"></a>2.5 线程运行诊断</h3><h4 id="案例1-cpu占用过高"><a href="#案例1-cpu占用过高" class="headerlink" title="案例1: cpu占用过高"></a>案例1: cpu占用过高</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<h3 id="2-5-线程运行诊断"><a href="#2-5-线程运行诊断" class="headerlink" title="2.5 线程运行诊断"></a>2.5 线程运行诊断</h3><h4 id="案例1-cpu占用过高"><a href="#案例1-cpu占用过高" class="headerlink" title="案例1: cpu占用过高"></a>案例1: cpu占用过高</h4><pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 演示 cpu 占用过高</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo_01_16</span> </span>&#123;
@@ -546,7 +546,7 @@
             &#125;
         &#125;, <span class="hljs-string">&quot;thread3&quot;</span>).start();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>此代码运行到linux环境下:</p>
 <p>top命令:</p>
@@ -568,7 +568,7 @@
 </li>
 </ul>
 <h4 id="案例2-程序运行很长时间没有结果"><a href="#案例2-程序运行很长时间没有结果" class="headerlink" title="案例2: 程序运行很长时间没有结果"></a>案例2: 程序运行很长时间没有结果</h4><p>代码:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 演示线程死锁</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span></span>&#123;&#125;;
@@ -601,7 +601,7 @@
         &#125;).start();
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>同样可以利用jstack来查询</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204101456.png" srcset="/img/loading.gif" alt="结果"></p>
@@ -623,7 +623,7 @@
 <h3 id="4-3-堆内存溢出问题"><a href="#4-3-堆内存溢出问题" class="headerlink" title="4.3 堆内存溢出问题"></a>4.3 堆内存溢出问题</h3><blockquote>
 <p> <strong>java.lang.OutofMemoryError</strong> ：java heap space. 堆内存溢出</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo1_5</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo1_5</span> </span>&#123;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
@@ -640,7 +640,7 @@
             System.out.println(i);
         &#125;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204103052.png" srcset="/img/loading.gif" alt="结果"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204103650.png" srcset="/img/loading.gif" alt="修改"></p>
@@ -655,7 +655,7 @@
 <h3 id="jconsole工具"><a href="#jconsole工具" class="headerlink" title="jconsole工具"></a>jconsole工具</h3><ul>
 <li><p>图形界面的，多功能的检测工具，可以 <strong>连续监测</strong></p>
 <p>代码:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo1_4</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo1_4</span> </span>&#123;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
         System.out.println(<span class="hljs-string">&quot;1...&quot;</span>);
@@ -668,13 +668,13 @@
         System.out.println(<span class="hljs-string">&quot;3...&quot;</span>);
         Thread.sleep(<span class="hljs-number">1000000L</span>);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204105859.png" srcset="/img/loading.gif" alt="检测"></p>
 </li>
 </ul>
 <h3 id="案例-gc回收之后-内存占用仍然很高"><a href="#案例-gc回收之后-内存占用仍然很高" class="headerlink" title="案例: gc回收之后, 内存占用仍然很高"></a>案例: gc回收之后, 内存占用仍然很高</h3><p>​ 代码:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 演示查看对象个数 堆转储 dump</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo1_13</span> </span>&#123;
@@ -690,7 +690,7 @@
 &#125;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Student</span> </span>&#123;
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">byte</span>[] big = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>];
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>​ 执行完gc后, 内存占用还是很高:</p>
 <p>​ <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204135214.png" srcset="/img/loading.gif" alt="执行完gc后"></p>
@@ -704,7 +704,7 @@
 <p>​   元空间已经不由jvm管理内存了</p>
 <h3 id="5-3-内存溢出"><a href="#5-3-内存溢出" class="headerlink" title="5.3 内存溢出"></a>5.3 内存溢出</h3><ul>
 <li><p>1.8以后会导致 <strong>元空间</strong>内存溢出</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 演示元空间内存溢出 java.lang.OutOfMemoryError: Metaspace</span>
 <span class="hljs-comment"> * -XX:MaxMetaspaceSize=8m</span>
 <span class="hljs-comment"> */</span>
@@ -727,7 +727,7 @@
             System.out.println(j);
         &#125;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204143911.png" srcset="/img/loading.gif" alt="配置"></p>
 <p>（元空间默认用系统内存，很难演示元空间溢出）</p>
@@ -758,12 +758,12 @@
 <p>所以使用这种框架, 是很容易产生 <strong>永久代溢出</strong> 的情况的！</p>
 </li>
 </ul>
-<h3 id="5-5-常量池"><a href="#5-5-常量池" class="headerlink" title="5.5 常量池"></a>5.5 常量池</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 运行先编译二进制字节码，包含了(类的基本信息、常量池、类的方法定义（包含了虚拟机指令）)</span>
+<h3 id="5-5-常量池"><a href="#5-5-常量池" class="headerlink" title="5.5 常量池"></a>5.5 常量池</h3><pre><code class="hljs java"><span class="hljs-comment">// 运行先编译二进制字节码，包含了(类的基本信息、常量池、类的方法定义（包含了虚拟机指令）)</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloWorld</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         System.out.println(<span class="hljs-string">&quot;hello!&quot;</span>);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>找到class文件:</p>
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204150212.png" srcset="/img/loading.gif" alt="class文件" style="zoom:50%;" />
@@ -776,7 +776,7 @@
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201204150745.png" srcset="/img/loading.gif" alt="main方法"></p>
 <p>0,3,5,8后为虚拟机指令, getstatic为获取 <strong>静态变量</strong> , 即得到sout, ldc加载参数(hello!), invokevirtual虚方法调用,调用println, return为结束</p>
 <p>#2,#3,#4查表翻译:</p>
-<div class="hljs"><pre><code class="hljs clean">根据#<span class="hljs-number">2</span>查到常量池的表 -&gt; Fieldref -&gt; #<span class="hljs-number">21.</span>#<span class="hljs-number">22</span>
+<pre><code class="hljs clean">根据#<span class="hljs-number">2</span>查到常量池的表 -&gt; Fieldref -&gt; #<span class="hljs-number">21.</span>#<span class="hljs-number">22</span>
 #<span class="hljs-number">21</span> -&gt; Class -&gt; #<span class="hljs-number">28</span>
 (说明要找java/lang/System类的成员变量)
 #<span class="hljs-number">22</span> -&gt; #<span class="hljs-number">29</span> #<span class="hljs-number">30</span>
@@ -784,7 +784,7 @@
 
 根据#<span class="hljs-number">3</span>查到常量池的表 -&gt; #<span class="hljs-number">23</span>(String) -&gt; hello!(utf<span class="hljs-number">-8</span>) 加载进来
 
-#<span class="hljs-number">4</span> -&gt; 方法调用Methodref -&gt; ....</code></pre></div>
+#<span class="hljs-number">4</span> -&gt; 方法调用Methodref -&gt; ....</code></pre>
 
 <blockquote>
 <p>常量池作用</p>
@@ -801,45 +801,45 @@
 </li>
 </ul>
 <h3 id="5-7-String-Table-（串池）"><a href="#5-7-String-Table-（串池）" class="headerlink" title="5.7 String Table （串池）"></a>5.7 String Table （串池）</h3><h4 id="字节码和常量池角度理解底层原理"><a href="#字节码和常量池角度理解底层原理" class="headerlink" title="字节码和常量池角度理解底层原理"></a>字节码和常量池角度理解底层原理</h4><p>测试代码：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
     String s1 = <span class="hljs-string">&quot;a&quot;</span>; <span class="hljs-comment">// 懒惰的</span>
     String s2 = <span class="hljs-string">&quot;b&quot;</span>;
     String s3 = <span class="hljs-string">&quot;ab&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201225100606.png" srcset="/img/loading.gif" alt="进行编译"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201225100858.png" srcset="/img/loading.gif" alt="加载"></p>
 <p>Ldc #n 从常量池n号位置加载对应信息（常量、对象引用）</p>
 <p>astore_1 加载好的信息放入局部变量表编号1</p>
-<div class="hljs"><pre><code class="hljs js">常量池中的信息，都会被加载到运行时常量池中， 这时 a b ab 都是常量池中的符号，还没有变为 java 字符串对象
+<pre><code class="hljs js">常量池中的信息，都会被加载到运行时常量池中， 这时 a b ab 都是常量池中的符号，还没有变为 java 字符串对象
 执行到ldc #2 会把 a 符号变为 &quot;a&quot; 字符串对象，此时会准备一份空间为String table[] （哈希表,不可扩容）也就是串池，存入，然后去找，看看有没有取值相同的key
 
 执行到ldc #3 会把 b 符号变为 &quot;b&quot; 字符串对象
 执行到ldc #4 会把 ab 符号变为 &quot;ab&quot; 字符串对象
 
-#懒惰的 用到了才会创建，用不到不会提前创建</code></pre></div>
+#懒惰的 用到了才会创建，用不到不会提前创建</code></pre>
 
 
 
 <h4 id="字符串变量拼接"><a href="#字符串变量拼接" class="headerlink" title="字符串变量拼接"></a>字符串变量拼接</h4><p>修改代码：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
     String s1 = <span class="hljs-string">&quot;a&quot;</span>; <span class="hljs-comment">// 懒惰的 用到了才会创建，用不到不会提前创建</span>
     String s2 = <span class="hljs-string">&quot;b&quot;</span>;
     String s3 = <span class="hljs-string">&quot;ab&quot;</span>;
     String s4 = s1 + s2;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>再次编译：</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201225102356.png" srcset="/img/loading.gif" alt="编译"></p>
 <p>先创建一个 <strong>StringBuilder</strong> 对象，invokespecial调用方法， init为 <strong>构造方法，且无参</strong>，aload_1把s1加载进来，和astore_1相对，调用append方法，再aload_2，append方法，再调用toString方法，再存储astore_4</p>
 <p>所以是会调用StringBuilder的toString()方法的，我们找到这个方法</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201225102830.png" srcset="/img/loading.gif" alt="toString"></p>
-<div class="hljs"><pre><code class="hljs java">System.out.println(s3 == s4);
-<span class="hljs-comment">// false</span></code></pre></div>
+<pre><code class="hljs java">System.out.println(s3 == s4);
+<span class="hljs-comment">// false</span></code></pre>
 
 <p> s3值为ab，是串池中的一个对象，s4引用的是一个新的字符串对象，存在 <strong>堆</strong> 里面，new出来的。</p>
 <h4 id="编译期优化"><a href="#编译期优化" class="headerlink" title="编译期优化"></a>编译期优化</h4><p>代码修改为</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
     String s1 = <span class="hljs-string">&quot;a&quot;</span>; <span class="hljs-comment">// 懒惰的 用到了才会创建，用不到不会提前创建</span>
     String s2 = <span class="hljs-string">&quot;b&quot;</span>;
     String s3 = <span class="hljs-string">&quot;ab&quot;</span>;
@@ -847,7 +847,7 @@
     String s5 = <span class="hljs-string">&quot;a&quot;</span> + <span class="hljs-string">&quot;b&quot;</span>;
     System.out.println(s3 == s5);
 &#125;
-<span class="hljs-comment">// true</span></code></pre></div>
+<span class="hljs-comment">// true</span></code></pre>
 
 <p>编译后发现是直接去取值</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201225103458.png" srcset="/img/loading.gif" alt="取值"></p>
@@ -856,7 +856,7 @@
 <p>原理</p>
 </blockquote>
 <p> <strong>javac 在编译期间的优化</strong> ，结果已经在编译期确定为ab，并在StringTable中查找。</p>
-<h4 id="字符串延迟实例化"><a href="#字符串延迟实例化" class="headerlink" title="字符串延迟实例化"></a>字符串延迟实例化</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+<h4 id="字符串延迟实例化"><a href="#字符串延迟实例化" class="headerlink" title="字符串延迟实例化"></a>字符串延迟实例化</h4><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
     <span class="hljs-keyword">int</span> x = args.length;
     System.out.println(); <span class="hljs-comment">// 字符串个数 2275</span>
 
@@ -881,7 +881,7 @@
     System.out.print(<span class="hljs-string">&quot;9&quot;</span>);
     System.out.print(<span class="hljs-string">&quot;0&quot;</span>);
     System.out.print(x); <span class="hljs-comment">// 字符串个数</span>
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>用的IDEA memory工具查看</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201225110206.png" srcset="/img/loading.gif" alt="memory"></p>
@@ -901,7 +901,7 @@
 <h4 id="intern方法"><a href="#intern方法" class="headerlink" title="intern方法"></a>intern方法</h4><blockquote>
 <p>主动将串池中没有的串放入</p>
 </blockquote>
-<h5 id="intern-1-8"><a href="#intern-1-8" class="headerlink" title="intern 1.8"></a>intern 1.8</h5><div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+<h5 id="intern-1-8"><a href="#intern-1-8" class="headerlink" title="intern 1.8"></a>intern 1.8</h5><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
 
     <span class="hljs-comment">// a b都是常量，放在串池 两个 a b</span>
     <span class="hljs-comment">// new的String放在堆中 三个 a b ab 动态拼接的字符串开始都放在堆中，不在串池</span>
@@ -916,10 +916,10 @@
     <span class="hljs-comment">// true</span>
     System.out.println(s == <span class="hljs-string">&quot;ab&quot;</span>); <span class="hljs-comment">// intern会将s尝试放入串池</span>
     <span class="hljs-comment">// true</span>
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>如果“ab”一开始就放入</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
     String x = <span class="hljs-string">&quot;ab&quot;</span>; <span class="hljs-comment">// ab放入串池</span>
     
     <span class="hljs-comment">// a b都是常量，放在串池 三个 a b ab</span>
@@ -935,7 +935,7 @@
     <span class="hljs-comment">// true</span>
     System.out.println(s == x); <span class="hljs-comment">// 拿堆的比，intern没有放入</span>
     <span class="hljs-comment">// false</span>
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>s.intern()，如果串池没有，s会放入；如果有，会返回串池中的对象</p>
 <p>所以如果串池没有 s == “ab” ，s放入了，所以相等</p>
@@ -957,7 +957,7 @@
 </li>
 </ul>
 <h4 id="String-Table-面试题"><a href="#String-Table-面试题" class="headerlink" title="String Table 面试题"></a>String Table 面试题</h4><p>code：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         String s1 = <span class="hljs-string">&quot;a&quot;</span>;
         String s2 = <span class="hljs-string">&quot;b&quot;</span>;
         String s3 = <span class="hljs-string">&quot;a&quot;</span> + <span class="hljs-string">&quot;b&quot;</span>; <span class="hljs-comment">// ab</span>
@@ -975,16 +975,16 @@
         x2.intern();<span class="hljs-comment">// x2放入串池失败，堆中</span>
        
         System.out.println(x1 == x2); <span class="hljs-comment">// false</span>
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 
 <p>如果代码：</p>
-<div class="hljs"><pre><code class="hljs java">String x2 = <span class="hljs-keyword">new</span> String(<span class="hljs-string">&quot;c&quot;</span>) + <span class="hljs-keyword">new</span> String(<span class="hljs-string">&quot;d&quot;</span>); <span class="hljs-comment">// new String(&quot;cd&quot;)</span>
+<pre><code class="hljs java">String x2 = <span class="hljs-keyword">new</span> String(<span class="hljs-string">&quot;c&quot;</span>) + <span class="hljs-keyword">new</span> String(<span class="hljs-string">&quot;d&quot;</span>); <span class="hljs-comment">// new String(&quot;cd&quot;)</span>
         x2.intern(); <span class="hljs-comment">// x2放入串池</span>
         String x1 = <span class="hljs-string">&quot;cd&quot;</span>;
 
 <span class="hljs-comment">// 问，如果调换了【最后两行代码】的位置呢，如果是jdk1.6呢</span>
         System.out.println(x1 == x2); <span class="hljs-comment">// 1.8 true 1.6 false</span>
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 
 
 
@@ -993,7 +993,7 @@
 <p>堆里面串池只需要 <strong>minor GC</strong> 就可以触发垃圾回收。</p>
 <h5 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h5><p>1.6 环境下运行和1.8环境报错不同</p>
 <p>code：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 演示 StringTable 位置</span>
 <span class="hljs-comment"> * 在jdk8下设置 -Xmx10m -XX:-UseGCOverheadLimit</span>
 <span class="hljs-comment"> * 在jdk6下设置 -XX:MaxPermSize=10m</span>
@@ -1013,7 +1013,7 @@
             System.out.println(i);
         &#125;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201225142201.png" srcset="/img/loading.gif" alt="VM setting"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201225142737.png" srcset="/img/loading.gif" alt="堆错误"></p>
@@ -1027,7 +1027,7 @@
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201225143455.png" srcset="/img/loading.gif" alt="开关"></p>
 <p>加号表示开启，减号表示关闭</p>
 <h4 id="String-Table-垃圾回收"><a href="#String-Table-垃圾回收" class="headerlink" title="String Table 垃圾回收"></a>String Table 垃圾回收</h4><p>字符串常量并不是永久的，也是会被GC回收的。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 演示 StringTable 垃圾回收</span>
 <span class="hljs-comment"> * 堆内存最大值       打印字符串表统计信息          打印GC信息</span>
 <span class="hljs-comment"> * -Xmx10m -XX:+PrintStringTableStatistics -XX:+PrintGCDetails -verbose:gc</span>
@@ -1047,7 +1047,7 @@
         &#125;
 
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201225144248.png" srcset="/img/loading.gif" alt="JVM配置"></p>
 <p>SymbolTable statistics: 符号表 也在常量池</p>

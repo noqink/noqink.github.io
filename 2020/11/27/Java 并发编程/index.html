@@ -362,10 +362,10 @@
 <p>应用之提高效率(案例1)</p>
 </blockquote>
 <p>充分利用多核 cpu 的优势，提高运行效率。想象下面的场景，执行 3 个计算，最后将计算结果汇总。</p>
-<div class="hljs"><pre><code class="hljs crmsh">计算 <span class="hljs-number">1</span> 花费 <span class="hljs-number">10</span> <span class="hljs-keyword">ms</span> <span class="hljs-title"></span>
+<pre><code class="hljs crmsh">计算 <span class="hljs-number">1</span> 花费 <span class="hljs-number">10</span> <span class="hljs-keyword">ms</span> <span class="hljs-title"></span>
 <span class="hljs-title">计算 2</span> 花费 <span class="hljs-number">11</span> <span class="hljs-keyword">ms</span> <span class="hljs-title"></span>
 <span class="hljs-title">计算 3</span> 花费 <span class="hljs-number">9</span> <span class="hljs-keyword">ms</span> <span class="hljs-title"></span>
-<span class="hljs-title">汇总需要 1</span> ms</code></pre></div>
+<span class="hljs-title">汇总需要 1</span> ms</code></pre>
 
 <ul>
 <li>如果是串行执行，那么总共花费的时间是 10 + 11 + 9 + 1 = 31ms</li>
@@ -377,7 +377,7 @@
 <p>// TODO JMH测试</p>
 </blockquote>
 <p>1)设计代码:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Fork(1)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Fork(1)</span>
 <span class="hljs-meta">@BenchmarkMode(Mode.AverageTime)</span>
 <span class="hljs-meta">@Warmup(iterations=3)</span>
 <span class="hljs-meta">@Measurement(iterations=5)</span>
@@ -436,22 +436,22 @@
         <span class="hljs-keyword">new</span> Thread(t1).start();
         <span class="hljs-keyword">return</span> t1.get();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>测试结果:</p>
 <blockquote>
 <p>多核</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs apache"><span class="hljs-attribute">Benchmark</span> 					Mode 	Samples 	Score 	Score error 	Units 
+<pre><code class="hljs apache"><span class="hljs-attribute">Benchmark</span> 					Mode 	Samples 	Score 	Score error 	Units 
 <span class="hljs-attribute">o</span>.s.MyBenchmark.c 	avgt 	<span class="hljs-number">5</span> 				<span class="hljs-number">0</span>.<span class="hljs-number">020</span> 	<span class="hljs-number">0</span>.<span class="hljs-number">001</span> 				s/op 
-<span class="hljs-attribute">o</span>.s.MyBenchmark.d 	avgt 	<span class="hljs-number">5</span> 				<span class="hljs-number">0</span>.<span class="hljs-number">043</span> 	<span class="hljs-number">0</span>.<span class="hljs-number">003</span> 				s/op</code></pre></div>
+<span class="hljs-attribute">o</span>.s.MyBenchmark.d 	avgt 	<span class="hljs-number">5</span> 				<span class="hljs-number">0</span>.<span class="hljs-number">043</span> 	<span class="hljs-number">0</span>.<span class="hljs-number">003</span> 				s/op</code></pre>
 
 <blockquote>
 <p>单核</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs apache"><span class="hljs-attribute">Benchmark</span> 					Mode 	Samples Score 	Score error 	Units 
+<pre><code class="hljs apache"><span class="hljs-attribute">Benchmark</span> 					Mode 	Samples Score 	Score error 	Units 
 <span class="hljs-attribute">o</span>.s.MyBenchmark.c 	avgt 	<span class="hljs-number">5</span> 			<span class="hljs-number">0</span>.<span class="hljs-number">061</span> 	<span class="hljs-number">0</span>.<span class="hljs-number">060</span> 				s/op 
-<span class="hljs-attribute">o</span>.s.MyBenchmark.d 	avgt 	<span class="hljs-number">5</span> 			<span class="hljs-number">0</span>.<span class="hljs-number">064</span> 	<span class="hljs-number">0</span>.<span class="hljs-number">071</span> 				s/op</code></pre></div>
+<span class="hljs-attribute">o</span>.s.MyBenchmark.d 	avgt 	<span class="hljs-number">5</span> 			<span class="hljs-number">0</span>.<span class="hljs-number">064</span> 	<span class="hljs-number">0</span>.<span class="hljs-number">071</span> 				s/op</code></pre>
 
 <p>2)结论:</p>
 <ul>
@@ -466,7 +466,7 @@
 <li><p>IO 操作不占用 cpu，只是我们一般拷贝文件使用的是 <strong><em>【阻塞 IO】</em></strong>，这时相当于线程虽然不用 cpu，但需要一 直等待 IO 结束，没能充分利用线程。所以才有后面的 <strong><em>【非阻塞 IO】</em></strong>和 <strong><em>【异步 IO】</em></strong>优化</p>
 </li>
 </ul>
-<h2 id="2、Java-线程"><a href="#2、Java-线程" class="headerlink" title="2、Java 线程"></a>2、Java 线程</h2><h3 id="2-1、创建和运行线程"><a href="#2-1、创建和运行线程" class="headerlink" title="2.1、创建和运行线程"></a>2.1、创建和运行线程</h3><h4 id="方法一-直接使用Thread"><a href="#方法一-直接使用Thread" class="headerlink" title="方法一, 直接使用Thread"></a>方法一, 直接使用Thread</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 创建线程对象</span>
+<h2 id="2、Java-线程"><a href="#2、Java-线程" class="headerlink" title="2、Java 线程"></a>2、Java 线程</h2><h3 id="2-1、创建和运行线程"><a href="#2-1、创建和运行线程" class="headerlink" title="2.1、创建和运行线程"></a>2.1、创建和运行线程</h3><h4 id="方法一-直接使用Thread"><a href="#方法一-直接使用Thread" class="headerlink" title="方法一, 直接使用Thread"></a>方法一, 直接使用Thread</h4><pre><code class="hljs java"><span class="hljs-comment">// 创建线程对象</span>
 Thread t = <span class="hljs-keyword">new</span> Thread()&#123;
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
@@ -475,17 +475,17 @@ Thread t = <span class="hljs-keyword">new</span> Thread()&#123;
 &#125;;
 t.setName(<span class="hljs-string">&quot;t0&quot;</span>);
 <span class="hljs-comment">// 启动线程</span>
-t.start();</code></pre></div>
+t.start();</code></pre>
 
 <p>例如:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 构造方法的参数是给线程指定名字，推荐 </span>
+<pre><code class="hljs java"><span class="hljs-comment">// 构造方法的参数是给线程指定名字，推荐 </span>
 Thread t1 = <span class="hljs-keyword">new</span> Thread(<span class="hljs-string">&quot;t1&quot;</span>)&#123;
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
         log.info(<span class="hljs-string">&quot;hello&quot;</span>);
     &#125;
 &#125;;
-t1.start();</code></pre></div>
+t1.start();</code></pre>
 
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201127161656.png" srcset="/img/loading.gif" alt="test" style="zoom:50%;" />
 
@@ -494,7 +494,7 @@ t1.start();</code></pre></div>
 <li>Thread 代表线程</li>
 <li>Runnable 可运行的任务(线程要执行的代码)</li>
 </ul>
-<div class="hljs"><pre><code class="hljs java">Runnable runnable = <span class="hljs-keyword">new</span> Runnable() &#123;
+<pre><code class="hljs java">Runnable runnable = <span class="hljs-keyword">new</span> Runnable() &#123;
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
         <span class="hljs-comment">// 要执行的任务</span>
@@ -504,16 +504,16 @@ t1.start();</code></pre></div>
 <span class="hljs-comment">// 创建线程对象</span>
 Thread t = <span class="hljs-keyword">new</span> Thread(runnable, <span class="hljs-string">&quot;t2&quot;</span>);
 <span class="hljs-comment">// 启动线程</span>
-t.start();</code></pre></div>
+t.start();</code></pre>
 
-<div class="hljs"><pre><code class="hljs css">16<span class="hljs-selector-pseudo">:22</span><span class="hljs-selector-pseudo">:02</span> <span class="hljs-selector-attr">[t2]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span></code></pre></div>
+<pre><code class="hljs css">16<span class="hljs-selector-pseudo">:22</span><span class="hljs-selector-pseudo">:02</span> <span class="hljs-selector-attr">[t2]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span></code></pre>
 
 <h4 id="lambda精简代码"><a href="#lambda精简代码" class="headerlink" title="lambda精简代码"></a>lambda精简代码</h4><blockquote>
 <p>JDK中只有一个抽象方法的接口会加一个 @FunctionalInterface 注解，可被lambda表达式简化</p>
 </blockquote>
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201127162415.png" srcset="/img/loading.gif" alt="注解" style="zoom:33%;" />
 
-<div class="hljs"><pre><code class="hljs java">Runnable r2 = () -&gt; &#123;log.debug(<span class="hljs-string">&quot;running&quot;</span>);&#125;;
+<pre><code class="hljs java">Runnable r2 = () -&gt; &#123;log.debug(<span class="hljs-string">&quot;running&quot;</span>);&#125;;
 Thread t2 = <span class="hljs-keyword">new</span> Thread(r2, <span class="hljs-string">&quot;t2&quot;</span>);
 t2.start();
 Runnable r3 = () -&gt; log.debug(<span class="hljs-string">&quot;running&quot;</span>);
@@ -521,14 +521,14 @@ Thread t3 = <span class="hljs-keyword">new</span> Thread(r3, <span class="hljs-s
 t3.start();
 
 Thread t4 = <span class="hljs-keyword">new</span> Thread(()-&gt;log.debug(<span class="hljs-string">&quot;running&quot;</span>), <span class="hljs-string">&quot;t4&quot;</span>);
-        t4.start();</code></pre></div>
+        t4.start();</code></pre>
 
 <h4 id="原理之-Thread-与-Runnable-的关系"><a href="#原理之-Thread-与-Runnable-的关系" class="headerlink" title="原理之 Thread 与 Runnable 的关系"></a>原理之 Thread 与 Runnable 的关系</h4><p>1.跟随Thread(Runnable target)源码</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Thread</span><span class="hljs-params">(Runnable target)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Thread</span><span class="hljs-params">(Runnable target)</span> </span>&#123;
     init(<span class="hljs-keyword">null</span>, target, <span class="hljs-string">&quot;Thread-&quot;</span> + nextThreadNum(), <span class="hljs-number">0</span>);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Override</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Override</span>
 <span class="hljs-comment">// 对于Runnable创建Thread, 最终target(Runnable)在run方法中被调到, 优先采用Runnable对象的run方法</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
     <span class="hljs-keyword">if</span> (target != <span class="hljs-keyword">null</span>) &#123;
@@ -541,7 +541,7 @@ Thread t = <span class="hljs-keyword">new</span> Thread()&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
         <span class="hljs-comment">// 要执行的任务</span>
     &#125;
-&#125;;</code></pre></div>
+&#125;;</code></pre>
 
 <blockquote>
 <p>小结</p>
@@ -555,13 +555,13 @@ Thread t = <span class="hljs-keyword">new</span> Thread()&#123;
 <p> java中组合由于继承!</p>
 </li>
 </ul>
-<h4 id="方法三-FutureTask配合Thread"><a href="#方法三-FutureTask配合Thread" class="headerlink" title="方法三, FutureTask配合Thread"></a>方法三, FutureTask配合Thread</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">RunnableFuture</span>&lt;<span class="hljs-title">V</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">Runnable</span>, <span class="hljs-title">Future</span>&lt;<span class="hljs-title">V</span>&gt; </span>
-<span class="hljs-class">  // 说明能返回运行结果</span></code></pre></div>
+<h4 id="方法三-FutureTask配合Thread"><a href="#方法三-FutureTask配合Thread" class="headerlink" title="方法三, FutureTask配合Thread"></a>方法三, FutureTask配合Thread</h4><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">RunnableFuture</span>&lt;<span class="hljs-title">V</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">Runnable</span>, <span class="hljs-title">Future</span>&lt;<span class="hljs-title">V</span>&gt; </span>
+<span class="hljs-class">  // 说明能返回运行结果</span></code></pre>
 
 <blockquote>
 <p> FutureTask 能够接收 Callable 类型的参数，用来处理有返回结果的情况</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java">FutureTask&lt;Integer&gt; task1 = <span class="hljs-keyword">new</span> FutureTask(<span class="hljs-keyword">new</span> Callable() &#123;
+<pre><code class="hljs java">FutureTask&lt;Integer&gt; task1 = <span class="hljs-keyword">new</span> FutureTask(<span class="hljs-keyword">new</span> Callable() &#123;
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> Integer <span class="hljs-title">call</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
         log.debug(<span class="hljs-string">&quot;running&quot;</span>);
@@ -575,14 +575,14 @@ log.debug(<span class="hljs-string">&quot;&#123;&#125;,&quot;</span>, task1.get(
 
 FutureTask&lt;Integer&gt; task2 = <span class="hljs-keyword">new</span> FutureTask(()-&gt;log.debug(<span class="hljs-string">&quot;running&quot;</span>), <span class="hljs-number">200</span>);
 <span class="hljs-keyword">new</span> Thread(task2, <span class="hljs-string">&quot;t_task2&quot;</span>).start();
-log.debug(<span class="hljs-string">&quot;&#123;&#125;,&quot;</span>, task2.get());</code></pre></div>
+log.debug(<span class="hljs-string">&quot;&#123;&#125;,&quot;</span>, task2.get());</code></pre>
 
-<div class="hljs"><pre><code class="hljs css">17<span class="hljs-selector-pseudo">:19</span><span class="hljs-selector-pseudo">:44</span> <span class="hljs-selector-attr">[t_task1]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span>
+<pre><code class="hljs css">17<span class="hljs-selector-pseudo">:19</span><span class="hljs-selector-pseudo">:44</span> <span class="hljs-selector-attr">[t_task1]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span>
 17<span class="hljs-selector-pseudo">:19</span><span class="hljs-selector-pseudo">:47</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> 200,
 17<span class="hljs-selector-pseudo">:19</span><span class="hljs-selector-pseudo">:47</span> <span class="hljs-selector-attr">[t_task2]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span>
-17<span class="hljs-selector-pseudo">:19</span><span class="hljs-selector-pseudo">:47</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> 200,</code></pre></div>
+17<span class="hljs-selector-pseudo">:19</span><span class="hljs-selector-pseudo">:47</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> 200,</code></pre>
 
-<h3 id="2-2-观察多个线程同时运行"><a href="#2-2-观察多个线程同时运行" class="headerlink" title="2.2 观察多个线程同时运行"></a>2.2 观察多个线程同时运行</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+<h3 id="2-2-观察多个线程同时运行"><a href="#2-2-观察多个线程同时运行" class="headerlink" title="2.2 观察多个线程同时运行"></a>2.2 观察多个线程同时运行</h3><pre><code class="hljs java"><span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
     <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123;
         log.debug(<span class="hljs-string">&quot;running...&quot;</span>);
     &#125;
@@ -592,7 +592,7 @@ log.debug(<span class="hljs-string">&quot;&#123;&#125;,&quot;</span>, task2.get(
     <span class="hljs-keyword">while</span> (<span class="hljs-keyword">true</span>)&#123;
         log.debug(<span class="hljs-string">&quot;running...&quot;</span>);
     &#125;
-&#125;, <span class="hljs-string">&quot;t2&quot;</span>).start();</code></pre></div>
+&#125;, <span class="hljs-string">&quot;t2&quot;</span>).start();</code></pre>
 
 <p>主要是理解:</p>
 <ul>
@@ -638,8 +638,8 @@ log.debug(<span class="hljs-string">&quot;&#123;&#125;,&quot;</span>, task2.get(
 <ul>
 <li>需要以如下方式运行你的 java 类</li>
 </ul>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">//输入linux 根据选择true/false</span>
-java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom.sun.management.jmxremote.port=`连接端口` -Dcom.sun.management.jmxremote.ssl=是否安全连接 - Dcom.sun.management.jmxremote.authenticate=是否认证 java类</code></pre></div>
+<pre><code class="hljs java"><span class="hljs-comment">//输入linux 根据选择true/false</span>
+java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom.sun.management.jmxremote.port=`连接端口` -Dcom.sun.management.jmxremote.ssl=是否安全连接 - Dcom.sun.management.jmxremote.authenticate=是否认证 java类</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201127174348.png" srcset="/img/loading.gif" alt="连接"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201127174536.png" srcset="/img/loading.gif" alt="线程"></p>
@@ -651,7 +651,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 <li>每个栈由多个栈帧(Frame)组成，对应着每次方法调用时所占用的内存 </li>
 <li>每个线程只能有一个活动栈帧，对应着当前正在执行的那个方法</li>
 </ul>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestFrames</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestFrames</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         Thread t1 = <span class="hljs-keyword">new</span> Thread()&#123;
             <span class="hljs-meta">@Override</span>
@@ -674,7 +674,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
         Object n = <span class="hljs-keyword">new</span> Object();
         <span class="hljs-keyword">return</span> n;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>debug:</p>
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201127175404.png" srcset="/img/loading.gif" alt="为主方法分配的栈帧" style="zoom:50%;" />
@@ -692,12 +692,12 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 <h4 id="栈帧图解"><a href="#栈帧图解" class="headerlink" title="栈帧图解"></a>栈帧图解</h4><blockquote>
 <p>当我们运行TestFrames时发生了什么?</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs less">首先执行 类加载 把<span class="hljs-selector-tag">TestFrames</span>字节码加载到<span class="hljs-selector-tag">Java</span>虚拟机中(放入方法区)
+<pre><code class="hljs less">首先执行 类加载 把<span class="hljs-selector-tag">TestFrames</span>字节码加载到<span class="hljs-selector-tag">Java</span>虚拟机中(放入方法区)
 类加载完成后<span class="hljs-selector-tag">Java</span>虚拟机启动一个名称为<span class="hljs-selector-tag">main</span>的主线程, 并分配一块栈内存, 线程再交给任务调度器执行
 线程栈中有一个程序计数器组件, 记录了当前该执行哪行代码
 
 栈帧中的局部变量表(栈帧创建时就会分配, 非边运行边分配, 但赋值是边运行边执行的)包含当前方法局部变量和方法参数
-返回地址对应退出地址,</code></pre></div>
+返回地址对应退出地址,</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201127181557.png" srcset="/img/loading.gif" alt="执行method2之前"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201127181744.png" srcset="/img/loading.gif" alt="继续执行"></p>
@@ -745,7 +745,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209101753.png" srcset="/img/loading.gif" alt="单独run"></p>
 <p>并不是t1线程执行，并不能起到异步效果。</p>
 <p>start启用线程，再由新的线程执行。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 打印线程状态</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-meta">@Slf4j(topic = &quot;c.Test&quot;)</span>
@@ -761,22 +761,22 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
         t1.start();
         System.out.println(t1.getState());
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs css"><span class="hljs-selector-tag">NEW</span>
+<pre><code class="hljs css"><span class="hljs-selector-tag">NEW</span>
 10<span class="hljs-selector-pseudo">:25</span><span class="hljs-selector-pseudo">:53</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span>
 <span class="hljs-selector-tag">NEW</span>
 <span class="hljs-selector-tag">RUNNABLE</span>
-10<span class="hljs-selector-pseudo">:25</span><span class="hljs-selector-pseudo">:53</span> <span class="hljs-selector-attr">[t1]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span></code></pre></div>
+10<span class="hljs-selector-pseudo">:25</span><span class="hljs-selector-pseudo">:53</span> <span class="hljs-selector-attr">[t1]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span></code></pre>
 
 <blockquote>
 <p>不能调用多次start()方法</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs css"><span class="hljs-selector-tag">Exception</span> <span class="hljs-selector-tag">in</span> <span class="hljs-selector-tag">thread</span> &quot;<span class="hljs-selector-tag">main</span>&quot; 10<span class="hljs-selector-pseudo">:27</span><span class="hljs-selector-pseudo">:05</span> <span class="hljs-selector-attr">[t1]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span>
+<pre><code class="hljs css"><span class="hljs-selector-tag">Exception</span> <span class="hljs-selector-tag">in</span> <span class="hljs-selector-tag">thread</span> &quot;<span class="hljs-selector-tag">main</span>&quot; 10<span class="hljs-selector-pseudo">:27</span><span class="hljs-selector-pseudo">:05</span> <span class="hljs-selector-attr">[t1]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">running</span>
 <span class="hljs-selector-tag">java</span><span class="hljs-selector-class">.lang</span><span class="hljs-selector-class">.IllegalThreadStateException</span>
     <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">java</span><span class="hljs-selector-class">.lang</span><span class="hljs-selector-class">.Thread</span><span class="hljs-selector-class">.start</span>(<span class="hljs-selector-tag">Thread</span><span class="hljs-selector-class">.java</span><span class="hljs-selector-pseudo">:708)</span>
     <span class="hljs-selector-tag">at</span> <span class="hljs-selector-tag">com</span><span class="hljs-selector-class">.qiuke</span><span class="hljs-selector-class">.test</span><span class="hljs-selector-class">.Test5</span><span class="hljs-selector-class">.main</span>(<span class="hljs-selector-tag">Test5</span><span class="hljs-selector-class">.java</span><span class="hljs-selector-pseudo">:19)</span>
-// 多次调用<span class="hljs-selector-tag">start</span>()</code></pre></div>
+// 多次调用<span class="hljs-selector-tag">start</span>()</code></pre>
 
 <blockquote>
 <p>小结</p>
@@ -797,7 +797,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 </li>
 <li><p>建议用 <strong>TimeUnit 的 sleep</strong> 代替 Thread 的 sleep 来获得更好的可读性</p>
 <ul>
-<li><div class="hljs"><pre><code class="java">public void sleep(long timeout) throws InterruptedException &#123;
+<li><pre><code class="java">public void sleep(long timeout) throws InterruptedException &#123;
     if (timeout &gt; 0) &#123;
         long ms = toMillis(timeout);
         int ns = excessNanos(timeout, ms);
@@ -807,7 +807,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 // 内部仍然是sleep
 <pre><code class="hljs reasonml">
 - ```java
-  <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">TimeUnit</span>.</span><span class="hljs-module"><span class="hljs-identifier">SECONDS</span>.</span></span>sleep(<span class="hljs-number">2000</span>);</code></pre></div></code></pre>
+  <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">TimeUnit</span>.</span><span class="hljs-module"><span class="hljs-identifier">SECONDS</span>.</span></span>sleep(<span class="hljs-number">2000</span>);</code></pre></code></pre>
 </li>
 </ul>
 </li>
@@ -830,7 +830,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 <li>线程优先级会 <strong>提示(hint)**调度器优先调度该线程，但它 **仅仅是一个提示</strong>，调度器可以忽略它。</li>
 <li>如果 cpu 比较忙，那么优先级高的线程会获得更多的时间片，但 cpu 闲时，优先级几乎没作用</li>
 </ul>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         Runnable task1 = () -&gt; &#123;
             <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
             <span class="hljs-keyword">for</span> (;;) &#123;
@@ -850,32 +850,32 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
         t2.setPriority(Thread.MAX_PRIORITY);
         t1.start();
         t2.start();
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 
 <blockquote>
 <p>优先级高的，最终打印的count应该更大</p>
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209110407.png" srcset="/img/loading.gif" alt="结果"></p>
 <p>如果线程2开启yield：</p>
-<div class="hljs"><pre><code class="hljs java">Runnable task2 = () -&gt; &#123;
+<pre><code class="hljs java">Runnable task2 = () -&gt; &#123;
     <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
     <span class="hljs-keyword">for</span> (;;) &#123;
         Thread.yield();
         System.out.println(<span class="hljs-string">&quot;              ----&gt;2 &quot;</span> + count++);
     &#125;
-&#125;;</code></pre></div>
+&#125;;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209110459.png" srcset="/img/loading.gif" alt="新结果"></p>
 <p>如果将优先级注释掉：</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209110557.png" srcset="/img/loading.gif" alt="新结果"></p>
 <h4 id="sleep案例-防止cpu占用百分之百"><a href="#sleep案例-防止cpu占用百分之百" class="headerlink" title="sleep案例:防止cpu占用百分之百"></a>sleep案例:防止cpu占用百分之百</h4><h5 id="sleep实现"><a href="#sleep实现" class="headerlink" title="sleep实现"></a>sleep实现</h5><ul>
 <li><p>在没有利用 cpu 来计算时，不要让 while(true) 空转浪费 cpu，这时可以使用 yield 或 sleep 来让出 cpu 的使用权 给其他程序</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123; 
+<pre><code class="hljs java"><span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123; 
   <span class="hljs-keyword">try</span> &#123;
       Thread.sleep(<span class="hljs-number">50</span>);
   &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
       e.printStackTrace(); &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209111647.png" srcset="/img/loading.gif" alt="测试(加了sleep)" style="zoom: 50%;" />
 
@@ -899,7 +899,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 <h4 id="join"><a href="#join" class="headerlink" title="join"></a>join</h4><blockquote>
 <p>下面的代码执行，打印 r 是什么?</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> r = <span class="hljs-number">0</span>;
+<pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> r = <span class="hljs-number">0</span>;
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
     test1();
 &#125;
@@ -919,13 +919,13 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
     t1.start();
     log.debug(<span class="hljs-string">&quot;结果为:&#123;&#125;&quot;</span>, r);
     log.debug(<span class="hljs-string">&quot;结束&quot;</span>);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs css">11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 开始
+<pre><code class="hljs css">11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 开始
 11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[Thread-0]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 开始
 11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 结果为<span class="hljs-selector-pseudo">:0</span>
 11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[Thread-0]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 结束
-11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 结束</code></pre></div>
+11<span class="hljs-selector-pseudo">:32</span><span class="hljs-selector-pseudo">:52</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.Test10</span> <span class="hljs-selector-tag">-</span> 结束</code></pre>
 
 <p>主线程调用test1，线程1被启动，主线程继续往下运行，不会等到t1结束，直接打印结果r=0；</p>
 <blockquote>
@@ -955,7 +955,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 <h5 id="等待多个结果"><a href="#等待多个结果" class="headerlink" title="等待多个结果"></a>等待多个结果</h5><blockquote>
 <p>下面代码 cost 大约多少秒?</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test2</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test2</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
     Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
         <span class="hljs-keyword">try</span> &#123;
             TimeUnit.SECONDS.sleep(<span class="hljs-number">1</span>);
@@ -984,12 +984,12 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
     log.debug(<span class="hljs-string">&quot;t1 join end&quot;</span>);
     <span class="hljs-keyword">long</span> end = System.currentTimeMillis();
     log.debug(<span class="hljs-string">&quot;r1: &#123;&#125; r2: &#123;&#125; cost: &#123;&#125;&quot;</span>, r1, r2, end - start);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs css">14<span class="hljs-selector-pseudo">:07</span><span class="hljs-selector-pseudo">:10</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.TestJoin</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">join</span> <span class="hljs-selector-tag">begin</span>
+<pre><code class="hljs css">14<span class="hljs-selector-pseudo">:07</span><span class="hljs-selector-pseudo">:10</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.TestJoin</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">join</span> <span class="hljs-selector-tag">begin</span>
 14<span class="hljs-selector-pseudo">:07</span><span class="hljs-selector-pseudo">:12</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.TestJoin</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">t2</span> <span class="hljs-selector-tag">join</span> <span class="hljs-selector-tag">end</span>
 14<span class="hljs-selector-pseudo">:07</span><span class="hljs-selector-pseudo">:12</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.TestJoin</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">t1</span> <span class="hljs-selector-tag">join</span> <span class="hljs-selector-tag">end</span>
-14<span class="hljs-selector-pseudo">:07</span><span class="hljs-selector-pseudo">:12</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.TestJoin</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">r1</span>: 10 <span class="hljs-selector-tag">r2</span>: 20 <span class="hljs-selector-tag">cost</span>: 2002</code></pre></div>
+14<span class="hljs-selector-pseudo">:07</span><span class="hljs-selector-pseudo">:12</span> <span class="hljs-selector-attr">[main]</span> <span class="hljs-selector-tag">c</span><span class="hljs-selector-class">.TestJoin</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">r1</span>: 10 <span class="hljs-selector-tag">r2</span>: 20 <span class="hljs-selector-tag">cost</span>: 2002</code></pre>
 
 <p>时间差值为 <strong>2s</strong>！</p>
 <p>如果t2先join，t1再join呢？</p>
@@ -1017,7 +1017,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 <p>注意：一定要 <strong>先sleep再打断</strong>，如果先打断再sleep，打断表示为true！</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209143036.png" srcset="/img/loading.gif" alt="先打断再sleep情况"></p>
 <h5 id="打断正常运行的线程"><a href="#打断正常运行的线程" class="headerlink" title="打断正常运行的线程"></a>打断正常运行的线程</h5><p>Code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
     Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
         <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123;
             <span class="hljs-keyword">boolean</span> interrupted = Thread.currentThread().isInterrupted();
@@ -1032,7 +1032,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
     Thread.sleep(<span class="hljs-number">1000</span>);
     log.debug(<span class="hljs-string">&quot;interrupt&quot;</span>);
     t1.interrupt();
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>如果不加break，退不出循环。并不会影响程序正常运行。</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209143718.png" srcset="/img/loading.gif" alt="不加break 程序仍在运行"></p>
@@ -1066,7 +1066,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
 <p>​ 如果在 <strong>监控阶段被打断</strong>，打断标记为 true，下一轮判断是否被打断后会退出。</p>
 <p>​ 如果在 <strong>睡眠阶段被打断</strong>，抛出InterruptedException异常，打断标记清空。可以抓住这个异常，重新设计打断标记，下一轮继续判断。</p>
 <p>​ code模拟:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 通过两阶段终止模式实现监控线程</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-meta">@Slf4j(topic = &quot;c.Test13&quot;)</span>
@@ -1110,7 +1110,7 @@ java -Djava.rmi.server.hostname=`ip地址` -Dcom.sun.management.jmxremote - Dcom
         monitorThread.start();
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209162750.png" srcset="/img/loading.gif" alt="结果演示"></p>
 </li>

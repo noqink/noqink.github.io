@@ -235,7 +235,7 @@
 <p class="note note-primary">买卖股票有六种题型，后续更新</p>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201228180405.png" srcset="/img/loading.gif" alt="question"></p>
-<h3 id="暴力递归出发分析动态规划"><a href="#暴力递归出发分析动态规划" class="headerlink" title="暴力递归出发分析动态规划"></a>暴力递归出发分析动态规划</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxProfit1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k, <span class="hljs-keyword">int</span>[] prices)</span> </span>&#123;
+<h3 id="暴力递归出发分析动态规划"><a href="#暴力递归出发分析动态规划" class="headerlink" title="暴力递归出发分析动态规划"></a>暴力递归出发分析动态规划</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxProfit1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k, <span class="hljs-keyword">int</span>[] prices)</span> </span>&#123;
     <span class="hljs-comment">// 暴力</span>
     <span class="hljs-keyword">if</span>(prices.length== <span class="hljs-number">0</span> || prices == <span class="hljs-keyword">null</span>)&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -258,14 +258,14 @@
         c = dfs(index + <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, count, k, prices) - prices[index];
     &#125;
     <span class="hljs-keyword">return</span> Math.max(Math.max(a, b), c);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <h3 id="动态规划-1"><a href="#动态规划-1" class="headerlink" title="动态规划"></a>动态规划</h3><blockquote>
 <p>三个参数三维表，但有一维为01，转为两个二维表</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 动态规划</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 动态规划</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxProfit2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k, <span class="hljs-keyword">int</span>[] prices)</span> </span>&#123;
     <span class="hljs-keyword">if</span>(prices.length== <span class="hljs-number">0</span> || prices == <span class="hljs-keyword">null</span>)&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -296,14 +296,14 @@
     &#125;
 
     <span class="hljs-keyword">return</span> Arrays.stream(sell[n - <span class="hljs-number">1</span>]).max().getAsInt();
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <h3 id="动态规划优化"><a href="#动态规划优化" class="headerlink" title="动态规划优化"></a>动态规划优化</h3><blockquote>
 <p>不难看出上述二维表中的i并没有被实际用到</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxProfit</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k, <span class="hljs-keyword">int</span>[] prices)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxProfit</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k, <span class="hljs-keyword">int</span>[] prices)</span> </span>&#123;
     <span class="hljs-comment">// 动态规划空间优化</span>
     <span class="hljs-keyword">if</span>(prices.length== <span class="hljs-number">0</span> || prices == <span class="hljs-keyword">null</span>)&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -330,7 +330,7 @@
     &#125;
 
     <span class="hljs-keyword">return</span> Arrays.stream(sell).max().getAsInt();
-&#125;</code></pre></div>
+&#125;</code></pre>
 
             </div>
             <hr>
