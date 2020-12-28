@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
 
 
 
@@ -29,7 +29,7 @@
     
     
       
-      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/stackoverflow-dark.min.css" />
     
   
 
@@ -278,7 +278,7 @@
 
 <p>​    // 方式 3 的分析</p>
 <p>​    //  1. 这种修改方法没有对原来的类做大的修改，只是增加方法<br>   //   2. 这里虽然没有在类这个级别上遵守单一职责原则，但是在方法级别上，仍然是遵守单一职责</p>
-<pre><code>#### 单一职责原则注意事项和细节</code></pre>
+<div class="hljs"><pre><code>#### 单一职责原则注意事项和细节</code></pre></div>
 <blockquote>
 <p>  方法数量足够少，可以在方法级别保持单一职责原则</p>
 </blockquote>
@@ -304,7 +304,7 @@
 <h4 id="应用实例-1"><a href="#应用实例-1" class="headerlink" title="应用实例"></a>应用实例</h4><ol>
 <li>实现方案1+分析说明</li>
 </ol>
-<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Interface1</span></span>&#123;
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Interface1</span></span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">operation1</span><span class="hljs-params">()</span></span>;
     <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">operation2</span><span class="hljs-params">()</span></span>;
     <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">operation3</span><span class="hljs-params">()</span></span>;
@@ -379,7 +379,7 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">depend5</span><span class="hljs-params">(Interface1 i)</span> </span>&#123;
         i.operation5();
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <h4 id="应传统方法的问题和使用接口隔离原则改进"><a href="#应传统方法的问题和使用接口隔离原则改进" class="headerlink" title="应传统方法的问题和使用接口隔离原则改进"></a>应传统方法的问题和使用接口隔离原则改进</h4><ol>
 <li><p>类A通过接口Interface1依赖类B，类C通过接口Interface1依赖类D，如果接口Interface1对于类A和类C</p>
@@ -393,7 +393,7 @@
 
 <img src="../../Library/Application Support/typora-user-images/image-20201201204856491.png" srcset="/img/loading.gif" alt="解耦后" style="zoom:50%;" />
 
-<pre><code class="hljs java"><span class="hljs-comment">// 接口 1</span>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 接口 1</span>
 <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Interface1</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">operation1</span><span class="hljs-params">()</span></span>; &#125;
 <span class="hljs-comment">// 接口 2</span>
@@ -425,9 +425,9 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">depend1</span><span class="hljs-params">(Interface1 i)</span> </span>&#123; i.operation1(); &#125;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">depend4</span><span class="hljs-params">(Interface3 i)</span> </span>&#123; i.operation4(); &#125;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">depend5</span><span class="hljs-params">(Interface3 i)</span> </span>&#123; i.operation5(); &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
-<pre><code class="hljs java">A a = <span class="hljs-keyword">new</span> A();
+<div class="hljs"><pre><code class="hljs java">A a = <span class="hljs-keyword">new</span> A();
 a.depend1(<span class="hljs-keyword">new</span> B()); <span class="hljs-comment">// A类通过接口去依赖B类</span>
 a.depend2(<span class="hljs-keyword">new</span> B());
 a.depend3(<span class="hljs-keyword">new</span> B());
@@ -435,7 +435,7 @@ a.depend3(<span class="hljs-keyword">new</span> B());
 C c = <span class="hljs-keyword">new</span> C();
 c.depend1(<span class="hljs-keyword">new</span> D()); <span class="hljs-comment">// C类通过接口去依赖D类</span>
 c.depend4(<span class="hljs-keyword">new</span> D());
-c.depend5(<span class="hljs-keyword">new</span> D());</code></pre>
+c.depend5(<span class="hljs-keyword">new</span> D());</code></pre></div>
 
 
 
@@ -456,7 +456,7 @@ c.depend5(<span class="hljs-keyword">new</span> D());</code></pre>
 <ol>
 <li>实现方案1+分析说明</li>
 </ol>
-<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependecyInversion1</span> </span>&#123;
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DependecyInversion1</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         Person person = <span class="hljs-keyword">new</span> Person();
         person.receive(<span class="hljs-keyword">new</span> Email());
@@ -468,17 +468,17 @@ c.depend5(<span class="hljs-keyword">new</span> D());</code></pre>
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">receive</span><span class="hljs-params">(Email email )</span> </span>&#123; System.out.println(email.getInfo()); &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
-<pre><code class="hljs java"><span class="hljs-comment">//  方式 1 分析</span>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">//  方式 1 分析</span>
 <span class="hljs-number">1.</span> 简单，比较容易想到
 <span class="hljs-number">2.</span> 如果我们获取的对象是 微信，短信等等，则新增类，同时 Perons 也要增加相应的接收方法
-<span class="hljs-number">3.</span> 解决思路:引入一个抽象的接口 IReceiver, 表示接收者, 这样 Person 类与接口 IReceiver 发生依赖</code></pre>
+<span class="hljs-number">3.</span> 解决思路:引入一个抽象的接口 IReceiver, 表示接收者, 这样 Person 类与接口 IReceiver 发生依赖</code></pre></div>
 
 <ol start="2">
 <li>实现方案2+分析说明</li>
 </ol>
-<pre><code class="hljs java"><span class="hljs-comment">// 定义接口</span>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 定义接口</span>
 <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IReceiver</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getInfo</span><span class="hljs-params">()</span></span>;
 &#125;
@@ -498,14 +498,14 @@ c.depend5(<span class="hljs-keyword">new</span> D());</code></pre>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">receive</span><span class="hljs-params">(IReceiver receiver )</span> </span>&#123;
         System.out.println(receiver.getInfo());
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 
 
 <h4 id="依赖关系传递的三种方式和应用案例"><a href="#依赖关系传递的三种方式和应用案例" class="headerlink" title="依赖关系传递的三种方式和应用案例"></a>依赖关系传递的三种方式和应用案例</h4><blockquote>
 <p>接口传递</p>
 </blockquote>
-<pre><code class="hljs java"><span class="hljs-comment">// 方式1：通过接口传递实现依赖</span>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 方式1：通过接口传递实现依赖</span>
 <span class="hljs-comment">// 开关的接口</span>
 <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IOpenAndClose</span> </span>&#123;
    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">open</span><span class="hljs-params">(ITV tv)</span></span>; <span class="hljs-comment">//抽象方法，接收接口</span>
@@ -531,12 +531,12 @@ c.depend5(<span class="hljs-keyword">new</span> D());</code></pre>
 <span class="hljs-comment">// 使用</span>
 ChangHong changHong = <span class="hljs-keyword">new</span> ChangHong();
 OpenAndClose openAndClose = <span class="hljs-keyword">new</span> OpenAndClose();
-openAndClose.open(changHong);</code></pre>
+openAndClose.open(changHong);</code></pre></div>
 
 <blockquote>
 <p>构造方法传递 </p>
 </blockquote>
-<pre><code class="hljs java"><span class="hljs-comment">// 方式2：通过构造方法依赖传递</span>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 方式2：通过构造方法依赖传递</span>
  <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IOpenAndClose</span> </span>&#123;
    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">open</span><span class="hljs-params">()</span></span>; <span class="hljs-comment">//抽象方法</span>
  &#125;
@@ -563,12 +563,12 @@ openAndClose.open(changHong);</code></pre>
 <span class="hljs-comment">// 使用：</span>
 ChangHong changHong = <span class="hljs-keyword">new</span> ChangHong();
 OpenAndClose openAndClose = <span class="hljs-keyword">new</span> OpenAndClose(changHong);
-openAndClose.open();</code></pre>
+openAndClose.open();</code></pre></div>
 
 <blockquote>
 <p>setter 方式传递</p>
 </blockquote>
-<pre><code class="hljs java"><span class="hljs-comment">// 方式3：setter方法实现</span>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 方式3：setter方法实现</span>
 <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IOpenAndClose</span> </span>&#123;
    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">open</span><span class="hljs-params">()</span></span>; <span class="hljs-comment">// 抽象方法</span>
 
@@ -601,7 +601,7 @@ openAndClose.open();</code></pre>
         ChangHong changHong = <span class="hljs-keyword">new</span> ChangHong();
         OpenAndClose openAndClose = <span class="hljs-keyword">new</span> OpenAndClose();
         openAndClose.setTv(changHong);
-        openAndClose.open();</code></pre>
+        openAndClose.open();</code></pre></div>
 
 
 
@@ -621,7 +621,7 @@ openAndClose.open();</code></pre>
 <li>在使用继承时，遵循里氏替换原则，在 <strong><em>子类中尽量不要重写父类的方法</em></strong>。</li>
 <li>里氏替换原则告诉我们，继承实际上让两个类耦合性增强了，在适当的情况下，可以通过 <strong><em>聚合，组合，依赖</em></strong>来解决问题。</li>
 </ol>
-<h4 id="一个程序引出的问题和思考"><a href="#一个程序引出的问题和思考" class="headerlink" title="一个程序引出的问题和思考"></a>一个程序引出的问题和思考</h4><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Liskov1</span> </span>&#123;
+<h4 id="一个程序引出的问题和思考"><a href="#一个程序引出的问题和思考" class="headerlink" title="一个程序引出的问题和思考"></a>一个程序引出的问题和思考</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Liskov1</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         A a = <span class="hljs-keyword">new</span> A();
         System.out.println(<span class="hljs-string">&quot;11-3=&quot;</span> + a.func1(<span class="hljs-number">11</span>, <span class="hljs-number">3</span>));
@@ -645,7 +645,7 @@ openAndClose.open();</code></pre>
     <span class="hljs-comment">//这里，重写了 A 类的方法, 可能是无意识</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">func1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span> </span>&#123; <span class="hljs-keyword">return</span> a + b; &#125;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">func2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span> </span>&#123; <span class="hljs-keyword">return</span> func1(a, b) + <span class="hljs-number">9</span>; &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 
 
@@ -655,7 +655,7 @@ openAndClose.open();</code></pre>
 <li><p>通用的做法是: <strong><em>原来的父类和子类都继承一个更通俗的基类，原有的继承关系去掉，采用依赖，聚合，组合等 关系代替</em></strong>.</p>
 </li>
 </ol>
-<pre><code class="hljs java"><span class="hljs-comment">//创建一个更加基础的基类</span>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">//创建一个更加基础的基类</span>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Base</span> </span>&#123;
     <span class="hljs-comment">//把更加基础的方法和成员写到 Base 类</span>
 &#125;
@@ -672,7 +672,7 @@ openAndClose.open();</code></pre>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">func3</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span></span>&#123; <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.a.func1(a, b)&#125;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">func1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span> </span>&#123; <span class="hljs-keyword">return</span> a + b; &#125;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">func2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a, <span class="hljs-keyword">int</span> b)</span> </span>&#123; <span class="hljs-keyword">return</span> func1(a, b) + <span class="hljs-number">9</span>; &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 
 
@@ -689,7 +689,7 @@ openAndClose.open();</code></pre>
 <li><p>编程中遵循其它原则，以及使用设计模式的目的就是遵循开闭原则。</p>
 </li>
 </ol>
-<h4 id="应用实例-3"><a href="#应用实例-3" class="headerlink" title="应用实例"></a>应用实例</h4><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Ocp</span> </span>&#123;
+<h4 id="应用实例-3"><a href="#应用实例-3" class="headerlink" title="应用实例"></a>应用实例</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Ocp</span> </span>&#123;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         GraphicEditor graphicEditor = <span class="hljs-keyword">new</span> GraphicEditor();
@@ -734,10 +734,10 @@ openAndClose.open();</code></pre>
     Circle() &#123;
         <span class="hljs-keyword">super</span>.m_type = <span class="hljs-number">2</span>;
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <p> 问题出在, 如果要新增一个, 需要修改许多:</p>
-<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Triangle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Shape</span> </span>&#123;
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Triangle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Shape</span> </span>&#123;
     Triangle() &#123;
         <span class="hljs-keyword">super</span>.m_type = <span class="hljs-number">3</span>;
     &#125;
@@ -754,7 +754,7 @@ openAndClose.open();</code></pre>
             drawCircle(s);
         <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (s.m_type == <span class="hljs-number">3</span>)
             drawTriangle(s);
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <ol>
 <li><p>优点是比较好理解，简单易操作。</p>
@@ -765,7 +765,7 @@ openAndClose.open();</code></pre>
 </li>
 </ol>
 <h4 id="改进的思路分析"><a href="#改进的思路分析" class="headerlink" title="改进的思路分析"></a>改进的思路分析</h4><p>思路:把创建 <strong>Shape</strong> 类做成抽象类，并提供一个抽象的 <strong>draw</strong> 方法，让子类去实现即可，这样我们有新的图形 种类时，只需要让新的图形类继承 Shape，并实现 draw 方法即可，使用方的代码就不需要修 -&gt; 满足了开闭原则</p>
-<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Ocp</span> </span>&#123;
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Ocp</span> </span>&#123;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
 
@@ -833,7 +833,7 @@ openAndClose.open();</code></pre>
         <span class="hljs-comment">// TODO Auto-generated method stub</span>
         System.out.println(<span class="hljs-string">&quot; 其他 &quot;</span>);
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 
 
@@ -852,7 +852,7 @@ openAndClose.open();</code></pre>
 <li><p>代码演示</p>
 </li>
 </ol>
-<pre><code class="hljs java"><span class="hljs-comment">//迪米特法则</span>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">//迪米特法则</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demeter1</span> </span>&#123;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
@@ -930,7 +930,7 @@ openAndClose.open();</code></pre>
             System.out.println(e.getId());
         &#125;
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <h4 id="应用实例改进"><a href="#应用实例改进" class="headerlink" title="应用实例改进"></a>应用实例改进</h4><ol>
 <li><p>前面设计的问题在于SchoolManager中，<strong>CollegeEmployee</strong>类并不是<strong>SchoolManager</strong>类的直接朋友(分析) </p>
@@ -938,7 +938,7 @@ openAndClose.open();</code></pre>
 <li><p>按照迪米特法则，应该避免类中出现这样非直接朋友关系的耦合</p>
 </li>
 </ol>
-<pre><code class="hljs java"><span class="hljs-comment">//迪米特法则</span>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">//迪米特法则</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demeter1</span> </span>&#123;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
@@ -1017,7 +1017,7 @@ openAndClose.open();</code></pre>
             System.out.println(e.getId());
         &#125;
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <h4 id="迪米特法则注意事项和细节"><a href="#迪米特法则注意事项和细节" class="headerlink" title="迪米特法则注意事项和细节"></a>迪米特法则注意事项和细节</h4><ol>
 <li>迪米特法则的核心是 <strong>降低类之间的耦合</strong></li>
@@ -1052,7 +1052,7 @@ openAndClose.open();</code></pre>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202112951.png" srcset="/img/loading.gif" alt="依赖"></p>
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202113519.png" srcset="/img/loading.gif" alt="依赖关系" style="zoom:50%;" />
 
-<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PersonServiceBean</span> </span>&#123;
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PersonServiceBean</span> </span>&#123;
 <span class="hljs-keyword">private</span> PersonDao personDao;<span class="hljs-comment">//类 public void save(Person person)&#123;&#125;</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> IDCard <span class="hljs-title">getIDCard</span><span class="hljs-params">(Integer personid)</span></span>&#123;&#125; <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">modify</span><span class="hljs-params">()</span></span>&#123;
 Department department = <span class="hljs-keyword">new</span> Department(); &#125;
@@ -1060,13 +1060,13 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PersonDao</span></span>&#123;&#125; 
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IDCard</span></span>&#123;&#125; 
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span></span>&#123;&#125; 
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Department</span></span>&#123;&#125;</code></pre>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Department</span></span>&#123;&#125;</code></pre></div>
 
-<pre><code class="hljs plain">1) 类中用到了对方
+<div class="hljs"><pre><code class="hljs plain">1) 类中用到了对方
 2) 如果是类的成员属性 
 3) 如果是方法的返回类型 
 4) 是方法接收的参数类型 
-5) 方法中使用到</code></pre>
+5) 方法中使用到</code></pre></div>
 
 <h3 id="类图—泛化关系-generalization"><a href="#类图—泛化关系-generalization" class="headerlink" title="类图—泛化关系(generalization)"></a>类图—泛化关系(generalization)</h3><blockquote>
 <p>泛化关系实际上就是继承关系，他是依赖关系的特例</p>
@@ -1075,15 +1075,15 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202113543.png" srcset="/img/loading.gif" alt="泛化关系" style="zoom:50%;" />
 
-<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DaoSupport</span></span>&#123;
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DaoSupport</span></span>&#123;
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">save</span><span class="hljs-params">(Object entity)</span></span>&#123; &#125;
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">delete</span><span class="hljs-params">(Object id)</span></span>&#123;
 &#125;
 &#125;
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PersonServiceBean</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Daosupport</span></span>&#123; &#125;</code></pre>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PersonServiceBean</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Daosupport</span></span>&#123; &#125;</code></pre></div>
 
-<pre><code class="hljs dns"><span class="hljs-number">1</span>) 泛化关系实际上就是继承关系
-<span class="hljs-number">2</span>) 如果<span class="hljs-keyword">A</span>类继承了B类，我们就说<span class="hljs-keyword">A</span>和B存在泛化关系</code></pre>
+<div class="hljs"><pre><code class="hljs dns"><span class="hljs-number">1</span>) 泛化关系实际上就是继承关系
+<span class="hljs-number">2</span>) 如果<span class="hljs-keyword">A</span>类继承了B类，我们就说<span class="hljs-keyword">A</span>和B存在泛化关系</code></pre></div>
 
 
 
@@ -1092,11 +1092,11 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202113745.png" srcset="/img/loading.gif" alt="实现关系" style="zoom:50%;" />
 
-<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">PersonService</span> </span>&#123;
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">PersonService</span> </span>&#123;
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">delete</span><span class="hljs-params">(Interger id)</span></span>;
 &#125;
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PersonServiceBean</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">PersonService</span> </span>&#123; <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">delete</span><span class="hljs-params">(Interger id)</span></span>&#123;&#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <h3 id="类图—关联关系-Association"><a href="#类图—关联关系-Association" class="headerlink" title="类图—关联关系(Association)"></a>类图—关联关系(Association)</h3><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202113841.png" srcset="/img/loading.gif" alt="关联关系" style="zoom:67%;" />
 
@@ -1111,22 +1111,22 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 </blockquote>
 <p>再看一个案例:在程序中我们定义实体:Person 与 IDCard、Head, 那么 Head 和 Person 就是 组合，IDCard 和 Person 就是聚合。</p>
 <p>但是如果在程序中 Person 实体中定义了对 IDCard 进行级联删除，即删除 Person 时连同 IDCard 一起删除，那 么 IDCard 和 Person 就是组合了.</p>
-<pre><code class="hljs java">
+<div class="hljs"><pre><code class="hljs java">
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>&#123;
     <span class="hljs-keyword">private</span> IDCard card; 
     <span class="hljs-keyword">private</span> Head head = <span class="hljs-keyword">new</span> Head(); <span class="hljs-comment">// 注意区别</span>
 
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 
 
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202114443.png" srcset="/img/loading.gif" alt="组合" style="zoom:50%;" />
 
 <p>如果把聚合案例代码改成:</p>
-<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Computer</span> </span>&#123;
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Computer</span> </span>&#123;
 <span class="hljs-keyword">private</span> Mouse mouse = <span class="hljs-keyword">new</span> Mouse(); <span class="hljs-comment">//鼠标可以和 computer 不能分离 </span>
 <span class="hljs-keyword">private</span> Moniter moniter = <span class="hljs-keyword">new</span> Moniter();<span class="hljs-comment">//显示器可以和 Computer 不能分离</span>
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 
 
@@ -1171,7 +1171,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 <li>向外暴露一个静态的公共方法。getInstance </li>
 </ol>
 <p>代码实现:</p>
-<pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 饿汉式(静态常量)实现单例模式</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonTest</span> </span>&#123;
@@ -1195,7 +1195,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> instance;
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <ol>
 <li><p>优点:这种写法比较简单，就是在 <strong>类装载的时候就完成实例化</strong>。 <strong>避免了线程同步问题</strong>。</p>
@@ -1207,7 +1207,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 </li>
 </ol>
 <p>结论:这种单例模式 <strong><em>可用</em></strong>，可能造成 <strong><em>内存浪费</em></strong></p>
-<h3 id="饿汉式-静态代码块"><a href="#饿汉式-静态代码块" class="headerlink" title="饿汉式(静态代码块)"></a>饿汉式(静态代码块)</h3><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonTest</span> </span>&#123;
+<h3 id="饿汉式-静态代码块"><a href="#饿汉式-静态代码块" class="headerlink" title="饿汉式(静态代码块)"></a>饿汉式(静态代码块)</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonTest</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         Singleton singleton1 = Singleton.getInstance();
         Singleton singleton2 = Singleton.getInstance();
@@ -1230,13 +1230,13 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
     &#125;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;<span class="hljs-keyword">return</span> instance;&#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <ol>
 <li>这种方式和上面的方式其实类似，只不过将类实例化的过程放在了静态代码块中，也是在类装载的时候，就执行静态代码块中的代码，初始化类的实例。优缺点和上面是一样的。</li>
 </ol>
 <p>结论:这种单例模式可用，但是可能造成内存浪费</p>
-<h3 id="懒汉式-线程不安全"><a href="#懒汉式-线程不安全" class="headerlink" title="懒汉式(线程不安全)"></a>懒汉式(线程不安全)</h3><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<h3 id="懒汉式-线程不安全"><a href="#懒汉式-线程不安全" class="headerlink" title="懒汉式(线程不安全)"></a>懒汉式(线程不安全)</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 懒汉式(线程不安全写法)</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonTest</span> </span>&#123;
@@ -1261,7 +1261,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
         &#125;
         <span class="hljs-keyword">return</span> instance;
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <ol>
 <li><p>起到了 <strong>LazyLoading</strong>的效果，但是只能在 <strong>单线程</strong>下使用。</p>
@@ -1271,7 +1271,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 </li>
 </ol>
 <p>​   结论:在实际开发中，<strong>不要使用这种方式</strong>.</p>
-<h3 id="懒汉式-线程安全，同步方法"><a href="#懒汉式-线程安全，同步方法" class="headerlink" title="懒汉式(线程安全，同步方法)"></a>懒汉式(线程安全，同步方法)</h3><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
+<h3 id="懒汉式-线程安全，同步方法"><a href="#懒汉式-线程安全，同步方法" class="headerlink" title="懒汉式(线程安全，同步方法)"></a>懒汉式(线程安全，同步方法)</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Singleton instance;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">synchronized</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;
@@ -1280,7 +1280,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
         &#125;
         <span class="hljs-keyword">return</span> instance;
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <ol>
 <li><p><strong>解决了线程安全问题</strong></p>
@@ -1292,7 +1292,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 <h3 id="懒汉式-线程不安全，同步代码块"><a href="#懒汉式-线程不安全，同步代码块" class="headerlink" title="懒汉式(线程不安全，同步代码块)"></a>懒汉式(线程不安全，同步代码块)</h3><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201202150123.png" srcset="/img/loading.gif" alt="无效" style="zoom:50%;" />
 
 <p>​   在这里加入synchronized无效, 无法解决线程安全问题, 一个线程进入了if(singleton==null)判断语句块, 还未来得及往下执行, 另一个线程也通过了这个判断语句, 这时便会产生 <strong>多个实例</strong>。</p>
-<h3 id="双重检查"><a href="#双重检查" class="headerlink" title="双重检查"></a>双重检查</h3><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
+<h3 id="双重检查"><a href="#双重检查" class="headerlink" title="双重检查"></a>双重检查</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">volatile</span> Singleton instance;
     <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;
     <span class="hljs-comment">// 提供一个静态代码块，双重检查，解决线程安全问题，同时解决懒加载问题</span>
@@ -1306,7 +1306,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
         &#125;
         <span class="hljs-keyword">return</span> instance;
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <ol>
 <li>Double-Check 概念是多线程开发中常使用到的，如代码中所示，我们进行了两次 if (singleton == null)检查，这 样就可以保证线程安全了。</li>
@@ -1317,7 +1317,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 <h3 id="静态内部类"><a href="#静态内部类" class="headerlink" title="静态内部类"></a>静态内部类</h3><blockquote>
 <p>JVM装载类的时候线程是安全的</p>
 </blockquote>
-<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span></span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;
     <span class="hljs-comment">// 写一个静态内部类，该类中有一个静态属性Singleton</span>
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonInstance</span></span>&#123;
@@ -1327,7 +1327,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">synchronized</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> SingletonInstance.INSTANCE;
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <ol>
 <li><p>这种方式采用了 <strong>类装载的机制</strong>来保证初始化实例时只有一个线程。(因为类装载是线程安全的)</p>
@@ -1341,22 +1341,22 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 <li><p> 结论: <strong>推荐</strong>使用.</p>
 </li>
 </ol>
-<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">Singleton</span></span>&#123;
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">Singleton</span></span>&#123;
     INSTANCE;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sayOK</span><span class="hljs-params">()</span></span>&#123;
         System.out.println(<span class="hljs-string">&quot;ok!&quot;</span>);
     &#125;
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <p>使用:</p>
-<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
     Singleton instance = Singleton.INSTANCE;
     Singleton instance2 = Singleton.INSTANCE;
     System.out.println(instance == instance2);
     System.out.println(instance.hashCode());
     System.out.println(instance2.hashCode());
     instance.sayOK(); 
-&#125;</code></pre>
+&#125;</code></pre></div>
 
 <ol>
 <li><p> 这 <strong>借助JDK1.5中添加的枚举</strong>来实现单例模式。不仅能 <strong>避免多线程同步问题，而且还能防止反序列化重新创建 新的对象</strong>。</p>
@@ -1409,6 +1409,13 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
               
             </div>
 
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+
+              </article>
             
           </article>
         </div>
@@ -1573,5 +1580,7 @@ Department department = <span class="hljs-keyword">new</span> Department(); &#12
 
 
 
-</body>
+<!-- hexo injector body_end start -->
+  <script src="/js/custom.js"></script>
+<!-- hexo injector body_end end --></body>
 </html>
