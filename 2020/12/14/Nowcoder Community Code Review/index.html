@@ -29,7 +29,7 @@
     
     
       
-      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/stackoverflow-dark.min.css" />
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/ocean.min.css" />
     
   
 
@@ -245,19 +245,19 @@
 <h2 id="项目开发前框架基础配置"><a href="#项目开发前框架基础配置" class="headerlink" title="项目开发前框架基础配置"></a>项目开发前框架基础配置</h2><blockquote>
 <p>Mybatis</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs xml"># MybatisProperties
+<pre><code class="hljs xml"># MybatisProperties
 mybatis.mapper-locations=classpath:mapper/*.xml
 mybatis.type-aliases-package=com.nowcoder.community.entity
 mybatis.configuration.useGeneratedKeys=true
 #驼峰命名与数据库下划线命名转换
-mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
+mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre>
 
 
 
 <blockquote>
 <p>Spring</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-comment"># ServerProperties</span>
+<pre><code class="hljs yaml"><span class="hljs-comment"># ServerProperties</span>
 <span class="hljs-attr">server:</span>
   <span class="hljs-attr">port:</span> <span class="hljs-number">8080</span>
   <span class="hljs-attr">servlet:</span>
@@ -277,13 +277,13 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     <span class="hljs-attr">hikari:</span>
       <span class="hljs-attr">maximum-pool-size:</span> <span class="hljs-number">15</span>
       <span class="hljs-attr">minimum-idle:</span> <span class="hljs-number">5</span>
-      <span class="hljs-attr">idle-timeout:</span> <span class="hljs-number">30000</span></code></pre></div>
+      <span class="hljs-attr">idle-timeout:</span> <span class="hljs-number">30000</span></code></pre>
 
 <p>默认使用 <strong>hikari连接池</strong></p>
 <blockquote>
 <p>maven</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span>
 		<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.projectlombok<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lombok<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
@@ -337,7 +337,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
             <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
             <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span></code></pre>
 
 
 
@@ -363,7 +363,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <ol>
 <li><p>编写 <strong>实体类</strong></p>
 <p>为什么要同时编写 User相关的，因为页面需要Username，headerUrl等信息，所以查询一并返回。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Data</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Data</span>
 <span class="hljs-meta">@AllArgsConstructor</span>
 <span class="hljs-meta">@NoArgsConstructor</span>
 <span class="hljs-comment">// 使用了lombok</span>
@@ -396,10 +396,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     <span class="hljs-keyword">private</span> String activationCode;
     <span class="hljs-keyword">private</span> String headerUrl;
     <span class="hljs-keyword">private</span> Date createTime;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>描述接口Mapper</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Mapper</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Mapper</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">DiscussPostMapper</span> </span>&#123;
 
     <span class="hljs-comment">// userId为&quot;我发布的帖子&quot;功能调用</span>
@@ -414,11 +414,11 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">UserMapper</span> </span>&#123;
 
     <span class="hljs-function">User <span class="hljs-title">selectById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>写接口对应的Mapper文件</p>
 <p>xml文件开头过于冗余，已忽略，请查略源代码文件</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- discussPost-mapper --&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- discussPost-mapper --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">sql</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;</span>
     id, user_id, title, content, type, status, create_time, comment_count, score
 <span class="hljs-tag">&lt;/<span class="hljs-name">sql</span>&gt;</span>
@@ -450,10 +450,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         select <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
         from user
         where id = #&#123;id&#125;
-<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span></code></pre>
 </li>
 <li><p>写Service</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Service</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DiscussPostService</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -477,10 +477,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     <span class="hljs-function"><span class="hljs-keyword">public</span> User <span class="hljs-title">findUserById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span> </span>&#123;
         <span class="hljs-keyword">return</span> userMapper.selectById(id);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写HomeController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HomeController</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -507,7 +507,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;/index&quot;</span>;
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>对index页进行 <strong>模版引擎修改</strong> </p>
 <p>详细修改请查看源代码</p>
@@ -522,7 +522,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </blockquote>
 <ol>
 <li><p>封装分页对象</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 封装分页相关信息</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Page</span> </span>&#123;
@@ -535,14 +535,14 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> rows;
     <span class="hljs-comment">// 查询路径,用于复用分页链接</span>
     <span class="hljs-keyword">private</span> String path;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>分页里面的set和get方法有 <strong>技巧</strong>，有许多判断和默认值，不使用lombok，详细代码请看源码。</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219165225.png" srcset="/img/loading.gif" alt="分页对象信息"></p>
 </li>
 <li><p>修改HomeController</p>
 <p>修改后的controller：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/index&quot;, method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/index&quot;, method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getIndexPage</span><span class="hljs-params">(Model model, Page page)</span> </span>&#123;
     <span class="hljs-comment">// 方法调用前,SpringMVC会自动实例化Model和Page,并将Page注入Model.</span>
     <span class="hljs-comment">// 所以,在thymeleaf中可以直接访问Page对象中的数据.</span>
@@ -562,7 +562,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     &#125;
     model.addAttribute(<span class="hljs-string">&quot;discussPosts&quot;</span>, discussPosts);
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;/index&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎分页系统(可复用)</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219165634.png" srcset="/img/loading.gif" alt="模版引擎处理"></p>
@@ -595,14 +595,14 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219172636.png" srcset="/img/loading.gif" alt="邮箱服务"></p>
 </li>
 <li><p>Maven导入</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-mail<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.2.6.RELEASE<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 </li>
 <li><p>配置文件</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-comment">#MailProperties</span>
+<pre><code class="hljs yaml"><span class="hljs-comment">#MailProperties</span>
 <span class="hljs-attr">mail:</span>
   <span class="hljs-attr">host:</span> <span class="hljs-string">smtp.163.com</span>
   <span class="hljs-attr">port:</span> <span class="hljs-number">465</span>
@@ -612,10 +612,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
   <span class="hljs-attr">properties:</span>
     <span class="hljs-attr">smtp:</span>
       <span class="hljs-attr">ssl:</span>
-        <span class="hljs-attr">enable:</span> <span class="hljs-literal">true</span></code></pre></div>
+        <span class="hljs-attr">enable:</span> <span class="hljs-literal">true</span></code></pre>
 </li>
 <li><p>编写MailClient的工具类</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MailClient</span> </span>&#123;
 
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(MailClient.class);
@@ -641,7 +641,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
             logger.error(<span class="hljs-string">&quot;邮件发送失败：&quot;</span>+e.getMessage());
         &#125;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>测试 (省略，请查看test包下的MailTest)</p>
 </li>
@@ -664,35 +664,35 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程概括-2"><a href="#开发流程概括-2" class="headerlink" title="开发流程概括"></a>开发流程概括</h3><ol>
 <li><p>跳转注册页面</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoginController</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
   
     <span class="hljs-meta">@RequestMapping(path = &quot;/register&quot;,method = RequestMethod.GET)</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getRegisterPage</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/register&quot;</span>;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改主页模版引擎</p>
-<div class="hljs"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;nav-item ml-3 btn-group-vertical&quot;</span> <span class="hljs-attr">th:if</span>=<span class="hljs-string">&quot;$&#123;loginUser==null&#125;&quot;</span>&gt;</span>
+<pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;nav-item ml-3 btn-group-vertical&quot;</span> <span class="hljs-attr">th:if</span>=<span class="hljs-string">&quot;$&#123;loginUser==null&#125;&quot;</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;nav-link&quot;</span> <span class="hljs-attr">th:href</span>=<span class="hljs-string">&quot;@&#123;/register&#125;&quot;</span>&gt;</span>注册<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></code></pre>
 </li>
 <li><p>配置激活邮箱发送时附带的激活链接和Commonslang包</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-comment"># community</span>
+<pre><code class="hljs yaml"><span class="hljs-comment"># community</span>
 <span class="hljs-attr">community:</span>
   <span class="hljs-attr">path:</span>
     <span class="hljs-attr">domain:</span> <span class="hljs-string">http://localhost:8080</span>
-    <span class="hljs-attr">upload:</span> <span class="hljs-string">/Users/qiuke/Desktop/nowcoder_source/work/picture</span></code></pre></div>
+    <span class="hljs-attr">upload:</span> <span class="hljs-string">/Users/qiuke/Desktop/nowcoder_source/work/picture</span></code></pre>
 
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--    空值比较    --&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--    空值比较    --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.commons<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>commons-lang3<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 </li>
 <li><p>编写MD5、UUID工具类</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CommunityUtil</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CommunityUtil</span> </span>&#123;
 
     <span class="hljs-comment">// 生成随机字符串</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">generateUUID</span><span class="hljs-params">()</span></span>&#123;
@@ -706,10 +706,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         &#125;
         <span class="hljs-keyword">return</span> DigestUtils.md5DigestAsHex(key.getBytes());
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写UserService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
 <span class="hljs-keyword">private</span> MailClient mailClient;
 
 <span class="hljs-meta">@Autowired</span>
@@ -777,13 +777,13 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         mailClient.sendMail(user.getEmail(), <span class="hljs-string">&quot;激活邮件&quot;</span>, process);
 
         <span class="hljs-keyword">return</span> map;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219175018.png" srcset="/img/loading.gif" alt="模版引擎"></p>
 </li>
 <li><p>写LoginController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/register&quot;,method = RequestMethod.POST)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/register&quot;,method = RequestMethod.POST)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">register</span><span class="hljs-params">(Model model, User user)</span></span>&#123;
     Map&lt;String, Object&gt; map = userService.register(user);
     <span class="hljs-keyword">if</span> (map == <span class="hljs-keyword">null</span> || map.isEmpty())&#123;
@@ -797,7 +797,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         model.addAttribute(<span class="hljs-string">&quot;emailMsg&quot;</span>, map.get(<span class="hljs-string">&quot;emailMsg&quot;</span>));
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/register&quot;</span>;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改operate-result模版引擎</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219175509.png" srcset="/img/loading.gif" alt="模版引擎"></p>
@@ -806,7 +806,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219175654.png" srcset="/img/loading.gif" alt="模版引擎"></p>
 </li>
 <li><p>编写常量接口</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
 
     <span class="hljs-comment">/**</span>
 <span class="hljs-comment">     * 激活成功</span>
@@ -823,10 +823,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-comment">     */</span>
 
     <span class="hljs-keyword">int</span> ACTIVATION_REPEAT = <span class="hljs-number">0</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写activation 激活函数</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">activation</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String code)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">activation</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String code)</span></span>&#123;
     User user = userMapper.selectById(userId);
     <span class="hljs-keyword">if</span> (user.getStatus() == <span class="hljs-number">1</span>)&#123;
         <span class="hljs-keyword">return</span> ACTIVATION_REPEAT;
@@ -837,10 +837,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     &#125; <span class="hljs-keyword">else</span> &#123;
         <span class="hljs-keyword">return</span> ACTIVATION_FAILURE;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写LoginController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// http://localhost:8080/community/activation/id/code</span>
+<pre><code class="hljs java"><span class="hljs-comment">// http://localhost:8080/community/activation/id/code</span>
 <span class="hljs-meta">@RequestMapping(path = &quot;/activation/&#123;userId&#125;/&#123;code&#125;&quot;, method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">activation</span><span class="hljs-params">(Model model, <span class="hljs-meta">@PathVariable(&quot;userId&quot;)</span> <span class="hljs-keyword">int</span> userId, <span class="hljs-meta">@PathVariable(&quot;code&quot;)</span> String code)</span></span>&#123;
     <span class="hljs-keyword">int</span> activation_code = userService.activation(userId, code);
@@ -864,7 +864,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-meta">@RequestMapping(path = &quot;/login&quot;,method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getLoginPage</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/login&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改index可以点击注册</p>
 </li>
@@ -886,15 +886,15 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>Maven导入</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--    验证码工具    --&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--    验证码工具    --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.github.penggle<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>kaptcha<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.3.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 </li>
 <li><p>编写Kaptcha配置类</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">KaptchaConfig</span> </span>&#123;
 
     <span class="hljs-meta">@Bean</span>
@@ -916,10 +916,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         <span class="hljs-keyword">return</span> kaptcha;
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写LoginController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/kaptcha&quot;,method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/kaptcha&quot;,method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getKaptcha</span><span class="hljs-params">(HttpServletResponse response, HttpSession session)</span></span>&#123;
     <span class="hljs-comment">// 生成验证码</span>
     String text = kaptchProducer.createText();
@@ -936,23 +936,23 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;
         logger.error(<span class="hljs-string">&quot;验证码响应失败：&quot;</span> + e.getMessage());
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改login页面模版引擎路径</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219183214.png" srcset="/img/loading.gif" alt="模版引擎"></p>
-<div class="hljs"><pre><code class="hljs js">&lt;script&gt;
+<pre><code class="hljs js">&lt;script&gt;
    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">refresh_kaptcha</span>(<span class="hljs-params"></span>) </span>&#123;
       <span class="hljs-keyword">var</span> path = CONTEXT_PATH + <span class="hljs-string">&quot;/kaptcha?p=&quot;</span> + <span class="hljs-built_in">Math</span>.random();
       $(<span class="hljs-string">&quot;#kaptcha&quot;</span>).attr(<span class="hljs-string">&quot;src&quot;</span>, path);
    &#125;
-&lt;/script&gt;</code></pre></div>
+&lt;/script&gt;</code></pre>
 
 </li>
 </ol>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219183831.png" srcset="/img/loading.gif" alt="流程图"></p>
 <h3 id="登录开发流程"><a href="#登录开发流程" class="headerlink" title="登录开发流程"></a>登录开发流程</h3><ol>
 <li><p>生成loginTicket实体类并编写Mapper</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Data</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Data</span>
 <span class="hljs-meta">@AllArgsConstructor</span>
 <span class="hljs-meta">@NoArgsConstructor</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoginTicket</span> </span>&#123;
@@ -963,9 +963,9 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> status;
     <span class="hljs-keyword">private</span> Date expired;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Mapper</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Mapper</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">LoginTicketMapper</span> </span>&#123;
 
     <span class="hljs-meta">@Insert(&#123;</span>
@@ -988,10 +988,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-meta">    &#125;)</span>
     <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateStatus</span><span class="hljs-params">(String ticket, <span class="hljs-keyword">int</span> status)</span></span>;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写UserService的login方法，一个实现跳转，一个实现登录业务</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> Map&lt;String, Object&gt; <span class="hljs-title">login</span><span class="hljs-params">(String username, String password, <span class="hljs-keyword">int</span> expiredSeconds)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> Map&lt;String, Object&gt; <span class="hljs-title">login</span><span class="hljs-params">(String username, String password, <span class="hljs-keyword">int</span> expiredSeconds)</span></span>&#123;
      Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
    
      <span class="hljs-comment">// 空值处理</span>
@@ -1034,10 +1034,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
      map.put(<span class="hljs-string">&quot;ticket&quot;</span>, loginTicket.getTicket());
    
      <span class="hljs-keyword">return</span> map;
- &#125;</code></pre></div>
+ &#125;</code></pre>
 </li>
 <li><p>编写LoginController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/login&quot;,method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/login&quot;,method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getLoginPage</span><span class="hljs-params">()</span></span>&#123;
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/login&quot;</span>;
 &#125;
@@ -1077,14 +1077,14 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/login&quot;</span>;
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 </li>
 </ol>
 <p>​     期间对应的工具类常量接口数值为：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 默认状态登录凭证的超时时间</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">int</span> DEFAULT_EXPIRED_SECONDS = <span class="hljs-number">3600</span> * <span class="hljs-number">12</span>;
@@ -1093,7 +1093,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-comment"> * 记住状态登录凭证的超时时间</span>
 <span class="hljs-comment"> */</span>
 
-<span class="hljs-keyword">int</span> REMEMBER_EXPIRED_SECONDS = <span class="hljs-number">3600</span> * <span class="hljs-number">24</span> * <span class="hljs-number">14</span>;</code></pre></div>
+<span class="hljs-keyword">int</span> REMEMBER_EXPIRED_SECONDS = <span class="hljs-number">3600</span> * <span class="hljs-number">24</span> * <span class="hljs-number">14</span>;</code></pre>
 
 <ol start="4">
 <li><p>修改模版引擎</p>
@@ -1101,16 +1101,16 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <p>代码修改请见源码。</p>
 </li>
 <li><p>编写UserService logout功能</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">logout</span><span class="hljs-params">(String ticket)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">logout</span><span class="hljs-params">(String ticket)</span></span>&#123;
     loginTicketMapper.updateStatus(ticket,<span class="hljs-number">1</span>);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写的LoginController logout请求</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/logout&quot;,method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/logout&quot;,method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">logout</span><span class="hljs-params">(<span class="hljs-meta">@CookieValue(&quot;ticket&quot;)</span> String ticket)</span></span>&#123;
     userService.logout(ticket);
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;redirect:/login&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎导航栏请求</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221152201.png" srcset="/img/loading.gif" alt="模版引擎"></p>
@@ -1136,7 +1136,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221155649.png" srcset="/img/loading.gif" alt="原理图"></p>
 </li>
 <li><p>编写HostHolder持有用户信息</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 容器作用,持有用户信息,用于代替session对象,线程隔离</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-meta">@Component</span>
@@ -1156,10 +1156,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         users.remove();
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写登录拦截器(实现CookieUtil)</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CookieUtil</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CookieUtil</span> </span>&#123;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getValue</span><span class="hljs-params">(HttpServletRequest request, String name)</span></span>&#123;
         <span class="hljs-keyword">if</span> (request == <span class="hljs-keyword">null</span> || name == <span class="hljs-keyword">null</span>)&#123;
@@ -1178,9 +1178,9 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoginTicketInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HandlerInterceptor</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -1224,13 +1224,13 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         hostHolder.clear();
         SecurityContextHolder.clearContext();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>modelAndView.addObject(“loginUser”,user) </p>
 <p>这样user就会被模版引擎拿到</p>
 </li>
 <li><p>注入到WebMvcConfig</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WebMvcConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">WebMvcConfigurer</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -1242,7 +1242,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
                 .excludePathPatterns(<span class="hljs-string">&quot;/**/*.css&quot;</span>, <span class="hljs-string">&quot;/**/*.js&quot;</span>, <span class="hljs-string">&quot;/**/*.png&quot;</span>, <span class="hljs-string">&quot;/**/*.jpg&quot;</span>, <span class="hljs-string">&quot;/**/*.jpeg&quot;</span>);
 
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>更改模版引擎</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221160610.png" srcset="/img/loading.gif" alt="模版引擎"></p>
@@ -1263,27 +1263,27 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="上传文件开发流程"><a href="#上传文件开发流程" class="headerlink" title="上传文件开发流程"></a>上传文件开发流程</h3><ol>
 <li><p>设置跳转请求并配置模版引擎</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/setting&quot;, method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/setting&quot;, method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getSettingPage</span><span class="hljs-params">(Model model)</span> </span>&#123;
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/setting&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>yaml文件设置访问路径</p>
-<div class="hljs"><pre><code class="hljs yaml"><span class="hljs-comment"># community</span>
+<pre><code class="hljs yaml"><span class="hljs-comment"># community</span>
 <span class="hljs-attr">community:</span>
   <span class="hljs-attr">path:</span>
     <span class="hljs-attr">domain:</span> <span class="hljs-string">http://localhost:8080</span>
-    <span class="hljs-attr">upload:</span> <span class="hljs-string">路径</span></code></pre></div>
+    <span class="hljs-attr">upload:</span> <span class="hljs-string">路径</span></code></pre>
 </li>
 <li><p>编写UserService更新头像并编写mapper(省略)</p>
-<div class="hljs"><pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateHeadUrl</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String headerUrl)</span></span>&#123;
+<pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateHeadUrl</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String headerUrl)</span></span>&#123;
 <span class="hljs-comment">//        return userMapper.updateHeader(userId, headerUrl);</span>
         <span class="hljs-keyword">int</span> rows = userMapper.updateHeader(userId, headerUrl);
         <span class="hljs-keyword">return</span> rows;
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 </li>
 <li><p>编写UserController中upload方法</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Value(&quot;$&#123;community.path.upload&#125;&quot;)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Value(&quot;$&#123;community.path.upload&#125;&quot;)</span>
 <span class="hljs-keyword">private</span> String uploadPath;
 
 <span class="hljs-meta">@RequestMapping(path = &quot;/upload&quot;, method = RequestMethod.POST)</span>
@@ -1324,10 +1324,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         &#125;
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/setting&quot;</span>;
 <span class="hljs-comment">//        return &quot;redirect:/index&quot;;</span>
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 </li>
 <li><p>编写UserController中展示头像方法</p>
-<div class="hljs"><pre><code class="hljs java">
+<pre><code class="hljs java">
 <span class="hljs-meta">@RequestMapping(path = &quot;/header/&#123;fileName&#125;&quot;, method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getHeader</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(&quot;fileName&quot;)</span> String fileName, HttpServletResponse response)</span> </span>&#123;
 
@@ -1351,14 +1351,14 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         logger.error(<span class="hljs-string">&quot;读取头像失败&quot;</span> + e.getMessage());
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎</p>
 </li>
 </ol>
 <h3 id="更改密码"><a href="#更改密码" class="headerlink" title="更改密码"></a>更改密码</h3><ol>
 <li><p>编写UserService中updatePassword方法</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> Map&lt;String, Object&gt; <span class="hljs-title">updatePassword</span><span class="hljs-params">(String oldPassword, String newPassword, String newPasswordConfim)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> Map&lt;String, Object&gt; <span class="hljs-title">updatePassword</span><span class="hljs-params">(String oldPassword, String newPassword, String newPasswordConfim)</span></span>&#123;
     Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
 
     <span class="hljs-keyword">if</span>(StringUtils.isBlank(oldPassword))&#123;
@@ -1394,15 +1394,15 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
     userMapper.updatePassword(user.getId(),CommunityUtil.md5(newPassword+user.getSalt()));
     <span class="hljs-keyword">return</span> map;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写Mapper</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">update</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;updatePassword&quot;</span>&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">update</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;updatePassword&quot;</span>&gt;</span>
     update user set password = #&#123;password&#125; where id = #&#123;id&#125;
-<span class="hljs-tag">&lt;/<span class="hljs-name">update</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">update</span>&gt;</span></code></pre>
 </li>
 <li><p>编写UserControlle请求</p>
-<div class="hljs"><pre><code class="hljs java">
+<pre><code class="hljs java">
 <span class="hljs-meta">@RequestMapping(path = &quot;/updatePassword&quot;, method = RequestMethod.POST)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">updatePasswordByOld</span><span class="hljs-params">(String oldPassword, String newPassword, String newPasswordConfim,</span></span>
 <span class="hljs-function"><span class="hljs-params">                                  Model model, <span class="hljs-meta">@CookieValue(&quot;ticket&quot;)</span> String ticket)</span> </span>&#123;
@@ -1418,7 +1418,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/setting&quot;</span>;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎</p>
 </li>
@@ -1445,11 +1445,11 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程-1"><a href="#开发流程-1" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>实现注解</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Target(ElementType.METHOD)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Target(ElementType.METHOD)</span>
 <span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span>
 <span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> LoginRequired &#123;
     
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221165052.png" srcset="/img/loading.gif" alt="包位置" style="zoom:50%;" />
 </li>
@@ -1457,7 +1457,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221165130.png" srcset="/img/loading.gif" alt="加注解"></p>
 </li>
 <li><p>编写拦截注解的拦截器</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
 <span class="hljs-meta">@Deprecated</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoginRequiredInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HandlerInterceptor</span> </span>&#123;
 
@@ -1479,10 +1479,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         &#125;
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>给WebMvcConfig添加拦截器</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WebMvcConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">WebMvcConfigurer</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -1498,7 +1498,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
         <span class="hljs-comment">//registry.addInterceptor(loginRequiredInterceptor)</span>
         <span class="hljs-comment">//        .excludePathPatterns(&quot;/**/*.css&quot;, &quot;/**/*.js&quot;, &quot;/**/*.png&quot;, &quot;/**/*.jpg&quot;, &quot;/**/*.jpeg&quot;);</span>
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -1522,7 +1522,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <ol>
 <li><p>编写前缀树算法</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SensitiveFilter</span> </span>&#123;
 
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(SensitiveFilter.class);
@@ -1670,7 +1670,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     &#125;
 
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写sensitive-words.txt，设置要过滤的词</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221165956.png" srcset="/img/loading.gif" alt="过滤词"></p>
@@ -1684,14 +1684,14 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程-2"><a href="#开发流程-2" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>导入fastJson</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>fastjson<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.2.73<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 </li>
 <li><p>编写工具类，增加Json转换方法</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CommunityUtil</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CommunityUtil</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getJSONString</span><span class="hljs-params">(<span class="hljs-keyword">int</span> code, String msg, Map&lt;String, Object&gt; map)</span></span>&#123;
         JSONObject json = <span class="hljs-keyword">new</span> JSONObject();
         json.put(<span class="hljs-string">&quot;code&quot;</span>, code);
@@ -1712,16 +1712,16 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         <span class="hljs-keyword">return</span> getJSONString(code, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>);
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>discussPost-mapper增加insert</p>
-<div class="hljs"><pre><code class="hljs java">&lt;insert id=<span class="hljs-string">&quot;insertDiscussPost&quot;</span> parameterType=<span class="hljs-string">&quot;DiscussPost&quot;</span> keyProperty=<span class="hljs-string">&quot;id&quot;</span>&gt;
+<pre><code class="hljs java">&lt;insert id=<span class="hljs-string">&quot;insertDiscussPost&quot;</span> parameterType=<span class="hljs-string">&quot;DiscussPost&quot;</span> keyProperty=<span class="hljs-string">&quot;id&quot;</span>&gt;
     <span class="hljs-function">insert into <span class="hljs-title">discuss_post</span><span class="hljs-params">(&lt;include refid=<span class="hljs-string">&quot;insertFields&quot;</span>&gt;&lt;/include&gt;)</span></span>
 <span class="hljs-function">    <span class="hljs-title">values</span> <span class="hljs-params">(#&#123;userId&#125;,#&#123;title&#125;,#&#123;content&#125;,#&#123;type&#125;,#&#123;status&#125;,#&#123;createTime&#125;,#&#123;commentCount&#125;,#&#123;score&#125;)</span></span>
-<span class="hljs-function">&lt;/insert&gt;</span></code></pre></div>
+<span class="hljs-function">&lt;/insert&gt;</span></code></pre>
 </li>
 <li><p>DiscussPostService添加add方法</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">addDiscussPost</span><span class="hljs-params">(DiscussPost discussPost)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">addDiscussPost</span><span class="hljs-params">(DiscussPost discussPost)</span></span>&#123;
     <span class="hljs-keyword">if</span> (discussPost == <span class="hljs-keyword">null</span>)&#123;
         <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException(<span class="hljs-string">&quot;参数不能为空&quot;</span>);
     &#125;
@@ -1734,10 +1734,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     discussPost.setContent(sensitiveFilter.Filter(discussPost.getContent()));
 
     <span class="hljs-keyword">return</span> discussPostMapper.insertDiscussPost(discussPost);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>便携DiscussPostController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/add&quot;, method = RequestMethod.POST)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/add&quot;, method = RequestMethod.POST)</span>
 <span class="hljs-meta">@ResponseBody</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">addDiscussPost</span><span class="hljs-params">(String title, String content)</span></span>&#123;
 
@@ -1755,10 +1755,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
     <span class="hljs-comment">// 报错将来统一处理</span>
     discussPostService.addDiscussPost(discussPost);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改前端</p>
-<div class="hljs"><pre><code class="hljs js">$(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;
+<pre><code class="hljs js">$(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;
    $(<span class="hljs-string">&quot;#publishBtn&quot;</span>).click(publish);
 &#125;);
 
@@ -1789,7 +1789,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
       &#125;
    );
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎</p>
 </li>
@@ -1806,20 +1806,20 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程-3"><a href="#开发流程-3" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>编写discussPost-mapper 增select</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectDiscussPostById&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;DiscussPost&quot;</span> &gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectDiscussPostById&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;DiscussPost&quot;</span> &gt;</span>
     select
     <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
     from discuss_post
     where id = #&#123;id&#125;
-<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span></code></pre>
 </li>
 <li><p>编写discussPostService 增find</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> DiscussPost <span class="hljs-title">findDiscussPostById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> DiscussPost <span class="hljs-title">findDiscussPostById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>&#123;
     <span class="hljs-keyword">return</span> discussPostMapper.selectDiscussPostById(id);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写DiscussPostController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/detail/&#123;discussPostId&#125;&quot;, method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/detail/&#123;discussPostId&#125;&quot;, method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getDiscussPost</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(&quot;discussPostId&quot;)</span> <span class="hljs-keyword">int</span> discussPostId, Page page, Model model)</span></span>&#123;
     DiscussPost post = discussPostService.findDiscussPostById(discussPostId);
     model.addAttribute(<span class="hljs-string">&quot;post&quot;</span>, post);
@@ -1829,7 +1829,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     model.addAttribute(<span class="hljs-string">&quot;user&quot;</span>, user);
 
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/discuss-detail&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>处理模版引擎，详情查看源码</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221173900.png" srcset="/img/loading.gif" alt="其他省略"></p>
@@ -1853,7 +1853,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程-4"><a href="#开发流程-4" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>编写评论pojo</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Data</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Data</span>
 <span class="hljs-meta">@AllArgsConstructor</span>
 <span class="hljs-meta">@NoArgsConstructor</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Comment</span> </span>&#123;
@@ -1867,18 +1867,18 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> status;
     <span class="hljs-keyword">private</span> Date createTime;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写comment-mapper.xml和CommentMapper基础</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Mapper</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Mapper</span>
 <span class="hljs-comment">//@Repository</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">CommentMapper</span> </span>&#123;
 
         <span class="hljs-function">List&lt;Comment&gt; <span class="hljs-title">selectCommentsByEntity</span><span class="hljs-params">(<span class="hljs-keyword">int</span> entityType, <span class="hljs-keyword">int</span> entityId, <span class="hljs-keyword">int</span> offset, <span class="hljs-keyword">int</span> limit)</span></span>;
         <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">selectCountByEntity</span><span class="hljs-params">(<span class="hljs-keyword">int</span> entityType, <span class="hljs-keyword">int</span> entityId)</span></span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java">&lt;sql id=<span class="hljs-string">&quot;selectFields&quot;</span> &gt;
+<pre><code class="hljs java">&lt;sql id=<span class="hljs-string">&quot;selectFields&quot;</span> &gt;
     id, user_id, entity_type, entity_id, target_id, content, status, create_time
 &lt;/sql&gt;
 &lt;select id=<span class="hljs-string">&quot;selectCommentsByEntity&quot;</span> resultType=<span class="hljs-string">&quot;Comment&quot;</span>&gt;
@@ -1898,10 +1898,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-function">    where status </span>= <span class="hljs-number">0</span>
     and entity_type = #&#123;entityType&#125;
     and entity_id = #&#123;entityId&#125;
-&lt;/select&gt;</code></pre></div>
+&lt;/select&gt;</code></pre>
 </li>
 <li><p>编写service</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Service</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CommentService</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -1913,10 +1913,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findCommentCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> entityType, <span class="hljs-keyword">int</span> entityId)</span></span>&#123;
         <span class="hljs-keyword">return</span> commentMapper.selectCountByEntity(entityType, entityId);
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 </li>
 <li><p>编写DiscussPostController, 丰富/detail/{discussPostId}请求</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/detail/&#123;discussPostId&#125;&quot;, method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/detail/&#123;discussPostId&#125;&quot;, method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getDiscussPost</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(&quot;discussPostId&quot;)</span> <span class="hljs-keyword">int</span> discussPostId, Page page, Model model)</span></span>&#123;
     DiscussPost post = discussPostService.findDiscussPostById(discussPostId);
     model.addAttribute(<span class="hljs-string">&quot;post&quot;</span>, post);
@@ -1970,10 +1970,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
     model.addAttribute(<span class="hljs-string">&quot;comments&quot;</span>,show_comments);
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/discuss-detail&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>对应的常量接口</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 实体类型:帖子</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">int</span> ENTITY_TYPE_POST = <span class="hljs-number">1</span>;
@@ -1986,7 +1986,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 实体类型:用户</span>
 <span class="hljs-comment"> */</span>
-<span class="hljs-keyword">int</span> ENTITY_TYPE_USER = <span class="hljs-number">3</span>;</code></pre></div>
+<span class="hljs-keyword">int</span> ENTITY_TYPE_USER = <span class="hljs-number">3</span>;</code></pre>
 </li>
 <li><p>修改discuss-detail.html模版引擎(代码众多，查看源文件)</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201222143039.png" srcset="/img/loading.gif" alt="模版引擎"></p>
@@ -2013,31 +2013,31 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程-5"><a href="#开发流程-5" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>编写CommentMapper 以及mapper文件</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">insertComment</span><span class="hljs-params">(Comment comment)</span></span>;</code></pre></div>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">insertComment</span><span class="hljs-params">(Comment comment)</span></span>;</code></pre>
 
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">sql</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;insertFields&quot;</span> &gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">sql</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;insertFields&quot;</span> &gt;</span>
         user_id, entity_type, entity_id, target_id, content, status, create_time
 <span class="hljs-tag">&lt;/<span class="hljs-name">sql</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">insert</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;insertComment&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;Comment&quot;</span>&gt;</span>
     insert into comment (<span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;insertFields&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>)
     values(#&#123;userId&#125;,#&#123;entityType&#125;,#&#123;entityId&#125;,#&#123;targetId&#125;,#&#123;content&#125;,#&#123;status&#125;,#&#123;createTime&#125;)
-<span class="hljs-tag">&lt;/<span class="hljs-name">insert</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">insert</span>&gt;</span></code></pre>
 </li>
 <li><p>编写DiscussPostMapper 更新评论方法</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateCommentCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> commentCount)</span></span>;</code></pre></div>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateCommentCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> commentCount)</span></span>;</code></pre>
 
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">update</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;updateCommentCount&quot;</span> &gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">update</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;updateCommentCount&quot;</span> &gt;</span>
     update discuss_post set comment_count = #&#123;commentCount&#125;
     where id = #&#123;id&#125;
-<span class="hljs-tag">&lt;/<span class="hljs-name">update</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">update</span>&gt;</span></code></pre>
 </li>
 <li><p>编写DiscussPostService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateCommentCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> commentCount)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateCommentCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> commentCount)</span></span>&#123;
     <span class="hljs-keyword">return</span> discussPostMapper.updateCommentCount(id, commentCount);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写CommentService add方法</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">addComment</span><span class="hljs-params">(Comment comment)</span></span>&#123;
     <span class="hljs-comment">// 要过滤</span>
     <span class="hljs-keyword">if</span> (comment == <span class="hljs-keyword">null</span>)&#123;
@@ -2055,10 +2055,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         discussPostService.updateCommentCount(comment.getEntityId(), count);
     &#125;
     <span class="hljs-keyword">return</span> rows;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写CommentController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
 <span class="hljs-keyword">private</span> RedisTemplate redisTemplate;
 
 <span class="hljs-meta">@RequestMapping(path = &quot;/add/&#123;discussPostId&#125;&quot;, method = RequestMethod.POST)</span>
@@ -2069,7 +2069,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     commentService.addComment(comment);
 
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;redirect:/discuss/detail/&quot;</span> + discussPostId;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎</p>
 </li>
@@ -2090,7 +2090,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="私信首页和详情开发流程"><a href="#私信首页和详情开发流程" class="headerlink" title="私信首页和详情开发流程"></a>私信首页和详情开发流程</h3><ol>
 <li><p>编写MessageMapper 添加方法</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Mapper</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Mapper</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">MessageMapper</span> </span>&#123;
 
     <span class="hljs-comment">// 查询当前用户会话列表,针对每个会话只返回一条最新私信</span>
@@ -2107,10 +2107,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
     <span class="hljs-comment">// 查询未读私信数量,查询总未读,查询对某用户未读需动态conversationId</span>
     <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">selectLetterUnreadCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String conversationId)</span></span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写mapper文件</p>
-<div class="hljs"><pre><code class="hljs java">&lt;sql id=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;
+<pre><code class="hljs java">&lt;sql id=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;
     id,from_id,to_id,conversation_id,content,status,create_time
 &lt;/sql&gt;
 
@@ -2170,10 +2170,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     &lt;<span class="hljs-keyword">if</span> test=<span class="hljs-string">&quot;conversationId!=null&quot;</span>&gt;
         and conversation_id = #&#123;conversationId&#125;
     &lt;/if&gt;
-&lt;/select&gt;</code></pre></div>
+&lt;/select&gt;</code></pre>
 </li>
 <li><p>编写MessageService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Service</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MessageService</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -2198,10 +2198,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findeLetterUnreadCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String conversationId)</span></span>&#123;
         <span class="hljs-keyword">return</span> messageMapper.selectLetterUnreadCount(userId, conversationId);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写MessageController 展示私信首页</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/list&quot;,method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/list&quot;,method = RequestMethod.GET)</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getMessageList</span><span class="hljs-params">(Model model, Page page)</span></span>&#123;
         User user = hostHolder.getUsers();
         <span class="hljs-comment">// 设置分页信息</span>
@@ -2227,12 +2227,12 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         <span class="hljs-keyword">int</span> unreadCountAll = messageService.findeLetterUnreadCount(user.getId(), <span class="hljs-keyword">null</span>);
         model.addAttribute(<span class="hljs-string">&quot;unreadCountAll&quot;</span>, unreadCountAll);
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/letter&quot;</span>;
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 </li>
 <li><p>修改模版引擎</p>
 </li>
 <li><p>编写MessageController 展示私信详情页面</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/detail/&#123;conversationId&#125;&quot;,method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/detail/&#123;conversationId&#125;&quot;,method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getMessageDetail</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> String conversationId, Model model, Page page)</span></span>&#123;
     page.setPath(<span class="hljs-string">&quot;/message/detail/&quot;</span>+conversationId);
     page.setRows(messageService.findLetterCount(conversationId));
@@ -2257,12 +2257,12 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     &#125;
 
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/letter-detail&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 </li>
 </ol>
 <p>​     期间涉及私有方法:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> User <span class="hljs-title">findTargetUser</span><span class="hljs-params">(String conversationId)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> User <span class="hljs-title">findTargetUser</span><span class="hljs-params">(String conversationId)</span></span>&#123;
 
     String[] s = conversationId.split(<span class="hljs-string">&quot;_&quot;</span>);
     <span class="hljs-keyword">int</span> id0 = Integer.valueOf(s[<span class="hljs-number">0</span>]);
@@ -2287,7 +2287,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         &#125;
     &#125;
     <span class="hljs-keyword">return</span> ids;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2304,11 +2304,11 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程-6"><a href="#开发流程-6" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>编写MessageMapper以及mapper文件</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">insertMessage</span><span class="hljs-params">(Message message)</span></span>;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">insertMessage</span><span class="hljs-params">(Message message)</span></span>;
 
-<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateMessageStatus</span><span class="hljs-params">(List&lt;Integer&gt; ids, <span class="hljs-keyword">int</span> status)</span></span>;</code></pre></div>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateMessageStatus</span><span class="hljs-params">(List&lt;Integer&gt; ids, <span class="hljs-keyword">int</span> status)</span></span>;</code></pre>
 
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">insert</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;insertMessage&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;Message&quot;</span> <span class="hljs-attr">keyProperty</span>=<span class="hljs-string">&quot;id&quot;</span>&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">insert</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;insertMessage&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;Message&quot;</span> <span class="hljs-attr">keyProperty</span>=<span class="hljs-string">&quot;id&quot;</span>&gt;</span>
     insert into message(<span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;insertFields&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>)
     values(#&#123;fromId&#125;,#&#123;toId&#125;,#&#123;conversationId&#125;,#&#123;content&#125;,#&#123;status&#125;,#&#123;createTime&#125;)
 <span class="hljs-tag">&lt;/<span class="hljs-name">insert</span>&gt;</span>
@@ -2319,10 +2319,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     <span class="hljs-tag">&lt;<span class="hljs-name">foreach</span> <span class="hljs-attr">collection</span>=<span class="hljs-string">&quot;ids&quot;</span> <span class="hljs-attr">item</span>=<span class="hljs-string">&quot;id&quot;</span> <span class="hljs-attr">open</span>=<span class="hljs-string">&quot;(&quot;</span> <span class="hljs-attr">separator</span>=<span class="hljs-string">&quot;,&quot;</span> <span class="hljs-attr">close</span>=<span class="hljs-string">&quot;)&quot;</span>&gt;</span>
         #&#123;id&#125;
     <span class="hljs-tag">&lt;/<span class="hljs-name">foreach</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">update</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">update</span>&gt;</span></code></pre>
 </li>
 <li><p>编写MessageService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">insertLetter</span><span class="hljs-params">(Message message)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">insertLetter</span><span class="hljs-params">(Message message)</span></span>&#123;
     <span class="hljs-comment">// 敏感词过滤</span>
     message.setContent(HtmlUtils.htmlEscape(message.getContent()));
     message.setContent(sensitiveFilter.Filter(message.getContent()));
@@ -2331,10 +2331,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">readMessage</span><span class="hljs-params">(List&lt;Integer&gt; ids)</span></span>&#123;
     <span class="hljs-keyword">return</span> messageMapper.updateMessageStatus(ids, <span class="hljs-number">1</span>);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写MessageController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/send&quot;,method = RequestMethod.POST)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/send&quot;,method = RequestMethod.POST)</span>
 <span class="hljs-meta">@ResponseBody</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">sendMessage</span><span class="hljs-params">(String toName, String content)</span></span>&#123;
     User toUser = userService.findUserByUsername(toName);
@@ -2355,10 +2355,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     messageService.insertLetter(message);
 
     <span class="hljs-keyword">return</span> CommunityUtil.getJSONString(<span class="hljs-number">0</span>);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写js</p>
-<div class="hljs"><pre><code class="hljs java">$(function()&#123;
+<pre><code class="hljs java">$(function()&#123;
    $(<span class="hljs-string">&quot;#sendBtn&quot;</span>).click(send_letter);
    $(<span class="hljs-string">&quot;.close&quot;</span>).click(delete_msg);
 &#125;);
@@ -2391,7 +2391,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-function">function <span class="hljs-title">delete_msg</span><span class="hljs-params">()</span> </span>&#123;
    <span class="hljs-comment">// TODO 删除数据</span>
    $(<span class="hljs-keyword">this</span>).parents(<span class="hljs-string">&quot;.media&quot;</span>).remove();
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2418,7 +2418,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </li>
 </ul>
 <h3 id="error页面"><a href="#error页面" class="headerlink" title="error页面"></a>error页面</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201222164736.png" srcset="/img/loading.gif" alt="error"></p>
-<h3 id="统一异常处理-1"><a href="#统一异常处理-1" class="headerlink" title="统一异常处理"></a>统一异常处理</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/error&quot;,method = RequestMethod.GET)</span>
+<h3 id="统一异常处理-1"><a href="#统一异常处理-1" class="headerlink" title="统一异常处理"></a>统一异常处理</h3><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/error&quot;,method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getErrorPage</span><span class="hljs-params">()</span></span>&#123;
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;error/500&quot;</span>;
 &#125;
@@ -2427,12 +2427,12 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-meta">@RequestMapping(path = &quot;/denied&quot;, method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getDeniedPage</span><span class="hljs-params">()</span> </span>&#123;
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;/error/404&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h3 id="Controller全局配置类"><a href="#Controller全局配置类" class="headerlink" title="Controller全局配置类"></a>Controller全局配置类</h3><blockquote>
 <p>不需要对任何Controller加处理，只需要编写全局配置类</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@ControllerAdvice(annotations = Controller.class)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@ControllerAdvice(annotations = Controller.class)</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExceptionAdvice</span> </span>&#123;
 
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
@@ -2456,7 +2456,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2468,7 +2468,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201222170059.png" srcset="/img/loading.gif" alt="原理图"></p>
 <p>详细原理查看Spring AOP</p>
-<h3 id="Aspect实现AOP"><a href="#Aspect实现AOP" class="headerlink" title="Aspect实现AOP"></a>Aspect实现AOP</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<h3 id="Aspect实现AOP"><a href="#Aspect实现AOP" class="headerlink" title="Aspect实现AOP"></a>Aspect实现AOP</h3><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
 <span class="hljs-meta">@Aspect</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ServiceLogAspect</span> </span>&#123;
 
@@ -2493,7 +2493,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
         logger.info(String.format(<span class="hljs-string">&quot;用户[%s],在[%s],访问了[%s]&quot;</span>, ip, now, classname));
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2501,23 +2501,23 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
 <h1 id="点赞关注模块"><a href="#点赞关注模块" class="headerlink" title="点赞关注模块"></a>点赞关注模块</h1><h2 id="整合redis"><a href="#整合redis" class="headerlink" title="整合redis"></a>整合redis</h2><h3 id="开发流程-8"><a href="#开发流程-8" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>引入依赖</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 </li>
 <li><p>配置redis</p>
 <p>ymal配置：</p>
-<div class="hljs"><pre><code class="hljs yaml">
+<pre><code class="hljs yaml">
 <span class="hljs-attr">spring:</span>
   <span class="hljs-comment">#RedisProperties</span>
   <span class="hljs-attr">redis:</span>
     <span class="hljs-attr">database:</span> <span class="hljs-number">1</span>
     <span class="hljs-attr">host:</span> <span class="hljs-string">localhost</span>
-    <span class="hljs-attr">port:</span> <span class="hljs-number">6379</span></code></pre></div>
+    <span class="hljs-attr">port:</span> <span class="hljs-number">6379</span></code></pre>
 
 <p>编写配置类</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RedisConfig</span> </span>&#123;
 
     <span class="hljs-meta">@Bean</span>
@@ -2539,7 +2539,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         <span class="hljs-keyword">return</span> template;
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>测试</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201222170723.png" srcset="/img/loading.gif" alt="测试"></p>
@@ -2564,7 +2564,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="帖子点赞开发流程"><a href="#帖子点赞开发流程" class="headerlink" title="帖子点赞开发流程"></a>帖子点赞开发流程</h3><ol>
 <li><p>编写RedisKeyUtil 设置业务key</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RedisKeyUtil</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RedisKeyUtil</span> </span>&#123;
 
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String SPILIT = <span class="hljs-string">&quot;:&quot;</span>;
 
@@ -2583,10 +2583,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getUserLikeKey</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
         <span class="hljs-keyword">return</span> PREFIX_USER_LIKE + SPILIT + userId;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写LikeService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Service</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LikeService</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -2629,10 +2629,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         <span class="hljs-keyword">return</span> redisTemplate.opsForSet().isMember(entityLikeKey, userId) ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写LikeController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LikeController</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -2658,12 +2658,12 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 
         <span class="hljs-keyword">return</span> CommunityUtil.getJSONString(<span class="hljs-number">0</span>, <span class="hljs-keyword">null</span>, map);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎</p>
 </li>
 <li><p>编写js</p>
-<div class="hljs"><pre><code class="hljs js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">like</span>(<span class="hljs-params">btn, entityType, entityId, entityUserId, postId</span>) </span>&#123;
+<pre><code class="hljs js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">like</span>(<span class="hljs-params">btn, entityType, entityId, entityUserId, postId</span>) </span>&#123;
     $.post(
         CONTEXT_PATH + <span class="hljs-string">&quot;/like&quot;</span>,
         &#123;<span class="hljs-string">&quot;entityType&quot;</span>:entityType,<span class="hljs-string">&quot;entityId&quot;</span>:entityId,<span class="hljs-string">&quot;entityUserId&quot;</span>:entityUserId,<span class="hljs-string">&quot;postId&quot;</span>:postId&#125;,
@@ -2677,7 +2677,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
             &#125;
         &#125;
     );
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>给其他Controller添加查询赞的功能</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201222172546.png" srcset="/img/loading.gif" alt="DiscussPostController添加like"></p>
@@ -2686,15 +2686,15 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ol>
 <h3 id="获取用户主页获得的赞数开发流程"><a href="#获取用户主页获得的赞数开发流程" class="headerlink" title="获取用户主页获得的赞数开发流程"></a>获取用户主页获得的赞数开发流程</h3><ol>
 <li><p>添加RedisKeyUtil</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_USER_LIKE = <span class="hljs-string">&quot;like:user&quot;</span>;
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_USER_LIKE = <span class="hljs-string">&quot;like:user&quot;</span>;
  <span class="hljs-comment">// 某个用户的赞</span>
  <span class="hljs-comment">// 格式:  like:user:userid -&gt; int</span>
  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getUserLikeKey</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
      <span class="hljs-keyword">return</span> PREFIX_USER_LIKE + SPILIT + userId;
- &#125;</code></pre></div>
+ &#125;</code></pre>
 </li>
 <li><p>事务化点赞Service，点赞后更新用户获赞数</p>
-<div class="hljs"><pre><code class="hljs java">redisTemplate.execute(<span class="hljs-keyword">new</span> SessionCallback() &#123;
+<pre><code class="hljs java">redisTemplate.execute(<span class="hljs-keyword">new</span> SessionCallback() &#123;
     <span class="hljs-meta">@Override</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">execute</span><span class="hljs-params">(RedisOperations redisOperations)</span> <span class="hljs-keyword">throws</span> DataAccessException </span>&#123;
         <span class="hljs-comment">// 实体用户同时更新 保证事务性</span>
@@ -2714,20 +2714,20 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         &#125;
         <span class="hljs-keyword">return</span> redisOperations.exec();
     &#125;
-&#125;);</code></pre></div>
+&#125;);</code></pre>
 </li>
 <li><p>添加用户获得赞个数方法</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 查询用户获得的点赞数量</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 查询用户获得的点赞数量</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findUserLikeCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
     String UserLikeKey = RedisKeyUtil.getUserLikeKey(userId);
     <span class="hljs-keyword">return</span> (Integer) redisTemplate.opsForValue().get(UserLikeKey) == <span class="hljs-keyword">null</span>?<span class="hljs-number">0</span>:(Integer) ((Integer) redisTemplate.opsForValue().get(UserLikeKey)).intValue();
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>给Controller和js添加一个entityUserId参数即可（上述点赞代码已给出）</p>
 </li>
 <li><p>编写UserController 定位个人主页</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 个人主页</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 个人主页</span>
 <span class="hljs-meta">@RequestMapping(path = &quot;/profile/&#123;userId&#125;&quot;, method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getProfilePage</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(&quot;userId&quot;)</span> <span class="hljs-keyword">int</span> userId, Model model)</span> </span>&#123;
 
@@ -2742,7 +2742,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     model.addAttribute(<span class="hljs-string">&quot;userLikeCount&quot;</span>, userLikeCount);
 
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/profile&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎profile.html</p>
 </li>
@@ -2763,7 +2763,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程-9"><a href="#开发流程-9" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>编写RedisKeyUtil</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 关注</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 关注</span>
 <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_FOLLOWEE = <span class="hljs-string">&quot;followee&quot;</span>;
 <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_FOLLOWER = <span class="hljs-string">&quot;follower&quot;</span>;
 <span class="hljs-comment">// 某个用户关注的实体</span>
@@ -2776,10 +2776,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-comment">// 格式: follower:entityType:entityId -&gt; zset(userId, now date()) 时间排序</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getFollowerKey</span><span class="hljs-params">(<span class="hljs-keyword">int</span> entityType, <span class="hljs-keyword">int</span> entityId)</span></span>&#123;
     <span class="hljs-keyword">return</span> PREFIX_FOLLOWER + SPILIT + entityType + SPILIT + entityId;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写FollowService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Service</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FollowService</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -2818,10 +2818,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
             &#125;
         &#125;);
     &#125;
- &#125;</code></pre></div>
+ &#125;</code></pre>
 </li>
 <li><p>Service添加查询关注、粉丝数以及关注状态</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 关注列表数量</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 关注列表数量</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">long</span> <span class="hljs-title">findFolloweeCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">int</span> entityType)</span></span>&#123;
     String followeeKey = RedisKeyUtil.getFolloweeKey(userId, entityType);
     <span class="hljs-keyword">return</span> redisTemplate.opsForZSet().zCard(followeeKey);
@@ -2837,10 +2837,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">hasFollow</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">int</span> entityType, <span class="hljs-keyword">int</span> entityId)</span></span>&#123;
     String followeeKey = RedisKeyUtil.getFolloweeKey(userId, entityType);
     <span class="hljs-keyword">return</span> redisTemplate.opsForZSet().score(followeeKey, entityId) != <span class="hljs-keyword">null</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写FollowController以及js</p>
-<div class="hljs"><pre><code class="hljs js">$(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;
+<pre><code class="hljs js">$(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;
    $(<span class="hljs-string">&quot;.follow-btn&quot;</span>).click(follow);
 &#125;);
 
@@ -2877,9 +2877,9 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
       );
       <span class="hljs-comment">//$(btn).text(&quot;关注TA&quot;).removeClass(&quot;btn-secondary&quot;).addClass(&quot;btn-info&quot;);</span>
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FollowController</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -2906,7 +2906,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         followService.unfollow(user.getId(), entityType, entityId);
 
         <span class="hljs-keyword">return</span> CommunityUtil.getJSONString(<span class="hljs-number">0</span>, <span class="hljs-string">&quot;已取消关注&quot;</span>);
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 </li>
 <li><p>编写UserController主页显示请求 添加关注状态</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201222181231.png" srcset="/img/loading.gif" alt="usercontroller"></p>
@@ -2927,7 +2927,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程-10"><a href="#开发流程-10" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>编写FollowService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 查询关注的用户</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 查询关注的用户</span>
 <span class="hljs-keyword">public</span> List&lt;Map&lt;String, Object&gt;&gt; findFollowees(<span class="hljs-keyword">int</span> userId, <span class="hljs-keyword">int</span> offset, <span class="hljs-keyword">int</span> limit)&#123;
     String followeeKey = RedisKeyUtil.getFolloweeKey(userId, ENTITY_TYPE_USER);
     Set&lt;Integer&gt; targetIds = redisTemplate.opsForZSet().reverseRange(followeeKey, offset, offset + limit - <span class="hljs-number">1</span>);
@@ -2973,10 +2973,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         list.add(map);
     &#125;
     <span class="hljs-keyword">return</span> list;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写FollowController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/followees/&#123;userId&#125;&quot;, method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/followees/&#123;userId&#125;&quot;, method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getFollowees</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(&quot;userId&quot;)</span> <span class="hljs-keyword">int</span> userId, Page page, Model model)</span></span>&#123;
     User user = userService.findUserById(userId);
     <span class="hljs-keyword">if</span> (user == <span class="hljs-keyword">null</span>)&#123;
@@ -3030,15 +3030,15 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     model.addAttribute(<span class="hljs-string">&quot;followers&quot;</span>, followersList);
 
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;/site/follower&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">hasFollow</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">hasFollow</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
     <span class="hljs-keyword">if</span> (hostHolder.getUsers() == <span class="hljs-keyword">null</span>)&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
     &#125;
 
     <span class="hljs-keyword">return</span> followService.hasFollow(hostHolder.getUsers().getId(), ENTITY_TYPE_USER, userId);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎</p>
 </li>
@@ -3063,14 +3063,14 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h2 id="储存验证码"><a href="#储存验证码" class="headerlink" title="储存验证码"></a>储存验证码</h2><h3 id="储存验证码开发流程"><a href="#储存验证码开发流程" class="headerlink" title="储存验证码开发流程"></a>储存验证码开发流程</h3><ol>
 <li><p>编写RedisKeyUtil</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String KAPTCHA = <span class="hljs-string">&quot;kaptcha&quot;</span>;
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String KAPTCHA = <span class="hljs-string">&quot;kaptcha&quot;</span>;
  <span class="hljs-comment">// 登录验证码</span>
  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getKaptchaKey</span><span class="hljs-params">(String owner)</span></span>&#123;
      <span class="hljs-keyword">return</span> KAPTCHA + SPILIT + owner;
- &#125;</code></pre></div>
+ &#125;</code></pre>
 </li>
 <li><p>修改LoginController中/kaptcha请求</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/kaptcha&quot;,method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/kaptcha&quot;,method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getKaptcha</span><span class="hljs-params">(HttpServletResponse response)</span></span>&#123;
     <span class="hljs-comment">// 生成验证码</span>
     String text = kaptchProducer.createText();
@@ -3096,7 +3096,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;
         logger.error(<span class="hljs-string">&quot;验证码响应失败：&quot;</span> + e.getMessage());
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改LoginController中/login请求</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223090056.png" srcset="/img/loading.gif" alt="redis存验证码"></p>
@@ -3105,11 +3105,11 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <h3 id="开发流程图-4"><a href="#开发流程图-4" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223095133.png" srcset="/img/loading.gif" alt="开发流程图"></p>
 <h2 id="存储登录凭证"><a href="#存储登录凭证" class="headerlink" title="存储登录凭证"></a>存储登录凭证</h2><h3 id="存储登录凭证开发流程"><a href="#存储登录凭证开发流程" class="headerlink" title="存储登录凭证开发流程"></a>存储登录凭证开发流程</h3><ol>
 <li><p>编写redisKeyUtil</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_TICKET = <span class="hljs-string">&quot;ticket&quot;</span>;
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_TICKET = <span class="hljs-string">&quot;ticket&quot;</span>;
  <span class="hljs-comment">// 登录凭证</span>
  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getTicketKey</span><span class="hljs-params">(String ticket)</span></span>&#123;
      <span class="hljs-keyword">return</span> PREFIX_TICKET + SPILIT + ticket;
- &#125;</code></pre></div>
+ &#125;</code></pre>
 </li>
 <li><p>废弃LoginTicketMapper(不再MySql存储登录凭证)</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223090329.png" srcset="/img/loading.gif" alt="废弃"></p>
@@ -3118,20 +3118,20 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223090538.png" srcset="/img/loading.gif" alt="redis"></p>
 </li>
 <li><p>修改UserService logout方法</p>
-<div class="hljs"><pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">logout</span><span class="hljs-params">(String ticket)</span></span>&#123;
+<pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">logout</span><span class="hljs-params">(String ticket)</span></span>&#123;
 <span class="hljs-comment">//        loginTicketMapper.updateStatus(ticket,1);</span>
         String redisKey = RedisKeyUtil.getTicketKey(ticket);
         LoginTicket loginTicket =(LoginTicket) redisTemplate.opsForValue().get(redisKey);
         loginTicket.setStatus(<span class="hljs-number">1</span>);
         redisTemplate.opsForValue().set(redisKey, loginTicket);
 
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 </li>
 <li><p>修改findLoginTicket方法</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> LoginTicket <span class="hljs-title">findLoginTicket</span><span class="hljs-params">(String ticket)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> LoginTicket <span class="hljs-title">findLoginTicket</span><span class="hljs-params">(String ticket)</span></span>&#123;
     String redisKey = RedisKeyUtil.getTicketKey(ticket);
     <span class="hljs-keyword">return</span> (LoginTicket) redisTemplate.opsForValue().get(redisKey);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>这样拦截器能通过redis找到</p>
 </li>
@@ -3139,14 +3139,14 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <h3 id="开发流程图-5"><a href="#开发流程图-5" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223095906.png" srcset="/img/loading.gif" alt="流程图"></p>
 <h2 id="存储用户信息"><a href="#存储用户信息" class="headerlink" title="存储用户信息"></a>存储用户信息</h2><h3 id="存储用户信息开发流程"><a href="#存储用户信息开发流程" class="headerlink" title="存储用户信息开发流程"></a>存储用户信息开发流程</h3><ol>
 <li><p>编写RedisKeyUtil</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_USER = <span class="hljs-string">&quot;user&quot;</span>;
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_USER = <span class="hljs-string">&quot;user&quot;</span>;
 <span class="hljs-comment">// 用户</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getUserKey</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
     <span class="hljs-keyword">return</span> PREFIX_USER + SPILIT + userId;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改UserService</p>
-<div class="hljs"><pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> User <span class="hljs-title">findUserById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>&#123;
+<pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> User <span class="hljs-title">findUserById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>&#123;
 <span class="hljs-comment">//        return userMapper.selectById(id);</span>
         User user = getCache(id);
         <span class="hljs-keyword">if</span> (user == <span class="hljs-keyword">null</span>)&#123;
@@ -3175,7 +3175,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
     <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">clearCache</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId)</span></span>&#123;
         String redisKey = RedisKeyUtil.getUserKey(userId);
         redisTemplate.delete(redisKey);
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 </li>
 <li><p>给相应方法添加清除缓存</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223091454.png" srcset="/img/loading.gif" alt="activation"></p>
@@ -3201,20 +3201,20 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ul>
 <h3 id="开发流程-11"><a href="#开发流程-11" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>Maven</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--    kafka    --&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--    kafka    --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.kafka<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-kafka<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 </li>
 <li><p>配置kafka</p>
-<div class="hljs"><pre><code class="hljs properties"><span class="hljs-comment"># KafkaProperties</span>
+<pre><code class="hljs properties"><span class="hljs-comment"># KafkaProperties</span>
 <span class="hljs-meta">spring.kafka.bootstrap-servers</span>=<span class="hljs-string">localhost:9092</span>
 <span class="hljs-meta">spring.kafka.consumer.group-id</span>=<span class="hljs-string">test</span>
 <span class="hljs-meta">spring.kafka.consumer.enable-auto-commit</span>=<span class="hljs-string">true</span>
 <span class="hljs-meta">spring.kafka.consumer.auto-commit-interval</span>=<span class="hljs-string">3000</span>
 <span class="hljs-meta">spring.kafka.listener.missing-topics-fatal</span>=<span class="hljs-string">false</span>
-<span class="hljs-comment">#如果无主题会报错 选择false</span></code></pre></div>
+<span class="hljs-comment">#如果无主题会报错 选择false</span></code></pre>
 </li>
 <li><p>检查kafka本地配置</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223101350.png" srcset="/img/loading.gif" alt="kafka"></p>
@@ -3225,7 +3225,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 </ol>
 <ol start="4">
 <li><p>编写测试类</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RunWith(SpringRunner.class)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RunWith(SpringRunner.class)</span>
 <span class="hljs-meta">@SpringBootTest</span>
 <span class="hljs-meta">@ContextConfiguration(classes = CommunityApplication.class)</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">KafkaTest</span> </span>&#123;
@@ -3267,7 +3267,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         System.out.println(record.value()
         );
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>单元测试源文件已给出</p>
 </li>
@@ -3289,7 +3289,7 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
 <h3 id="开发原理"><a href="#开发原理" class="headerlink" title="开发原理"></a>开发原理</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223102514.png" srcset="/img/loading.gif" alt="原理"></p>
 <h3 id="开发流程-12"><a href="#开发流程-12" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>创建事件对象</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Event</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Event</span> </span>&#123;
      <span class="hljs-comment">// return this的原因是让其可以链式编程</span>
     <span class="hljs-keyword">private</span> String topic;
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> userId;
@@ -3354,10 +3354,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         <span class="hljs-keyword">this</span>.data.put(key, value);
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>业务层角度创建事件生产者</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EventProducer</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -3368,10 +3368,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         <span class="hljs-comment">// 将事件发送指定主题</span>
         kafkaTemplate.send(event.getTopic(), JSONObject.toJSONString(event));
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>创建事件消费者</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EventConsumer</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
 
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(EventConsumer.class);
@@ -3414,10 +3414,10 @@ mybatis.configuration.mapUnderscoreToCamelCase=true</code></pre></div>
         messageService.insertLetter(message);
 
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改常量接口</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 主题:评论</span>
 <span class="hljs-comment"> */</span>
 String TOPIC_COMMENT = <span class="hljs-string">&quot;comment&quot;</span>;
@@ -3430,12 +3430,12 @@ String TOPIC_LIKE = <span class="hljs-string">&quot;like&quot;</span>;
 <span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 主题:关注</span>
 <span class="hljs-comment"> */</span>
-String TOPIC_FOLLOW = <span class="hljs-string">&quot;follow&quot;</span>;</code></pre></div>
+String TOPIC_FOLLOW = <span class="hljs-string">&quot;follow&quot;</span>;</code></pre>
 </li>
 <li><p>修改评论、点赞、关注Controller</p>
 </li>
 <li><p>评论事件</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 触发评论事件</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 触发评论事件</span>
 <span class="hljs-comment">// type为1 id为帖子id</span>
 <span class="hljs-comment">// type为2 id为评论的id</span>
 Event event = <span class="hljs-keyword">new</span> Event()
@@ -3454,12 +3454,12 @@ Event event = <span class="hljs-keyword">new</span> Event()
     event.setEntityUserId(target.getUserId());
 &#125;
 
-eventProducer.fireEvent(event);</code></pre></div>
+eventProducer.fireEvent(event);</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223103720.png" srcset="/img/loading.gif" alt="评论事件"></p>
 </li>
 <li><p>点赞事件</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 触发点赞事件</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 触发点赞事件</span>
 <span class="hljs-keyword">if</span> (likeStatus == <span class="hljs-number">1</span>)&#123;
     Event event = <span class="hljs-keyword">new</span> Event()
             .setTopic(TOPIC_LIKE)
@@ -3470,12 +3470,12 @@ eventProducer.fireEvent(event);</code></pre></div>
             .setData(<span class="hljs-string">&quot;postId&quot;</span>, postId);
 
     eventProducer.fireEvent(event);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223103905.png" srcset="/img/loading.gif" alt="点赞事件"></p>
 </li>
 <li><p>关注事件</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 触发关注事件</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 触发关注事件</span>
 Event event = <span class="hljs-keyword">new</span> Event()
         .setTopic(TOPIC_FOLLOW)
         .setUserId(user.getId())
@@ -3483,7 +3483,7 @@ Event event = <span class="hljs-keyword">new</span> Event()
         .setEntityId(entityId)
         .setEntityUserId(entityId);
 
-eventProducer.fireEvent(event);</code></pre></div>
+eventProducer.fireEvent(event);</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223103952.png" srcset="/img/loading.gif" alt="image-20201223103949547"></p>
 </li>
@@ -3505,7 +3505,7 @@ eventProducer.fireEvent(event);</code></pre></div>
 </ul>
 <h3 id="开发流程-13"><a href="#开发流程-13" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>编写MessageMapper和mapper.xml</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 查询某个主题下最新的通知</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 查询某个主题下最新的通知</span>
 <span class="hljs-function">Message <span class="hljs-title">selectLatestNotice</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>;
 <span class="hljs-comment">// 查询某个主题包含通知数量</span>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">selectNoticeCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>;
@@ -3513,9 +3513,9 @@ eventProducer.fireEvent(event);</code></pre></div>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">selectNoticeUnreadCount</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>;
 
 <span class="hljs-comment">// 查询某个主题所有的通知</span>
-<span class="hljs-function">List&lt;Message&gt; <span class="hljs-title">selectNotices</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic, <span class="hljs-keyword">int</span> offset, <span class="hljs-keyword">int</span> limit)</span></span>;</code></pre></div>
+<span class="hljs-function">List&lt;Message&gt; <span class="hljs-title">selectNotices</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic, <span class="hljs-keyword">int</span> offset, <span class="hljs-keyword">int</span> limit)</span></span>;</code></pre>
 
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectLatestNotice&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;Message&quot;</span>&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;selectLatestNotice&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;Message&quot;</span>&gt;</span>
     select <span class="hljs-tag">&lt;<span class="hljs-name">include</span> <span class="hljs-attr">refid</span>=<span class="hljs-string">&quot;selectFields&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
     from message
     where id in (
@@ -3554,10 +3554,10 @@ eventProducer.fireEvent(event);</code></pre></div>
     and conversation_id = #&#123;topic&#125;
     order by create_time desc
     limit #&#123;offset&#125;, #&#123;limit&#125;
-<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span></code></pre>
 </li>
 <li><p>编写MessageService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> Message <span class="hljs-title">findLatestNotice</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> Message <span class="hljs-title">findLatestNotice</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic)</span></span>&#123;
     <span class="hljs-keyword">return</span> messageMapper.selectLatestNotice(userId, topic);
 &#125;
 
@@ -3571,10 +3571,10 @@ eventProducer.fireEvent(event);</code></pre></div>
 
 <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Message&gt; <span class="hljs-title">findNotices</span><span class="hljs-params">(<span class="hljs-keyword">int</span> userId, String topic, <span class="hljs-keyword">int</span> offset, <span class="hljs-keyword">int</span> limit)</span></span>&#123;
     <span class="hljs-keyword">return</span> messageMapper.selectNotices(userId, topic, offset, limit);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写MessageController 显示消息主页</p>
-<div class="hljs"><pre><code class="hljs java">    <span class="hljs-meta">@RequestMapping(path = &quot;/notice/list&quot;, method = RequestMethod.GET)</span>
+<pre><code class="hljs java">    <span class="hljs-meta">@RequestMapping(path = &quot;/notice/list&quot;, method = RequestMethod.GET)</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getNoticeList</span><span class="hljs-params">(Model model)</span></span>&#123;
         User user = hostHolder.getUsers();
         <span class="hljs-comment">// 查询评论类通知</span>
@@ -3647,10 +3647,10 @@ eventProducer.fireEvent(event);</code></pre></div>
         model.addAttribute(<span class="hljs-string">&quot;noticeUnreadCount&quot;</span>, noticeUnreadCount);
 
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/notice&quot;</span>;
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 </li>
 <li><p>编写MessageController 显示具体消息的全部页面</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/notice/detail/&#123;topic&#125;&quot;, method = RequestMethod.GET)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(path = &quot;/notice/detail/&#123;topic&#125;&quot;, method = RequestMethod.GET)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getNoticeDetail</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(&quot;topic&quot;)</span>String topic,Page page, Model model)</span></span>&#123;
     User user = hostHolder.getUsers();
 
@@ -3684,10 +3684,10 @@ eventProducer.fireEvent(event);</code></pre></div>
         messageService.readMessage(ids);
     &#125;
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/notice-detail&quot;</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写拦截器记录全局消息未读数</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MessageUnreadInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HandlerInterceptor</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -3704,16 +3704,16 @@ eventProducer.fireEvent(event);</code></pre></div>
             modelAndView.addObject(<span class="hljs-string">&quot;unread&quot;</span>, letterUnreadCount + noticeUnreadCount);
         &#125;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>添加至WebMvcConfig</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
 <span class="hljs-keyword">private</span> MessageUnreadInterceptor messageUnreadInterceptor;
 
     registry.addInterceptor(messageUnreadInterceptor)
             .excludePathPatterns(<span class="hljs-string">&quot;/**/*.css&quot;</span>, <span class="hljs-string">&quot;/**/*.js&quot;</span>, <span class="hljs-string">&quot;/**/*.png&quot;</span>, <span class="hljs-string">&quot;/**/*.jpg&quot;</span>, <span class="hljs-string">&quot;/**/*.jpeg&quot;</span>);
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎（查看源文件）</p>
 </li>
@@ -3739,15 +3739,15 @@ eventProducer.fireEvent(event);</code></pre></div>
 <p>本项目使用elasticsearch 6.4.3</p>
 <h3 id="开发流程-14"><a href="#开发流程-14" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>Maven依赖</p>
-<div class="hljs"><pre><code class="hljs java">&lt;dependency&gt;
+<pre><code class="hljs java">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-data-elasticsearch&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre></div>
+&lt;/dependency&gt;</code></pre>
 </li>
 <li><p>配置es</p>
-<div class="hljs"><pre><code class="hljs properties"><span class="hljs-comment"># ElasticSearchProperties</span>
+<pre><code class="hljs properties"><span class="hljs-comment"># ElasticSearchProperties</span>
 <span class="hljs-meta">spring.data.elasticsearch.cluster-name</span>=<span class="hljs-string">nowcoder</span>
-<span class="hljs-meta">spring.data.elasticsearch.cluster-nodes</span>=<span class="hljs-string">127.0.0.1:9300</span></code></pre></div>
+<span class="hljs-meta">spring.data.elasticsearch.cluster-nodes</span>=<span class="hljs-string">127.0.0.1:9300</span></code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223113939.png" srcset="/img/loading.gif" alt="配置本地"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223114002.png" srcset="/img/loading.gif" alt="与上面一致"></p>
@@ -3755,7 +3755,7 @@ eventProducer.fireEvent(event);</code></pre></div>
 </ol>
 <ol start="3">
 <li><p>解决es和redis同时占用netty问题</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
+<pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CommunityApplication</span> </span>&#123;
 
     <span class="hljs-meta">@PostConstruct</span>
@@ -3769,10 +3769,10 @@ eventProducer.fireEvent(event);</code></pre></div>
         SpringApplication.run(CommunityApplication.class, args);
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>配置表对象和es存储对应的索引关系</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Data</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Data</span>
 <span class="hljs-meta">@AllArgsConstructor</span>
 <span class="hljs-meta">@NoArgsConstructor</span>
 <span class="hljs-meta">@Document(indexName = &quot;discusspost&quot;, type =&quot;_doc&quot;, shards = 6, replicas = 3)</span>
@@ -3807,16 +3807,16 @@ eventProducer.fireEvent(event);</code></pre></div>
     <span class="hljs-meta">@Field(type = FieldType.Double)</span>
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">double</span> score;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>其中es的ik插件请前往github下载对应版本 <a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-ik">ik</a></p>
 </li>
 <li><p>编写接口文件</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Repository</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Repository</span>
 <span class="hljs-comment">// 声明主键类型</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">DiscussPostRepository</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ElasticsearchRepository</span>&lt;<span class="hljs-title">DiscussPost</span>, <span class="hljs-title">Integer</span>&gt; </span>&#123;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223114530.png" srcset="/img/loading.gif" alt="es"></p>
 </li>
@@ -3844,7 +3844,7 @@ eventProducer.fireEvent(event);</code></pre></div>
 </ul>
 <h3 id="开发流程-15"><a href="#开发流程-15" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>编写ElasticsearchService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Service</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ElasticSearchService</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -3932,17 +3932,17 @@ eventProducer.fireEvent(event);</code></pre></div>
 
         &#125;);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>处理发帖事件</p>
 <p>常量接口添加：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 主题:发帖</span>
 <span class="hljs-comment"> */</span>
-String TOPIC_PUBLISH = <span class="hljs-string">&quot;publish&quot;</span>;</code></pre></div>
+String TOPIC_PUBLISH = <span class="hljs-string">&quot;publish&quot;</span>;</code></pre>
 </li>
 <li><p>处理事件消费者</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@KafkaListener(topics = TOPIC_PUBLISH)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@KafkaListener(topics = TOPIC_PUBLISH)</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">handleEventPublish</span><span class="hljs-params">(ConsumerRecord record)</span></span>&#123;
     <span class="hljs-keyword">if</span> (record == <span class="hljs-keyword">null</span> || record.value() == <span class="hljs-keyword">null</span>)&#123;
         <span class="hljs-comment">// 空消息</span>
@@ -3959,21 +3959,21 @@ String TOPIC_PUBLISH = <span class="hljs-string">&quot;publish&quot;</span>;</co
     elasticSearchService.saveDiscussPost(post);
 
 &#125;
-</code></pre></div>
+</code></pre>
 </li>
 <li><p>DiscusspostController处理发帖事件</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 触发发帖事件</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 触发发帖事件</span>
 Event event = <span class="hljs-keyword">new</span> Event()
         .setTopic(TOPIC_PUBLISH)
         .setUserId(user.getId())
         .setEntityType(ENTITY_TYPE_POST)
         .setEntityId(discussPost.getId());
-eventProducer.fireEvent(event);</code></pre></div>
+eventProducer.fireEvent(event);</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223140158.png" srcset="/img/loading.gif" alt="发帖事件"></p>
 </li>
 <li><p>CommentController 处理发帖事件</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">if</span> (comment.getEntityType() == ENTITY_TYPE_POST)&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">if</span> (comment.getEntityType() == ENTITY_TYPE_POST)&#123;
     <span class="hljs-comment">// 触发发帖事件</span>
     event = <span class="hljs-keyword">new</span> Event()
             .setTopic(TOPIC_PUBLISH)
@@ -3982,12 +3982,12 @@ eventProducer.fireEvent(event);</code></pre></div>
             <span class="hljs-comment">// 更新的是帖子</span>
             .setEntityId(discussPostId);
     eventProducer.fireEvent(event);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223140313.png" srcset="/img/loading.gif" alt="发帖事件"></p>
 </li>
 <li><p>编写SearchController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SearchController</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -4024,7 +4024,7 @@ eventProducer.fireEvent(event);</code></pre></div>
         model.addAttribute(<span class="hljs-string">&quot;keywords&quot;</span>, keywords);
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;site/search&quot;</span>;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>处理模版引擎</p>
 </li>
@@ -4054,10 +4054,10 @@ eventProducer.fireEvent(event);</code></pre></div>
 </blockquote>
 <h3 id="开发流程-16"><a href="#开发流程-16" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>Maven引入</p>
-<div class="hljs"><pre><code class="hljs java">&lt;dependency&gt;
+<pre><code class="hljs java">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre></div>
+&lt;/dependency&gt;</code></pre>
 </li>
 <li><p>废弃之前的LoginRequired注解</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223143832.png" srcset="/img/loading.gif" alt="废弃"></p>
@@ -4065,7 +4065,7 @@ eventProducer.fireEvent(event);</code></pre></div>
 </ol>
 <ol start="3">
 <li><p>常量接口增加权限常量</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 普通用户</span>
 <span class="hljs-comment"> */</span>
 String AUTHORITY_USER = <span class="hljs-string">&quot;user&quot;</span>;
@@ -4078,10 +4078,10 @@ String AUTHORITY_ADMIN = <span class="hljs-string">&quot;admin&quot;</span>;
 <span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 版主(置顶、加精)</span>
 <span class="hljs-comment"> */</span>
-String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</span>;</code></pre></div>
+String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</span>;</code></pre>
 </li>
 <li><p>SecurityConfig配置</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SpringSecurityConfig</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">WebSecurityConfigurerAdapter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CommunityConstant</span> </span>&#123;
 
     <span class="hljs-meta">@Override</span>
@@ -4157,10 +4157,10 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
         <span class="hljs-comment">// 想要运行自己的/logout 覆盖其默认逻辑 欺骗</span>
         http.logout().logoutUrl(<span class="hljs-string">&quot;/securitylogout&quot;</span>);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>UserService权限配置</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> Collection&lt;? extends GrantedAuthority&gt; getAuthorities(<span class="hljs-keyword">int</span> userId) &#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> Collection&lt;? extends GrantedAuthority&gt; getAuthorities(<span class="hljs-keyword">int</span> userId) &#123;
     User user = userMapper.selectById(userId);
     List&lt;GrantedAuthority&gt; list = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
     list.add(<span class="hljs-keyword">new</span> GrantedAuthority() &#123;
@@ -4177,10 +4177,10 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
         &#125;
     &#125;);
     <span class="hljs-keyword">return</span> list;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>拦截器预判断用户权限</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Override</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Override</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">preHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
 
     <span class="hljs-comment">// 从cookie中获取ticket</span>
@@ -4204,7 +4204,7 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
     &#125;
 
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223144555.png" srcset="/img/loading.gif" alt="退出功能"></p>
 </li>
@@ -4228,18 +4228,18 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
 </ul>
 <h3 id="开发流程-17"><a href="#开发流程-17" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>Maven导入</p>
-<div class="hljs"><pre><code class="hljs java">&lt;dependency&gt;
+<pre><code class="hljs java">&lt;dependency&gt;
     &lt;groupId&gt;org.thymeleaf.extras&lt;/groupId&gt;
     &lt;artifactId&gt;thymeleaf-extras-springsecurity5&lt;/artifactId&gt;
     &lt;version&gt;3.0.4.RELEASE&lt;/version&gt;
-&lt;/dependency&gt;</code></pre></div>
+&lt;/dependency&gt;</code></pre>
 </li>
 <li><p>便DiscusspostMapper 和 mapper文件</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateType</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> type)</span></span>;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateType</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> type)</span></span>;
 
-<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateStatus</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> status)</span></span>;</code></pre></div>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateStatus</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> status)</span></span>;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java">&lt;update id=<span class="hljs-string">&quot;updateType&quot;</span>&gt;
+<pre><code class="hljs java">&lt;update id=<span class="hljs-string">&quot;updateType&quot;</span>&gt;
     update discuss_post set type = #&#123;type&#125;
     where id = #&#123;id&#125;
 &lt;/update&gt;
@@ -4247,19 +4247,19 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
 &lt;update id=<span class="hljs-string">&quot;updateStatus&quot;</span>&gt;
     update discuss_post set status = #&#123;status&#125;
     where id = #&#123;id&#125;
-&lt;/update&gt;</code></pre></div>
+&lt;/update&gt;</code></pre>
 </li>
 <li><p>编写DiscusspostService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateType</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> type)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateType</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> type)</span></span>&#123;
     <span class="hljs-keyword">return</span> discussPostMapper.updateType(id, type);
 &#125;
 
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateStatus</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">int</span> status)</span></span>&#123;
     <span class="hljs-keyword">return</span> discussPostMapper.updateStatus(id, status);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写DiscusspostController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 置顶</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 置顶</span>
 <span class="hljs-meta">@RequestMapping(path = &quot;/top&quot;, method = RequestMethod.POST)</span>
 <span class="hljs-meta">@ResponseBody</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">setTop</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>&#123;
@@ -4305,10 +4305,10 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
             .setEntityId(id);
     eventProducer.fireEvent(event);
     <span class="hljs-keyword">return</span> CommunityUtil.getJSONString(<span class="hljs-number">0</span>, <span class="hljs-string">&quot;删除成功！&quot;</span>);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写js</p>
-<div class="hljs"><pre><code class="hljs js"><span class="hljs-comment">// 置顶</span>
+<pre><code class="hljs js"><span class="hljs-comment">// 置顶</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setTop</span>(<span class="hljs-params"></span>) </span>&#123;
     $.post(
         CONTEXT_PATH + <span class="hljs-string">&quot;/discuss/top&quot;</span>,
@@ -4354,7 +4354,7 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
             &#125;
         &#125;
     );
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>修改模版引擎</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223145804.png" srcset="/img/loading.gif" alt="权限"></p>
@@ -4378,7 +4378,7 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
 </ul>
 <h3 id="开发流程-18"><a href="#开发流程-18" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>编写RedisKeyUtil</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_UV = <span class="hljs-string">&quot;uv&quot;</span>;
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_UV = <span class="hljs-string">&quot;uv&quot;</span>;
    
 <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_DAU = <span class="hljs-string">&quot;dau&quot;</span>;
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getUVkey</span><span class="hljs-params">(String date)</span></span>&#123;
@@ -4395,12 +4395,12 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
    
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getDAUkey</span><span class="hljs-params">(String startDate, String endDate)</span></span>&#123;
     <span class="hljs-keyword">return</span> PREFIX_DAU + SPILIT + startDate + SPILIT + endDate;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>看一天/多天的</p>
 </li>
 <li><p>编写DataService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Service</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Service</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataService</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -4467,10 +4467,10 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
             &#125;
         &#125;);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写data拦截器 统计并计入</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Component</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Component</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">HandlerInterceptor</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -4492,10 +4492,10 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
             dataService.recordDAU(user.getId());
         &#125;
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 </li>
 <li><p>WebMvcConfig添加拦截器</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Autowired</span>
 <span class="hljs-keyword">private</span> DataInterceptor dataInterceptor;
 
 <span class="hljs-meta">@Override</span>
@@ -4503,10 +4503,10 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
     registry.addInterceptor(dataInterceptor)
             .excludePathPatterns(<span class="hljs-string">&quot;/**/*.css&quot;</span>, <span class="hljs-string">&quot;/**/*.js&quot;</span>, <span class="hljs-string">&quot;/**/*.png&quot;</span>, <span class="hljs-string">&quot;/**/*.jpg&quot;</span>, <span class="hljs-string">&quot;/**/*.jpeg&quot;</span>);
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写DataController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DataController</span> </span>&#123;
 
     <span class="hljs-meta">@Autowired</span>
@@ -4540,7 +4540,7 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
         model.addAttribute(<span class="hljs-string">&quot;dauEndDate&quot;</span>, end);
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;forward:/data&quot;</span>;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>处理模版引擎</p>
 </li>
@@ -4570,13 +4570,13 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223162756.png" srcset="/img/loading.gif" alt="Quartz_db"></p>
 </li>
 <li><p>Maven</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-quartz<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 </li>
 <li><p>配置</p>
-<div class="hljs"><pre><code class="hljs properties"><span class="hljs-comment"># QuartzProperties</span>
+<pre><code class="hljs properties"><span class="hljs-comment"># QuartzProperties</span>
 <span class="hljs-meta">spring.quartz.job-store-type</span>=<span class="hljs-string">jdbc</span>
 <span class="hljs-meta">spring.quartz.scheduler-name</span>=<span class="hljs-string">communityScheduler</span>
 <span class="hljs-meta">spring.quartz.properties.org.quartz.scheduler.instanceId</span>=<span class="hljs-string">AUTO</span>
@@ -4584,7 +4584,7 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
 <span class="hljs-meta">spring.quartz.properties.org.quartz.jobStore.driverDelegateClass</span>=<span class="hljs-string">org.quartz.impl.jdbcjobstore.StdJDBCDelegate</span>
 <span class="hljs-meta">spring.quartz.properties.org.quartz.jobStore.isClustered</span>=<span class="hljs-string">true</span>
 <span class="hljs-meta">spring.quartz.properties.org.quartz.threadPool.class</span>=<span class="hljs-string">org.quartz.simpl.SimpleThreadPool</span>
-<span class="hljs-meta">spring.quartz.properties.org.quartz.threadPool.threadCount</span>=<span class="hljs-string">5</span></code></pre></div>
+<span class="hljs-meta">spring.quartz.properties.org.quartz.threadPool.threadCount</span>=<span class="hljs-string">5</span></code></pre>
 
 
 
@@ -4592,11 +4592,11 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
 </ol>
 <h3 id="热帖开发流程"><a href="#热帖开发流程" class="headerlink" title="热帖开发流程"></a>热帖开发流程</h3><ol>
 <li><p>编写rediskey</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_POST = <span class="hljs-string">&quot;post&quot;</span>;
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX_POST = <span class="hljs-string">&quot;post&quot;</span>;
  <span class="hljs-comment">//帖子分数(点赞加精等操作 存入postId)</span>
  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getPostScoreKey</span><span class="hljs-params">()</span></span>&#123;
      <span class="hljs-keyword">return</span> PREFIX_POST + SPILIT + <span class="hljs-string">&quot;score&quot;</span>;
- &#125;</code></pre></div>
+ &#125;</code></pre>
 </li>
 <li><p>编写DiscusspotsController</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223163417.png" srcset="/img/loading.gif" alt="1"></p>
@@ -4611,7 +4611,7 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223163613.png" srcset="/img/loading.gif" alt="comment"></p>
 </li>
 <li><p>编写job（任务）</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PostScoreRefreshJob</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Job</span>, <span class="hljs-title">CommunityConstant</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PostScoreRefreshJob</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Job</span>, <span class="hljs-title">CommunityConstant</span> </span>&#123;
 
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger logger = LoggerFactory.getLogger(PostScoreRefreshJob.class);
 
@@ -4681,15 +4681,15 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
         post.setScore(score);
         elasticSearchService.saveDiscussPost(post);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写DiscusspostService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateScore</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">double</span> score)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateScore</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, <span class="hljs-keyword">double</span> score)</span></span>&#123;
     <span class="hljs-keyword">return</span> discussPostMapper.updateScore(id, score);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>编写QuartzConfig</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Configuration</span>
 <span class="hljs-comment">// 配置 -&gt; 数据库 -&gt; 访问db调度任务</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">QuartzConfig</span> </span>&#123;
 
@@ -4754,7 +4754,7 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
         factoryBean.setJobDataMap(<span class="hljs-keyword">new</span> JobDataMap());
         <span class="hljs-keyword">return</span> factoryBean;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4763,19 +4763,19 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
 <h3 id="开发流程图-12"><a href="#开发流程图-12" class="headerlink" title="开发流程图"></a>开发流程图</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223164912.png" srcset="/img/loading.gif" alt="流程图"></p>
 <h2 id="头像上传七牛云"><a href="#头像上传七牛云" class="headerlink" title="头像上传七牛云"></a>头像上传七牛云</h2><h3 id="开发流程-19"><a href="#开发流程-19" class="headerlink" title="开发流程"></a>开发流程</h3><ol>
 <li><p>Maven</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- https://mvnrepository.com/artifact/com.qiniu/qiniu-java-sdk --&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- https://mvnrepository.com/artifact/com.qiniu/qiniu-java-sdk --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.qiniu<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>qiniu-java-sdk<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>7.2.28<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 </li>
 <li><p>配置qini</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223165129.png" srcset="/img/loading.gif" alt="配置"></p>
 <p>具体依赖自己的qiniu配置</p>
 </li>
 <li><p>修改UserController</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Value(&quot;$&#123;qiniu.key.access&#125;&quot;)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Value(&quot;$&#123;qiniu.key.access&#125;&quot;)</span>
 <span class="hljs-keyword">private</span> String accessKey;
    
 <span class="hljs-meta">@Value(&quot;$&#123;qiniu.key.secret&#125;&quot;)</span>
@@ -4817,10 +4817,10 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
     userService.updateHeadUrl(hostHolder.getUsers().getId(), url);
    
     <span class="hljs-keyword">return</span> CommunityUtil.getJSONString(<span class="hljs-number">0</span>);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>更新前端表单</p>
-<div class="hljs"><pre><code class="hljs js">$(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;
+<pre><code class="hljs js">$(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;
     $(<span class="hljs-string">&quot;#uploadForm&quot;</span>).submit(upload);
 &#125;);
 
@@ -4853,10 +4853,10 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
     &#125;);
     <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
 &#125;
-</code></pre></div>
+</code></pre>
 </li>
 <li><p>更新表单</p>
-<div class="hljs"><pre><code class="hljs java">&lt;form <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;mt-5&quot;</span> id=<span class="hljs-string">&quot;uploadForm&quot;</span>&gt;
+<pre><code class="hljs java">&lt;form <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;mt-5&quot;</span> id=<span class="hljs-string">&quot;uploadForm&quot;</span>&gt;
    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;form-group row mt-4&quot;</span>&gt;
       &lt;label for=&quot;head-image&quot; class=&quot;col-sm-2 col-form-label text-right&quot;&gt;选择头像:&lt;/label&gt;
       &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;col-sm-10&quot;</span>&gt;
@@ -4877,7 +4877,7 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
          &lt;button type=&quot;submit&quot; class=&quot;btn btn-info text-white form-control&quot;&gt;立即上传&lt;/button&gt;
       &lt;/div&gt;
    &lt;/div&gt;
-&lt;/form&gt;</code></pre></div>
+&lt;/form&gt;</code></pre>
 
 </li>
 </ol>
@@ -4903,21 +4903,21 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223171726.png" srcset="/img/loading.gif" alt="redis单体"></p>
 <h3 id="caffeine-作缓存开发流程"><a href="#caffeine-作缓存开发流程" class="headerlink" title="caffeine 作缓存开发流程"></a>caffeine 作缓存开发流程</h3><ol>
 <li><p>Maven</p>
-<div class="hljs"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine --&gt;</span>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.github.ben-manes.caffeine<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>caffeine<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.8.4<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre></div>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 </li>
 <li><p>配置caffeine</p>
-<div class="hljs"><pre><code class="hljs properties"><span class="hljs-comment"># caffeine 缓存热帖</span>
+<pre><code class="hljs properties"><span class="hljs-comment"># caffeine 缓存热帖</span>
 <span class="hljs-meta">caffeine.posts.max-size</span>=<span class="hljs-string">15</span>
 <span class="hljs-comment"># 三分钟</span>
-<span class="hljs-meta">caffeine.posts.expire-seconds</span>=<span class="hljs-string">180</span></code></pre></div>
+<span class="hljs-meta">caffeine.posts.expire-seconds</span>=<span class="hljs-string">180</span></code></pre>
 </li>
 <li><p>编写DiscussPostService</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Value(&quot;$&#123;caffeine.posts.max-size&#125;&quot;)</span>
+<pre><code class="hljs java"><span class="hljs-meta">@Value(&quot;$&#123;caffeine.posts.max-size&#125;&quot;)</span>
 <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> maxSize;
    
 <span class="hljs-meta">@Value(&quot;$&#123;caffeine.posts.expire-seconds&#125;&quot;)</span>
@@ -4969,7 +4969,7 @@ String AUTHORITY_MODERATOR = <span class="hljs-string">&quot;moderator&quot;</sp
                     <span class="hljs-keyword">return</span> discussPostMapper.selectDiscussPostRows(integer);
                 &#125;
             &#125;);
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>对find方法修改</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201223172210.png" srcset="/img/loading.gif" alt="修改"></p>

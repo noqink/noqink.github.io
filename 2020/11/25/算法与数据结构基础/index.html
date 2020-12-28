@@ -29,7 +29,7 @@
     
     
       
-      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/stackoverflow-dark.min.css" />
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/ocean.min.css" />
     
   
 
@@ -268,7 +268,7 @@
 <h4 id="a、选择排序"><a href="#a、选择排序" class="headerlink" title="a、选择排序"></a>a、选择排序</h4><p>过程：<br>arr[0～N-1]范围上，找到最小值所在的位置，然后把最小值交换到0位置。<br>arr[1～N-1]范围上，找到最小值所在的位置，然后把最小值交换到1位置。<br>arr[2～N-1]范围上，找到最小值所在的位置，然后把最小值交换到2位置。<br>…<br>arr[N-1～N-1]范围上，找到最小值位置，然后把最小值交换到N-1位置。</p>
 <p>估算：<br>很明显，如果arr长度为N，每一步常数操作的数量，如等差数列一般<br>所以，总的常数操作数量 = a*(N^2) + b*N + c (a、b、c都是常数)</p>
 <p>所以选择排序的时间复杂度为 **O(N^2)**。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">selectionSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">selectionSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
@@ -289,13 +289,13 @@
    <span class="hljs-keyword">int</span> tmp = arr[i];
    arr[i] = arr[j];
    arr[j] = tmp;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h4 id="b、冒泡排序"><a href="#b、冒泡排序" class="headerlink" title="b、冒泡排序"></a>b、冒泡排序</h4><p>过程：<br>在arr[0～N-1]范围上：<br>arr[0]和arr[1]，谁大谁来到1位置；arr[1]和arr[2]，谁大谁来到2位置…arr[N-2]和arr[N-1]，谁大谁来到N-1位置</p>
 <p>在arr[0～N-2]范围上，重复上面的过程，但最后一步是arr[N-3]和arr[N-2]，谁大谁来到N-2位置<br>在arr[0～N-3]范围上，重复上面的过程，但最后一步是arr[N-4]和arr[N-3]，谁大谁来到N-3位置<br>…<br>最后在arr[0～1]范围上，重复上面的过程，但最后一步是arr[0]和arr[1]，谁大谁来到1位置</p>
 <p>估算：<br>很明显，如果arr长度为N，每一步常数操作的数量，依然如等差数列一般<br>所以，总的常数操作数量 = a*(N^2) + b*N + c (a、b、c都是常数)</p>
 <p>所以冒泡排序的时间复杂度为O(N^2)。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">bubbleSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">bubbleSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span></span>&#123;
         <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>)&#123;
             <span class="hljs-keyword">return</span>;
         &#125;
@@ -313,11 +313,11 @@
         arr[i] = arr[i] ^ arr[j];
         arr[j] = arr[i] ^ arr[j];
         arr[i] = arr[i] ^ arr[j];
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 
 <h4 id="c、插入排序"><a href="#c、插入排序" class="headerlink" title="c、插入排序"></a>c、插入排序</h4><p>过程：<br>想让arr[0<del>0]上有序，这个范围只有一个数，当然是有序的。<br>想让arr[0</del>1]上有序，所以从arr[1]开始往前看，如果arr[1]&lt;arr[0]，就交换。否则什么也不做。<br>想让arr[0<del>i]上有序，所以从arr[i]开始往前看，arr[i]这个数不停向左移动，一直移动到左边的数字不再比自己大，停止移动。<br>最后一步，想让arr[0</del>N-1]上有序， arr[N-1]这个数不停向左移动，一直移动到左边的数字不再比自己大，停止移动。</p>
 <p>估算时发现这个算法流程的复杂程度，会因为数据状况的不同而不同。</p>
-<div class="hljs"><pre><code class="hljs mathematica">
+<pre><code class="hljs mathematica">
 如果某个算法流程的复杂程度会根据数据状况的不同而不同，那么你必须要按照最差情况来估计。
 
 很明显，在最差情况下，如果<span class="hljs-variable">arr</span>长度为<span class="hljs-built_in">N</span>，插入排序的每一步常数操作的数量，还是如等差数列一般
@@ -326,9 +326,9 @@
 
 所以插入排序排序的时间复杂度为<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">2</span><span class="hljs-punctuation">)</span>。
 
-</code></pre></div>
+</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">insertionSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">insertionSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
@@ -349,7 +349,7 @@
    arr[i] = arr[i] ^ arr[j];
    arr[j] = arr[i] ^ arr[j];
    arr[i] = arr[i] ^ arr[j];
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <blockquote>
 <p>注意</p>
@@ -361,14 +361,14 @@
 </li>
 <li><p>一定要确保在拆分算法流程时，拆分出来的所有行为都是常数时间的操作。这意味着你写算法时，对自己的用过的每一个系统api，都非常的熟悉。否则会影响你对时间复杂度的估算。</p>
 <hr>
-<div class="hljs"><pre><code class="hljs mathematica">排名从好到差：
+<pre><code class="hljs mathematica">排名从好到差：
 <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-number">1</span><span class="hljs-punctuation">)</span>   
 <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span>   
 <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span>   
 <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span>   
 <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">2</span><span class="hljs-punctuation">)</span>   <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">3</span><span class="hljs-punctuation">)</span>   …   <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-built_in">K</span><span class="hljs-punctuation">)</span>
 <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-number">2</span><span class="hljs-operator">^</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span>   <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-number">3</span><span class="hljs-operator">^</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span>   …   <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">K</span><span class="hljs-operator">^</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span>
-<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">!</span><span class="hljs-punctuation">)</span></code></pre></div>
+<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">!</span><span class="hljs-punctuation">)</span></code></pre>
 
 
 
@@ -396,7 +396,7 @@
 <p>认识对数器</p>
 </blockquote>
 <p>1，你想要测的方法a<br>2，实现复杂度不好但是容易实现的方法b<br>3，实现一个随机样本产生器<br>4，把方法a和方法b跑相同的随机样本，看看得到的结果是否一样<br>5，如果有一个随机样本使得比对结果不一致，打印样本进行人工干预，改对方法a和方法b<br>6，当样本数量很多时比对测试依然正确，可以确定方法a已经正确。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span>[] generateRandomArray(<span class="hljs-keyword">int</span> maxSize, <span class="hljs-keyword">int</span> maxValue) &#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span>[] generateRandomArray(<span class="hljs-keyword">int</span> maxSize, <span class="hljs-keyword">int</span> maxValue) &#123;
    <span class="hljs-comment">// Math.random() -&gt;  [0,1) 所有的小数，等概率返回一个</span>
    <span class="hljs-comment">// Math.random() * N -&gt; [0,N) 所有小数，等概率返回一个</span>
    <span class="hljs-comment">// (int)(Math.random() * N) -&gt; [0,N-1] 所有的整数，等概率返回一个</span>
@@ -440,9 +440,9 @@
 			&#125;
 		&#125;
 		<span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
-	&#125;</code></pre></div>
+	&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// for test</span>
+<pre><code class="hljs java"><span class="hljs-comment">// for test</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
    <span class="hljs-keyword">int</span> testTime = <span class="hljs-number">500000</span>;
    <span class="hljs-keyword">int</span> maxSize = <span class="hljs-number">100</span>; <span class="hljs-comment">// 随机数组的长度0～100</span>
@@ -466,12 +466,12 @@
    printArray(arr);
    insertionSort(arr);
    printArray(arr);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h2 id="认识二分法"><a href="#认识二分法" class="headerlink" title="认识二分法"></a>认识二分法</h2><blockquote>
 <p> 经常见到的类型是在一个有序数组上，开展二分搜索，但有序真的是所有问题求解时使用二分的必要条件吗？<br>不！<br>只要能正确构建左右两侧的淘汰逻辑，你就可以二分。</p>
 </blockquote>
-<h3 id="1、在一个有序数组中，找某个数是否存在"><a href="#1、在一个有序数组中，找某个数是否存在" class="headerlink" title="1、在一个有序数组中，找某个数是否存在"></a>1、在一个有序数组中，找某个数是否存在</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">exist</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] sortedArr, <span class="hljs-keyword">int</span> num)</span> </span>&#123;
+<h3 id="1、在一个有序数组中，找某个数是否存在"><a href="#1、在一个有序数组中，找某个数是否存在" class="headerlink" title="1、在一个有序数组中，找某个数是否存在"></a>1、在一个有序数组中，找某个数是否存在</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">exist</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] sortedArr, <span class="hljs-keyword">int</span> num)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (sortedArr == <span class="hljs-keyword">null</span> || sortedArr.length == <span class="hljs-number">0</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
    &#125;
@@ -491,9 +491,9 @@
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> sortedArr[L] == num;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<h3 id="2、在一个有序数组中，找-gt-某个数最左侧的位置"><a href="#2、在一个有序数组中，找-gt-某个数最左侧的位置" class="headerlink" title="2、在一个有序数组中，找&gt;=某个数最左侧的位置"></a>2、在一个有序数组中，找&gt;=某个数最左侧的位置</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 在arr上，找满足&gt;=value的最左位置</span>
+<h3 id="2、在一个有序数组中，找-gt-某个数最左侧的位置"><a href="#2、在一个有序数组中，找-gt-某个数最左侧的位置" class="headerlink" title="2、在一个有序数组中，找&gt;=某个数最左侧的位置"></a>2、在一个有序数组中，找&gt;=某个数最左侧的位置</h3><pre><code class="hljs java"><span class="hljs-comment">// 在arr上，找满足&gt;=value的最左位置</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">nearestIndex</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> value)</span></span>&#123;
     <span class="hljs-keyword">int</span> L = <span class="hljs-number">0</span>;
     <span class="hljs-keyword">int</span> R = arr.length - <span class="hljs-number">1</span>;
@@ -508,9 +508,9 @@
         &#125;
     &#125;
     <span class="hljs-keyword">return</span> index;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<h3 id="3、-在一个有序数组中，找-lt-某个数最右侧的位置"><a href="#3、-在一个有序数组中，找-lt-某个数最右侧的位置" class="headerlink" title="3、 在一个有序数组中，找&lt;=某个数最右侧的位置"></a>3、 在一个有序数组中，找&lt;=某个数最右侧的位置</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 在arr上，找满足&lt;=value的最右位置</span>
+<h3 id="3、-在一个有序数组中，找-lt-某个数最右侧的位置"><a href="#3、-在一个有序数组中，找-lt-某个数最右侧的位置" class="headerlink" title="3、 在一个有序数组中，找&lt;=某个数最右侧的位置"></a>3、 在一个有序数组中，找&lt;=某个数最右侧的位置</h3><pre><code class="hljs java"><span class="hljs-comment">// 在arr上，找满足&lt;=value的最右位置</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">nearestIndex</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> value)</span> </span>&#123;
     <span class="hljs-keyword">int</span> L = <span class="hljs-number">0</span>;
     <span class="hljs-keyword">int</span> R = arr.length - <span class="hljs-number">1</span>;
@@ -525,7 +525,7 @@
         &#125;
     &#125;
     <span class="hljs-keyword">return</span> index;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h3 id="4、-局部最小值问题"><a href="#4、-局部最小值问题" class="headerlink" title="4、 局部最小值问题"></a>4、 局部最小值问题</h3><blockquote>
 <ol>
@@ -535,7 +535,7 @@
 </ol>
 </blockquote>
 <p>arr无序, 任意两个相邻数不相等, 只需返回一个局部最小位置:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getLessIndex</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getLessIndex</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length == <span class="hljs-number">0</span>) &#123;
       <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>; <span class="hljs-comment">// no exist</span>
    &#125;
@@ -559,7 +559,7 @@
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> left;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h2 id="认识异或运算"><a href="#认识异或运算" class="headerlink" title="认识异或运算"></a>认识异或运算</h2><h3 id="1、如何记住"><a href="#1、如何记住" class="headerlink" title="1、如何记住"></a>1、如何记住</h3><p>异或运算：相同为0，不同为1<br>同或运算：相同以1，不同为0</p>
 <blockquote>
@@ -568,28 +568,28 @@
 </blockquote>
 <h3 id="2、异或运算的性质"><a href="#2、异或运算的性质" class="headerlink" title="2、异或运算的性质"></a>2、异或运算的性质</h3><p>0^N == N      N^N == 0<br>异或运算满足交换律和结合率</p>
 <p>上面的两个性质用无进位相加来理解就非常的容易</p>
-<h3 id="3、如何不用额外变量交换两个数"><a href="#3、如何不用额外变量交换两个数" class="headerlink" title="3、如何不用额外变量交换两个数"></a>3、如何不用额外变量交换两个数</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">swap</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> i, <span class="hljs-keyword">int</span> j)</span> </span>&#123;
+<h3 id="3、如何不用额外变量交换两个数"><a href="#3、如何不用额外变量交换两个数" class="headerlink" title="3、如何不用额外变量交换两个数"></a>3、如何不用额外变量交换两个数</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">swap</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> i, <span class="hljs-keyword">int</span> j)</span> </span>&#123;
     arr[i] = arr[i] ^ arr[j];
     arr[j] = arr[i] ^ arr[j];
     arr[i] = arr[i] ^ arr[j];
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125212731.png" srcset="/img/loading.gif" alt="结构"></p>
 <blockquote>
 <p>注意:     i和j是一个位置的话，会出错，指向的内存要求是不一样的，各自独立的。</p>
 </blockquote>
-<h3 id="4、一个数组中有一种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这种数"><a href="#4、一个数组中有一种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这种数" class="headerlink" title="4、一个数组中有一种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这种数"></a>4、一个数组中有一种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这种数</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// arr中，只有一种数，出现奇数次</span>
+<h3 id="4、一个数组中有一种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这种数"><a href="#4、一个数组中有一种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这种数" class="headerlink" title="4、一个数组中有一种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这种数"></a>4、一个数组中有一种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这种数</h3><pre><code class="hljs java"><span class="hljs-comment">// arr中，只有一种数，出现奇数次</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">printOddTimesNum1</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">int</span> eor = <span class="hljs-number">0</span>;
    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; arr.length; i++) &#123;
       eor ^= arr[i];
    &#125;
    System.out.println(eor);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h3 id="5、怎么把一个int类型的数，提取出最右侧的1来"><a href="#5、怎么把一个int类型的数，提取出最右侧的1来" class="headerlink" title="5、怎么把一个int类型的数，提取出最右侧的1来"></a>5、怎么把一个int类型的数，提取出最右侧的1来</h3><p>N &amp; ((~N)+1)</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img9SF_F0USXR87N%TE$HW3L80.png" srcset="/img/loading.gif" alt="1"></p>
-<h3 id="6、一个数组中有两种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这两种数"><a href="#6、一个数组中有两种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这两种数" class="headerlink" title="6、一个数组中有两种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这两种数"></a>6、一个数组中有两种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这两种数</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// arr中，有两种数，出现奇数次</span>
+<h3 id="6、一个数组中有两种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这两种数"><a href="#6、一个数组中有两种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这两种数" class="headerlink" title="6、一个数组中有两种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这两种数"></a>6、一个数组中有两种数出现了奇数次，其他数都出现了偶数次，怎么找到并打印这两种数</h3><pre><code class="hljs java"><span class="hljs-comment">// arr中，有两种数，出现奇数次</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">printOddTimesNum2</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">int</span> eor = <span class="hljs-number">0</span>;
    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; arr.length; i++) &#123;
@@ -606,19 +606,19 @@
       &#125;
    &#125;
    System.out.println(onlyOne + <span class="hljs-string">&quot; &quot;</span> + (eor ^ onlyOne));
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201125220723.png" srcset="/img/loading.gif" alt="图解"></p>
-<h1 id="链表结构、栈、队列、递归行为、哈希表"><a href="#链表结构、栈、队列、递归行为、哈希表" class="headerlink" title="链表结构、栈、队列、递归行为、哈希表"></a>链表结构、栈、队列、递归行为、哈希表</h1><h2 id="单向链表"><a href="#单向链表" class="headerlink" title="单向链表"></a>单向链表</h2><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
+<h1 id="链表结构、栈、队列、递归行为、哈希表"><a href="#链表结构、栈、队列、递归行为、哈希表" class="headerlink" title="链表结构、栈、队列、递归行为、哈希表"></a>链表结构、栈、队列、递归行为、哈希表</h1><h2 id="单向链表"><a href="#单向链表" class="headerlink" title="单向链表"></a>单向链表</h2><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
     <span class="hljs-keyword">public</span> Node next;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Node</span><span class="hljs-params">(<span class="hljs-keyword">int</span> data)</span> </span>&#123;
         <span class="hljs-keyword">this</span>.value = data;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<h2 id="双向链表"><a href="#双向链表" class="headerlink" title="双向链表"></a>双向链表</h2><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DoubleNode</span> </span>&#123;
+<h2 id="双向链表"><a href="#双向链表" class="headerlink" title="双向链表"></a>双向链表</h2><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DoubleNode</span> </span>&#123;
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
     <span class="hljs-keyword">public</span> DoubleNode last;
     <span class="hljs-keyword">public</span> DoubleNode next;
@@ -626,14 +626,14 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">DoubleNode</span><span class="hljs-params">(<span class="hljs-keyword">int</span> data)</span> </span>&#123;
         <span class="hljs-keyword">this</span>.value = data;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h2 id="单向链表和双向链表最简单的练习"><a href="#单向链表和双向链表最简单的练习" class="headerlink" title="单向链表和双向链表最简单的练习"></a>单向链表和双向链表最简单的练习</h2><blockquote>
 <p> 链表相关的问题几乎都是coding问题</p>
 </blockquote>
 <ul>
 <li><p>单链表和双链表如何反转</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">reverseLinkedList</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">reverseLinkedList</span><span class="hljs-params">(Node head)</span> </span>&#123;
    Node pre = <span class="hljs-keyword">null</span>;
    Node next = <span class="hljs-keyword">null</span>;
    <span class="hljs-keyword">while</span> (head != <span class="hljs-keyword">null</span>) &#123;
@@ -656,10 +656,10 @@
         head = next;
     &#125;
     <span class="hljs-keyword">return</span> pre;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>把给定值都删除</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">removeValue</span><span class="hljs-params">(Node head, <span class="hljs-keyword">int</span> num)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">removeValue</span><span class="hljs-params">(Node head, <span class="hljs-keyword">int</span> num)</span></span>&#123;
     <span class="hljs-comment">// 先找到值不是value的结点，作为头结点</span>
     <span class="hljs-keyword">while</span> (head != <span class="hljs-keyword">null</span>)&#123;
         <span class="hljs-keyword">if</span> (head.value != num)&#123;
@@ -680,7 +680,7 @@
         cur = cur.next;
     &#125;
     <span class="hljs-keyword">return</span> head;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 </li>
 </ul>
@@ -690,7 +690,7 @@
 </blockquote>
 <h2 id="栈和队列的实际实现"><a href="#栈和队列的实际实现" class="headerlink" title="栈和队列的实际实现"></a>栈和队列的实际实现</h2><ul>
 <li><p>双向链表实现</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span>&lt;<span class="hljs-title">T</span>&gt; </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span>&lt;<span class="hljs-title">T</span>&gt; </span>&#123;
     <span class="hljs-keyword">public</span> T value;
     <span class="hljs-keyword">public</span> Node&lt;T&gt; last;
     <span class="hljs-keyword">public</span> Node&lt;T&gt; next;
@@ -809,7 +809,7 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isEmpty</span><span class="hljs-params">()</span></span>&#123;
         <span class="hljs-keyword">return</span> queue.isEmpty();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>数组实现</p>
 <blockquote>
@@ -817,7 +817,7 @@
 </blockquote>
 </li>
 </ul>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ArrayStack</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ArrayStack</span> </span>&#123;
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span>[] a;
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> size;<span class="hljs-comment">//栈数组的大小</span>
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> top;<span class="hljs-comment">//栈顶</span>
@@ -880,12 +880,12 @@
         &#125;
         System.out.println(<span class="hljs-string">&quot;]&quot;</span>);
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <blockquote>
 <p>数组实现队列</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyQueue</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyQueue</span> </span>&#123;
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span>[] arr;
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> pushi;
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> polli;
@@ -925,7 +925,7 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">nextIndex</span><span class="hljs-params">(<span class="hljs-keyword">int</span> i)</span></span>&#123;
         <span class="hljs-keyword">return</span> i &lt; limit - <span class="hljs-number">1</span> ? i + <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h2 id="栈和队列的常见面试题"><a href="#栈和队列的常见面试题" class="headerlink" title="栈和队列的常见面试题"></a>栈和队列的常见面试题</h2><h3 id="1、实现一个特殊的栈，在基本功能的基础上，再实现返回栈中最小元素的功能"><a href="#1、实现一个特殊的栈，在基本功能的基础上，再实现返回栈中最小元素的功能" class="headerlink" title="1、实现一个特殊的栈，在基本功能的基础上，再实现返回栈中最小元素的功能"></a>1、实现一个特殊的栈，在基本功能的基础上，再实现返回栈中最小元素的功能</h3><blockquote>
 <p>1）pop、push、getMin操作的时间复杂度都是 O(1)。 </p>
@@ -934,7 +934,7 @@
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201128160516.png" srcset="/img/loading.gif" alt="实现"></p>
 <p> <strong>当前数和最小栈栈顶做比较, 谁小加谁</strong>,  弹出一起弹出 —–&gt; MyStack2</p>
 <p> <strong>当前数和最小栈栈顶做比较, 只有小于最小栈栈顶才压入</strong>,弹出如果Data Peek = Min Peek, 一起弹出 —–&gt; MyStack1</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 想要压入的数比最小栈大 不压入, 小于等于压入</span>
 <span class="hljs-comment"> */</span>
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyStack1</span> </span>&#123;
@@ -1019,12 +1019,12 @@
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.stackMin.peek();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h3 id="2、栈与队列互相实现"><a href="#2、栈与队列互相实现" class="headerlink" title="2、栈与队列互相实现"></a>2、栈与队列互相实现</h3><blockquote>
 <p>1）如何用栈结构实现队列结构</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TwoStacksQueue</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TwoStacksQueue</span> </span>&#123;
         <span class="hljs-keyword">public</span> Stack&lt;Integer&gt; stackPush;
         <span class="hljs-keyword">public</span> Stack&lt;Integer&gt; stackPop;
 
@@ -1062,12 +1062,12 @@
             pushToPop();
             <span class="hljs-keyword">return</span> stackPop.peek();
         &#125;
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 
 <blockquote>
 <p>2）如何用队列结构实现栈结构</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TwoQueueStack</span>&lt;<span class="hljs-title">T</span>&gt; </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TwoQueueStack</span>&lt;<span class="hljs-title">T</span>&gt; </span>&#123;
     <span class="hljs-keyword">public</span> Queue&lt;T&gt; queue;
     <span class="hljs-keyword">public</span> Queue&lt;T&gt; help;
 
@@ -1104,7 +1104,7 @@
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isEmpty</span><span class="hljs-params">()</span> </span>&#123;
         <span class="hljs-keyword">return</span> queue.isEmpty();
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><blockquote>
 <p>怎么从思想上理解递归</p>
@@ -1112,7 +1112,7 @@
 <p>求数组arr[L..R]中的最大值，怎么用递归方法实现。</p>
 <p>1）将[L..R]范围分成左右两半。左：[L..Mid]  右[Mid+1..R]<br>2）左部分求最大值，右部分求最大值<br>3） [L..R]范围上的最大值，是max{左部分最大值，右部分最大值}</p>
 <p>注意：2）是个递归过程，当范围上只有一个数，就可以不用再递归了</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 求arr中的最大值</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 求arr中的最大值</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getMax</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
     <span class="hljs-keyword">return</span> process(arr, <span class="hljs-number">0</span>, arr.length - <span class="hljs-number">1</span>);
 &#125;
@@ -1126,7 +1126,7 @@
     <span class="hljs-keyword">int</span> leftMax = process(arr, L, mid);
     <span class="hljs-keyword">int</span> rightMax = process(arr, mid + <span class="hljs-number">1</span>, R);
     <span class="hljs-keyword">return</span> Math.max(leftMax, rightMax);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -1143,7 +1143,7 @@
 <p>如果左边2/3, 右边也2/3, 也是两份, 其他再打印一次, 时间复杂度为O(n)</p>
 <p>T(N) = 2 * T(N/(3/2)) + O(N^1)</p>
 <h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><p>1)哈希表在使用层面上可以理解为一种集合结构<br>2)如果只有key，没有伴随数据value，可以使用 <strong><em>HashSet</em></strong>结构<br>3)如果既有key，又有伴随数据value，可以使用 <strong><em>HashMap</em></strong>结构<br>4) <strong><em>有无伴随数据，是HashMap和HashSet唯一的区别，实际结构是一回事</em></strong><br>5)使用哈希表增(put)、删(remove)、改(put)和查(get)的操作，可以认为时间复杂度为 O(1)，但是 <strong><em>常数时间</em></strong>比较大<br>6)放入哈希表的东西，如果是基础类型， <strong><em>内部按值传递</em></strong>，内存占用是这个东西的大小 </p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">int</span> a = <span class="hljs-number">100000</span>;
+<pre><code class="hljs java"><span class="hljs-keyword">int</span> a = <span class="hljs-number">100000</span>;
 <span class="hljs-keyword">int</span> b = <span class="hljs-number">100000</span>;
 <span class="hljs-comment">// 不关心内存区域, 只关心对应的值</span>
 System.out.println(a == b);
@@ -1155,44 +1155,44 @@ Integer e = <span class="hljs-number">127</span>;  <span class="hljs-comment">//
 Integer f = <span class="hljs-number">127</span>;
 System.out.println(e == f);
 
-<span class="hljs-comment">// 但是在哈希表中, 基础类型, 内部都按值传递</span></code></pre></div>
+<span class="hljs-comment">// 但是在哈希表中, 基础类型, 内部都按值传递</span></code></pre>
 
 
 
 <p>7)放入哈希表的东西，如果不是基础类型， <strong><em>内部按引用传递</em></strong>，内存占用是8字节</p>
-<div class="hljs"><pre><code class="hljs java">HashMap&lt;Node, String&gt; map2 = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+<pre><code class="hljs java">HashMap&lt;Node, String&gt; map2 = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
 Node node1 = <span class="hljs-keyword">new</span> Node(<span class="hljs-number">1</span>);
 Node node2 = node1;
 map2.put(node1, <span class="hljs-string">&quot;我是node1&quot;</span>);
 map2.put(node2, <span class="hljs-string">&quot;我是node1&quot;</span>);
 System.out.println(map2.size());
-<span class="hljs-comment">// 结果为 1</span></code></pre></div>
+<span class="hljs-comment">// 结果为 1</span></code></pre>
 
-<div class="hljs"><pre><code class="hljs java">HashMap&lt;Node, String&gt; map2 = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+<pre><code class="hljs java">HashMap&lt;Node, String&gt; map2 = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
 Node node1 = <span class="hljs-keyword">new</span> Node(<span class="hljs-number">1</span>);
 Node node2 = <span class="hljs-keyword">new</span> Node(<span class="hljs-number">2</span>);
 map2.put(node1, <span class="hljs-string">&quot;我是node1&quot;</span>);
 map2.put(node2, <span class="hljs-string">&quot;我是node1&quot;</span>);
 System.out.println(map2.size());
-<span class="hljs-comment">// 结果为 2</span></code></pre></div>
+<span class="hljs-comment">// 结果为 2</span></code></pre>
 
 
 
-<div class="hljs"><pre><code class="hljs processing">即如果<span class="hljs-keyword">HashMap</span>&lt;<span class="hljs-keyword">String</span>, <span class="hljs-keyword">String</span>&gt; <span class="hljs-built_in">map</span> = <span class="hljs-keyword">new</span> <span class="hljs-keyword">HashMap</span>&lt;&gt;();
+<pre><code class="hljs processing">即如果<span class="hljs-keyword">HashMap</span>&lt;<span class="hljs-keyword">String</span>, <span class="hljs-keyword">String</span>&gt; <span class="hljs-built_in">map</span> = <span class="hljs-keyword">new</span> <span class="hljs-keyword">HashMap</span>&lt;&gt;();
 <span class="hljs-built_in">key</span>和value都传<span class="hljs-number">100</span>位数据, 最终数据占用为 <span class="hljs-number">4</span> * <span class="hljs-number">100</span> * <span class="hljs-number">2</span>
 但如果<span class="hljs-keyword">HashMap</span>&lt;Node, Node&gt; map2 = <span class="hljs-keyword">new</span> <span class="hljs-keyword">HashMap</span>&lt;&gt;();
-<span class="hljs-built_in">key</span>和value都传<span class="hljs-number">20</span>g数据, <span class="hljs-built_in">map</span>中只存内存地址<span class="hljs-number">8</span>字节, <span class="hljs-number">4</span> * <span class="hljs-number">8</span> * <span class="hljs-number">2</span>字节大小完成操作</code></pre></div>
+<span class="hljs-built_in">key</span>和value都传<span class="hljs-number">20</span>g数据, <span class="hljs-built_in">map</span>中只存内存地址<span class="hljs-number">8</span>字节, <span class="hljs-number">4</span> * <span class="hljs-number">8</span> * <span class="hljs-number">2</span>字节大小完成操作</code></pre>
 
 
 
 <h2 id="有序表-TreeMap-O-logN"><a href="#有序表-TreeMap-O-logN" class="headerlink" title="有序表(TreeMap) O(logN)"></a>有序表(TreeMap) O(logN)</h2><p>1)有序表在使用层面上可以理解为一种集合结构<br>2)如果只有key，没有伴随数据value，可以使用TreeSet结构<br>3)如果既有key，又有伴随数据value，可以使用TreeMap结构<br>4)有无伴随数据，是TreeSet和TreeMap唯一的区别，底层的实际结构是一回事<br>5) <strong><em>有序表把key按照顺序组织起来，而哈希表完全不组织</em></strong></p>
-<div class="hljs"><pre><code class="hljs java">System.out.println(treeMap.firstKey());
+<pre><code class="hljs java">System.out.println(treeMap.firstKey());
 System.out.println(treeMap.lastKey());
 
 <span class="hljs-comment">// &lt;= 4</span>
 System.out.println(treeMap.floorKey(<span class="hljs-number">4</span>));
 <span class="hljs-comment">// &gt;= 4</span>
-System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</code></pre></div>
+System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</code></pre>
 
 <ol start="6">
 <li><strong><em>红黑树</em></strong>、 <strong><em>AVL树</em></strong>、 <strong><em>size-balance-tree</em></strong>和 <strong><em>跳表</em></strong>等都属于 <strong><em>有序表</em></strong>结构，只是底层具体实现不同</li>
@@ -1216,7 +1216,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 <p>运行后process(0,1) 再 process(2, 3) 再merge</p>
 <p>而运行process(0,1) 需要process(0,0)再process(1,1)再merge</p>
 <p>运行process(2, 3)需要process(2, 2)再process(3, 3)再merge</p>
-<h3 id="递归实现"><a href="#递归实现" class="headerlink" title="递归实现"></a>递归实现</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 递归方法实现</span>
+<h3 id="递归实现"><a href="#递归实现" class="headerlink" title="递归实现"></a>递归实现</h3><pre><code class="hljs java"><span class="hljs-comment">// 递归方法实现</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mergeSort1</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span></span>&#123;
     <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
         <span class="hljs-keyword">return</span>;
@@ -1256,14 +1256,14 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; help.length ; j++) &#123;
         arr[L + i] = help[i];
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h3 id="非递归实现"><a href="#非递归实现" class="headerlink" title="非递归实现"></a>非递归实现</h3><p>例子[2, 3, 1, 4, 5, 6]</p>
 <p>初始k = 1, 每个最小原子单元, 即每个数自我有序,</p>
 <p>K &lt;&lt; 2, 每两个一组进行merge, 变成[2, 3, 1, 4, 5, 6]</p>
 <p>K &lt;&lt; 2, 每四个一组进行merge, 不够则凑一组[1, 2, 3, 4, 5, 6]</p>
 <p>直到k &gt;= N</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 非递归方法实现</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 非递归方法实现</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mergeSort2</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
       <span class="hljs-keyword">return</span>;
@@ -1294,9 +1294,9 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
       &#125;
       mergeSize &lt;&lt;= <span class="hljs-number">1</span>;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<h3 id="利用master公式来求解时间复杂度"><a href="#利用master公式来求解时间复杂度" class="headerlink" title="利用master公式来求解时间复杂度"></a>利用master公式来求解时间复杂度</h3><div class="hljs"><pre><code class="hljs mathematica"><span class="hljs-variable">T</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">=</span> <span class="hljs-number">2</span><span class="hljs-operator">*</span><span class="hljs-variable">T</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">/</span><span class="hljs-number">2</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">+</span> <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">1</span><span class="hljs-punctuation">)</span>
+<h3 id="利用master公式来求解时间复杂度"><a href="#利用master公式来求解时间复杂度" class="headerlink" title="利用master公式来求解时间复杂度"></a>利用master公式来求解时间复杂度</h3><pre><code class="hljs mathematica"><span class="hljs-variable">T</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">=</span> <span class="hljs-number">2</span><span class="hljs-operator">*</span><span class="hljs-variable">T</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">/</span><span class="hljs-number">2</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">+</span> <span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">1</span><span class="hljs-punctuation">)</span>
 
 根据<span class="hljs-variable">master</span>可知时间复杂度为<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span>
 <span class="hljs-punctuation">(</span>非递归分析<span class="hljs-operator">:</span>每次<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span><span class="hljs-operator">,</span> <span class="hljs-number">2</span><span class="hljs-operator">,</span> <span class="hljs-number">4</span><span class="hljs-operator">,</span> <span class="hljs-number">8</span><span class="hljs-operator">,</span> <span class="hljs-number">16</span> <span class="hljs-operator">....</span> <span class="hljs-built_in">N</span> <span class="hljs-operator">,</span> <span class="hljs-built_in">Log</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span>次<span class="hljs-operator">,</span> 所以<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">)</span>
@@ -1304,7 +1304,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 
 归并排序的实质是把比较行为变成了有序信息并传递，比<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">2</span><span class="hljs-punctuation">)</span>的排序快
 
-<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">2</span><span class="hljs-punctuation">)</span>在无限浪费比较行为<span class="hljs-operator">,</span> 例如选择排序<span class="hljs-operator">,</span> 每次都与后面比较大小</code></pre></div>
+<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">^</span><span class="hljs-number">2</span><span class="hljs-punctuation">)</span>在无限浪费比较行为<span class="hljs-operator">,</span> 例如选择排序<span class="hljs-operator">,</span> 每次都与后面比较大小</code></pre>
 
 
 
@@ -1313,7 +1313,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 </blockquote>
 <p>例子： [1,3,4,2,5]<br>1左边比1小的数：没有<br>3左边比3小的数：1<br>4左边比4小的数：1、3<br>2左边比2小的数：1<br>5左边比5小的数：1、3、4、 2<br>所以数组的小和为1+1+3+1+1+3+4+2=16 </p>
 <p>每次merge时, 两个指针对应的数比较大小, 如果小, 则计算另外一个指针包括当前位置以后的有多少个比对方大的数字.</p>
-<div class="hljs"><pre><code class="hljs css">例子:
+<pre><code class="hljs css">例子:
 <span class="hljs-selector-attr">[1,3,4,2,5]</span> 分为<span class="hljs-selector-attr">[1,3]</span>和<span class="hljs-selector-attr">[4,2,5]</span>
 <span class="hljs-selector-attr">[1]</span> <span class="hljs-selector-attr">[3]</span><span class="hljs-selector-tag">merge</span>时, 1比3小, 1个1
 <span class="hljs-selector-attr">[4,2,5]</span>分为<span class="hljs-selector-attr">[4]</span>,<span class="hljs-selector-attr">[2, 5]</span>
@@ -1322,7 +1322,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 <span class="hljs-selector-attr">[4]</span>与<span class="hljs-selector-attr">[2,5]</span><span class="hljs-selector-tag">merge</span>时候, 左指针初始4, 右指针初始2, 4 &gt; 2, <span class="hljs-selector-tag">help</span>数组放入2, 右指针右移
 4 &lt; 5, 1个4,<span class="hljs-selector-tag">help</span>数组放入4,越界,放入5
 <span class="hljs-selector-attr">[1,3]</span>和<span class="hljs-selector-attr">[2,4,5]</span><span class="hljs-selector-tag">merge</span>, 1&lt;2, 3个1, 3&lt;4, 2个3
-结束4个1, 1个2, 2个3, 1个4,</code></pre></div>
+结束4个1, 1个2, 2个3, 1个4,</code></pre>
 
 <blockquote>
 <p>其实就是在左指针与右指针对比时, 加上右指针开始个大于左指针数(利用右边有序)的左指针当前数</p>
@@ -1330,7 +1330,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 <p>也可以解决降序对的问题</p>
 <p>只要纠结右边有多少个数比左边大这类的问题，都可以用归并</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">smallNum</span><span class="hljs-params">(<span class="hljs-keyword">int</span> arr[])</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">smallNum</span><span class="hljs-params">(<span class="hljs-keyword">int</span> arr[])</span></span>&#123;
     <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>)&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
     &#125;
@@ -1369,7 +1369,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
         arr[L + i] = help[i];
     &#125;
     <span class="hljs-keyword">return</span> result;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><h3 id="Partition过程"><a href="#Partition过程" class="headerlink" title="Partition过程"></a>Partition过程</h3><blockquote>
 <p>给定一个数组arr，和一个整数num。请把小于等于num的数放在数组的左边，大于num的数放在数组的右边。<br>要求额外空间复杂度O(1)，时间复杂度O(N) </p>
@@ -1384,7 +1384,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 <p>例子: [5, 3, 7, 2] num = 3</p>
 <p>一开始小于等于区位置 -1, i=0, i[0]=5 &gt; 3, i++, 跳到3, 3&lt;=num, 与小于等于区下一个数即i[0]交换</p>
 <p>变成[3, 5, 7, 2]小于等于区右扩, 初始位置为0, 逐步下去</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 以arr[R]做划分值</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 以arr[R]做划分值</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">partition</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> R)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (L &gt; R) &#123;
       <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
@@ -1402,7 +1402,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
    &#125;
    swap(arr, ++lessEqual, R);
    <span class="hljs-keyword">return</span> lessEqual;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h3 id="荷兰国旗问题"><a href="#荷兰国旗问题" class="headerlink" title="荷兰国旗问题"></a>荷兰国旗问题</h3><blockquote>
 <p>给定一个数组arr，和一个整数num。请把小于num的数放在数组的左边，等于num的数放在中间，大于num的数放在数组的右边。</p>
@@ -1419,7 +1419,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 </ol>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201129162221.png" srcset="/img/loading.gif" alt="流程图"></p>
 <p>i与大于区边界撞上的时候停</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// arr[L...R] 玩荷兰国旗问题的划分，以arr[R]做划分值</span>
+<pre><code class="hljs java"><span class="hljs-comment">// arr[L...R] 玩荷兰国旗问题的划分，以arr[R]做划分值</span>
 <span class="hljs-comment">//  &lt;arr[R]  ==arr[R]  &gt; arr[R]</span>
 <span class="hljs-comment">// 返回等于区域范围</span>
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span>[] netherlandsFlag(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> L, <span class="hljs-keyword">int</span> R) &#123;
@@ -1446,10 +1446,10 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
    <span class="hljs-comment">// L...Less 小于区 less+1.....more 等于区 more+1...R 大于区</span>
    swap(arr, more, R);
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[] &#123; less + <span class="hljs-number">1</span>, more &#125;;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h2 id="快速排序1-0"><a href="#快速排序1-0" class="headerlink" title="快速排序1.0"></a>快速排序1.0</h2><p>在arr[L..R]范围上，进行快速排序的过程：<br>1）用arr[R]对该范围做partition，&lt;= arr[R]的数在左部分并且保证arr[R]最后来到左部分小于区的最后一个位置，记为M； &lt;= arr[R]的数在右部分（arr[M+1..R]）,此时X就已经排好序了<br>2）对arr[L..M-1]进行快速排序(递归)<br>3）对arr[M+1..R]进行快速排序(递归)<br>因为每一次partition都会搞定一个数的位置且不会再变动，所以排序能完成</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">quickSort1</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">quickSort1</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
@@ -1464,12 +1464,12 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
    <span class="hljs-keyword">int</span> M = partition(arr, L, R);
    process1(arr, L, M - <span class="hljs-number">1</span>);
    process1(arr, M + <span class="hljs-number">1</span>, R);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <h2 id="快速排序2-0"><a href="#快速排序2-0" class="headerlink" title="快速排序2.0"></a>快速排序2.0</h2><p>在arr[L..R]范围上，进行快速排序的过程：<br>1）用arr[R]对该范围做partition，&lt; arr[R]的数在左部分，== arr[R]的数中间，&gt;arr[R]的数在右部分。假设== arr[R]的数所在范围是[a,b]<br>2）对arr[L..a-1]进行快速排序(递归)<br>3）对arr[b+1..R]进行快速排序(递归)<br>因为每一次partition都会搞定一批数的位置且不会再变动，所以排序能完成</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">quickSort2</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">quickSort2</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
@@ -1483,13 +1483,13 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
    <span class="hljs-keyword">int</span>[] equalArea = netherlandsFlag(arr, L, R);
    process2(arr, L, equalArea[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>);
    process2(arr, equalArea[<span class="hljs-number">1</span>] + <span class="hljs-number">1</span>, R);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <h2 id="快速排序1-0和2-0的时间复杂度分析"><a href="#快速排序1-0和2-0的时间复杂度分析" class="headerlink" title="快速排序1.0和2.0的时间复杂度分析"></a>快速排序1.0和2.0的时间复杂度分析</h2><blockquote>
 <p>数组已经有序的时候就是复杂度最高的时候<br>时间复杂度O(N^2)</p>
 </blockquote>
 <h2 id="快速排序3-0-随机快排-荷兰国旗技巧优化"><a href="#快速排序3-0-随机快排-荷兰国旗技巧优化" class="headerlink" title="快速排序3.0(随机快排+荷兰国旗技巧优化)"></a>快速排序3.0(随机快排+荷兰国旗技巧优化)</h2><p>在arr[L..R]范围上，进行快速排序的过程：<br>1）在这个范围上，随机选一个数记为num，<br>1）用num对该范围做partition，&lt; num的数在左部分，== num的数中间，&gt;num的数在右部分。假设== num的数所在范围是[a,b]<br>2）对arr[L..a-1]进行快速排序(递归)<br>3）对arr[b+1..R]进行快速排序(递归)<br>因为每一次partition都会搞定一批数的位置且不会再变动，所以排序能完成</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">quickSort3</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">quickSort3</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
@@ -1506,12 +1506,12 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
    <span class="hljs-keyword">int</span>[] equalArea = netherlandsFlag(arr, L, R);
    process3(arr, L, equalArea[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>);
    process3(arr, equalArea[<span class="hljs-number">1</span>] + <span class="hljs-number">1</span>, R);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs apache"><span class="hljs-attribute">1</span>）通过分析知道，划分值越靠近中间，性能越好；越靠近两边，性能越差
+<pre><code class="hljs apache"><span class="hljs-attribute">1</span>）通过分析知道，划分值越靠近中间，性能越好；越靠近两边，性能越差
 <span class="hljs-attribute">2</span>）随机选一个数进行划分的目的就是让好情况和差情况都变成概率事件
 <span class="hljs-attribute">3</span>）把每一种情况都列出来，会有每种情况下的时间复杂度，但概率都是<span class="hljs-number">1</span>/N
-<span class="hljs-attribute">4</span>）那么所有情况都考虑，时间复杂度就是这种概率模型下的长期期望！</code></pre></div>
+<span class="hljs-attribute">4</span>）那么所有情况都考虑，时间复杂度就是这种概率模型下的长期期望！</code></pre>
 
 
 <p> *<strong>时间复杂度O(N<em>logN)，额外空间复杂度O(logN)都是这么来的。</em></strong></p>
@@ -1540,7 +1540,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 <blockquote>
 <p>heapInsert: 数放入数组后, 与父节点比较, 如果数更大, 交换, 直到换到根结点</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span></span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-keyword">int</span> value)</span></span>&#123;
     <span class="hljs-keyword">if</span> (heapSize &gt; limit)&#123;
         <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(<span class="hljs-string">&quot;heap is full!&quot;</span>);
     &#125;
@@ -1561,10 +1561,10 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
         swap(arr, index, (index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>);
         index = (index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201201133318.png" srcset="/img/loading.gif" alt="heapInsert"></p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * 删除堆的最大值并返回, 重组堆</span>
 <span class="hljs-comment"> * 用最后的值去顶替arr[0]</span>
 <span class="hljs-comment"> * 再往下交换, 找到左孩子与右孩子之间更大的数, 如果更小, 则交换</span>
@@ -1596,15 +1596,15 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
         index = largest;
         left = index * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>5）堆结构的增大和减少<br>6）优先级队列结构，就是堆结构(小根堆)</p>
-<div class="hljs"><pre><code class="hljs java">PriorityQueue&lt;Integer&gt; heap = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(<span class="hljs-keyword">new</span> MyComp());</code></pre></div>
+<pre><code class="hljs java">PriorityQueue&lt;Integer&gt; heap = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(<span class="hljs-keyword">new</span> MyComp());</code></pre>
 
 <h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><blockquote>
 <p>先把数组数据变为大根堆结构, 再每次arr[0]与堆最后一个结点互换, 必定会把Max丢到最后, 再heapify</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 堆排序额外空间复杂度O(1)</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 堆排序额外空间复杂度O(1)</span>
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">heapSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
         <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
             <span class="hljs-keyword">return</span>;
@@ -1651,20 +1651,20 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
             index = largest;
             left = index * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>;
         &#125;
-    &#125;</code></pre></div>
+    &#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs mathematica"><span class="hljs-number">1</span>，先让整个数组都变成大根堆结构，建立堆的过程<span class="hljs-operator">:</span> 
+<pre><code class="hljs mathematica"><span class="hljs-number">1</span>，先让整个数组都变成大根堆结构，建立堆的过程<span class="hljs-operator">:</span> 
     <span class="hljs-number">1</span><span class="hljs-punctuation">)</span>从上到下的方法，时间复杂度为<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span> 
     <span class="hljs-number">2</span><span class="hljs-punctuation">)</span>从下到上的方法，时间复杂度为<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span> 
 <span class="hljs-number">2</span>，把堆的最大值和堆末尾的值交换，然后减少堆的大小之后，再去调整堆，一直周而复始，时间复杂度为<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span> 
-<span class="hljs-number">3</span>，堆的大小减小成<span class="hljs-number">0</span>之后，排序完成</code></pre></div>
+<span class="hljs-number">3</span>，堆的大小减小成<span class="hljs-number">0</span>之后，排序完成</code></pre>
 
 
 
 <blockquote>
 <p>堆排序优化</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// O(N*logN)</span>
+<pre><code class="hljs java"><span class="hljs-comment">// O(N*logN)</span>
 <span class="hljs-comment">// 给定数据的数组,一个一个插入都可以</span>
 <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; arr.length; i++) &#123; <span class="hljs-comment">// O(N)</span>
    heapInsert(arr, i); <span class="hljs-comment">// O(logN)</span>
@@ -1674,7 +1674,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 <span class="hljs-comment">// 一定要给定数据数组, 一个一个插入无法使用</span>
 <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = arr.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;
    heapify(arr, i, arr.length);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>一个O(N*logN), 一个O(N)</p>
 <p>怎么证明?</p>
@@ -1686,7 +1686,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201207140824.png" srcset="/img/loading.gif" alt="流程"></p>
 <p>把前k+1个数放入小根堆, 例如0,1,2,3,4,5位置数放入小根堆, 0～5的数才可能来到0位置, 每排好一次序, 把最小值弹出放到0位置, 再把6位置放入小根堆, 再弹最小值…</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sortedArrDistanceLessK</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> k)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sortedArrDistanceLessK</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> k)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (k == <span class="hljs-number">0</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
@@ -1707,7 +1707,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
    <span class="hljs-keyword">while</span> (!heap.isEmpty()) &#123;
       arr[i++] = heap.poll();
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>O(N*logK), 前提是k小于数组长度, 每次加减logk, N次则乘</p>
 <h2 id="比较器"><a href="#比较器" class="headerlink" title="比较器"></a>比较器</h2><blockquote>
@@ -1717,7 +1717,7 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
 <p>2)比较器可以很好的应用在 <strong>特殊标准的排序</strong>上 </p>
 <p>3)比较器可以很好的应用在 <strong>根据特殊标准排序的结构</strong>上</p>
 <p>4)写代码变得异常容易，还用于 <strong>范型编程</strong></p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Student</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Student</span> </span>&#123;
    <span class="hljs-keyword">public</span> String name;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> id;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> age;
@@ -1727,20 +1727,20 @@ System.out.println(treeMap.ceilingKey(<span class="hljs-number">4</span>));</cod
       <span class="hljs-keyword">this</span>.id = id;
       <span class="hljs-keyword">this</span>.age = age;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <blockquote>
 <p>comp(T o1, T o2) 返回负数o1放前, 正数o2放前</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java">Student student1 = <span class="hljs-keyword">new</span> Student(<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-number">2</span>, <span class="hljs-number">20</span>);
+<pre><code class="hljs java">Student student1 = <span class="hljs-keyword">new</span> Student(<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-number">2</span>, <span class="hljs-number">20</span>);
 Student student2 = <span class="hljs-keyword">new</span> Student(<span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-number">21</span>);
 Student student3 = <span class="hljs-keyword">new</span> Student(<span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-number">1</span>, <span class="hljs-number">22</span>);
 
-Student[] students = <span class="hljs-keyword">new</span> Student[] &#123; student1, student2, student3 &#125;;</code></pre></div>
+Student[] students = <span class="hljs-keyword">new</span> Student[] &#123; student1, student2, student3 &#125;;</code></pre>
 
 
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IdAscendingComparator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Comparator</span>&lt;<span class="hljs-title">Student</span>&gt; </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IdAscendingComparator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Comparator</span>&lt;<span class="hljs-title">Student</span>&gt; </span>&#123;
 
    <span class="hljs-comment">// 返回负数的时候，第一个参数排在前面</span>
    <span class="hljs-comment">// 返回正数的时候，第二个参数排在前面</span>
@@ -1751,11 +1751,11 @@ Student[] students = <span class="hljs-keyword">new</span> Student[] &#123; stud
    &#125;
 &#125;
 Arrays.sort(students, <span class="hljs-keyword">new</span> IdAscendingComparator());
-<span class="hljs-comment">// id升序</span></code></pre></div>
+<span class="hljs-comment">// id升序</span></code></pre>
 
 
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 先按照id排序，id小的，放前面；</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 先按照id排序，id小的，放前面；</span>
 <span class="hljs-comment">// id一样，age大的，前面；</span>
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IdInAgeDe</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Comparator</span>&lt;<span class="hljs-title">Student</span>&gt; </span>&#123;
 
@@ -1764,11 +1764,11 @@ Arrays.sort(students, <span class="hljs-keyword">new</span> IdAscendingComparato
       <span class="hljs-keyword">return</span> o1.id != o2.id ? o1.id - o2.id  : (  o2.age - o1.age  );
    &#125;
 <span class="hljs-comment">// 更复杂的比较器</span>
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
-<h3 id="应用在根据特殊标准排序的结构上"><a href="#应用在根据特殊标准排序的结构上" class="headerlink" title="应用在根据特殊标准排序的结构上"></a>应用在根据特殊标准排序的结构上</h3><div class="hljs"><pre><code class="hljs java">PriorityQueue&lt;Student&gt; minHeapBasedId
+<h3 id="应用在根据特殊标准排序的结构上"><a href="#应用在根据特殊标准排序的结构上" class="headerlink" title="应用在根据特殊标准排序的结构上"></a>应用在根据特殊标准排序的结构上</h3><pre><code class="hljs java">PriorityQueue&lt;Student&gt; minHeapBasedId
         = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(<span class="hljs-keyword">new</span> AgeAscendingComparator());
 minHeapBasedId.add(student1);
 minHeapBasedId.add(student2);
@@ -1783,15 +1783,15 @@ minHeapBasedId.add(student3);
         <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compare</span><span class="hljs-params">(Student o1, Student o2)</span> </span>&#123;
             <span class="hljs-keyword">return</span> o1.age - o2.age;
         &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>结果:</p>
-<div class="hljs"><pre><code class="hljs asciidoc">
+<pre><code class="hljs asciidoc">
 ===========================
 Name : A, Id : 2, Age : 20
 Name : B, Id : 3, Age : 21
 Name : C, Id : 1, Age : 22
-===========================</code></pre></div>
+===========================</code></pre>
 
 
 
@@ -1801,7 +1801,7 @@ Name : C, Id : 1, Age : 22
 <blockquote>
 <p>例子</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Student</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Student</span> </span>&#123;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> classNo;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> age;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> id;
@@ -1811,16 +1811,16 @@ Name : C, Id : 1, Age : 22
       age = a;
       id = i;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StudentComparator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Comparator</span>&lt;<span class="hljs-title">Student</span>&gt; </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StudentComparator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Comparator</span>&lt;<span class="hljs-title">Student</span>&gt; </span>&#123;
    <span class="hljs-meta">@Override</span>
    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compare</span><span class="hljs-params">(Student o1, Student o2)</span> </span>&#123;
       <span class="hljs-keyword">return</span> o1.age - o2.age;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java">PriorityQueue&lt;Student&gt; heap = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(<span class="hljs-keyword">new</span> StudentComparator());
+<pre><code class="hljs java">PriorityQueue&lt;Student&gt; heap = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(<span class="hljs-keyword">new</span> StudentComparator());
 heap.add(s1);
 heap.add(s2);
 heap.add(s3);
@@ -1832,18 +1832,18 @@ heap.add(s6);
    System.out.println(cur.classNo + <span class="hljs-string">&quot;,&quot;</span> + cur.age + <span class="hljs-string">&quot;,&quot;</span> + cur.id);
 &#125;
 
-System.out.println(<span class="hljs-string">&quot;===============&quot;</span>);</code></pre></div>
+System.out.println(<span class="hljs-string">&quot;===============&quot;</span>);</code></pre>
 
-<div class="hljs"><pre><code class="hljs asciidoc">
+<pre><code class="hljs asciidoc">
 6,10,33333
 1,14,66666
 3,20,44444
 2,50,11111
 1,60,22222
 7,72,55555
-===============</code></pre></div>
+===============</code></pre>
 
-<div class="hljs"><pre><code class="hljs java">s1 = <span class="hljs-keyword">new</span> Student(<span class="hljs-number">2</span>, <span class="hljs-number">50</span>, <span class="hljs-number">11111</span>);
+<pre><code class="hljs java">s1 = <span class="hljs-keyword">new</span> Student(<span class="hljs-number">2</span>, <span class="hljs-number">50</span>, <span class="hljs-number">11111</span>);
 s2 = <span class="hljs-keyword">new</span> Student(<span class="hljs-number">1</span>, <span class="hljs-number">60</span>, <span class="hljs-number">22222</span>);
 s3 = <span class="hljs-keyword">new</span> Student(<span class="hljs-number">6</span>, <span class="hljs-number">10</span>, <span class="hljs-number">33333</span>);
 s4 = <span class="hljs-keyword">new</span> Student(<span class="hljs-number">3</span>, <span class="hljs-number">20</span>, <span class="hljs-number">44444</span>);
@@ -1867,20 +1867,20 @@ s6.age = <span class="hljs-number">84</span>;
 <span class="hljs-keyword">while</span> (!heap.isEmpty()) &#123;
     Student cur = heap.poll();
     System.out.println(cur.classNo + <span class="hljs-string">&quot;,&quot;</span> + cur.age + <span class="hljs-string">&quot;,&quot;</span> + cur.id);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs asciidoc">6,10,33333
+<pre><code class="hljs asciidoc">6,10,33333
 3,12,44444
 1,6,22222
 7,10,55555
 2,50,11111
 1,84,66666
-===============</code></pre></div>
+===============</code></pre>
 
 <blockquote>
 <p>自己设计某一个值会发生变化的堆</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 堆</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 堆</span>
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyHeap</span>&lt;<span class="hljs-title">T</span>&gt; </span>&#123;
     <span class="hljs-comment">// 没有 T[], 动态数组实现</span>
     <span class="hljs-keyword">private</span> ArrayList&lt;T&gt; heap;
@@ -1963,7 +1963,7 @@ s6.age = <span class="hljs-number">84</span>;
         indexMap.put(o2, i);
     &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -1982,7 +1982,7 @@ s6.age = <span class="hljs-number">84</span>;
 <blockquote>
 <p>代码(方式一) <strong>固定数组实现</strong></p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node1</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node1</span> </span>&#123;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> pass;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> end;
    <span class="hljs-keyword">public</span> Node1[] nexts;
@@ -2083,14 +2083,14 @@ s6.age = <span class="hljs-number">84</span>;
       &#125;
       <span class="hljs-keyword">return</span> node.pass;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <blockquote>
 <p>代码(方式二)  <strong>哈希表实现</strong>:字符种类变多!</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node2</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node2</span> </span>&#123;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> pass;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> end;
    <span class="hljs-comment">// ASCII码值, 下一个结点</span>
@@ -2182,7 +2182,7 @@ s6.age = <span class="hljs-number">84</span>;
       &#125;
       <span class="hljs-keyword">return</span> node.pass;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2210,7 +2210,7 @@ s6.age = <span class="hljs-number">84</span>;
 <p>再根据百位数字入桶, 再倒出来, 由于队列, 先进先出</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201207165615.png" srcset="/img/loading.gif" alt="第三次排序后"></p>
 <p> <strong>一旦要求稍有升级，改写代价增加是显而易见的！</strong></p>
-<h3 id="计数排序代码"><a href="#计数排序代码" class="headerlink" title="计数排序代码"></a>计数排序代码</h3><div class="hljs"><pre><code class="hljs JAVA"><span class="hljs-comment">// only for 0~200 value</span>
+<h3 id="计数排序代码"><a href="#计数排序代码" class="headerlink" title="计数排序代码"></a>计数排序代码</h3><pre><code class="hljs JAVA"><span class="hljs-comment">// only for 0~200 value</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">countSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
       <span class="hljs-keyword">return</span>;
@@ -2229,9 +2229,9 @@ s6.age = <span class="hljs-number">84</span>;
          arr[i++] = j;
       &#125;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<h3 id="基数排序代码-O-N-log10为底max"><a href="#基数排序代码-O-N-log10为底max" class="headerlink" title="基数排序代码 O(N*log10为底max)"></a>基数排序代码 O(N*log10为底max)</h3><div class="hljs"><pre><code class="hljs Java"><span class="hljs-comment">// only for no-negative value</span>
+<h3 id="基数排序代码-O-N-log10为底max"><a href="#基数排序代码-O-N-log10为底max" class="headerlink" title="基数排序代码 O(N*log10为底max)"></a>基数排序代码 O(N*log10为底max)</h3><pre><code class="hljs Java"><span class="hljs-comment">// only for no-negative value</span>
 <span class="hljs-comment">// 非负</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">radixSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length &lt; <span class="hljs-number">2</span>) &#123;
@@ -2290,7 +2290,7 @@ s6.age = <span class="hljs-number">84</span>;
 
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getDigit</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> d)</span> </span>&#123;
    <span class="hljs-keyword">return</span> ((x / ((<span class="hljs-keyword">int</span>) Math.pow(<span class="hljs-number">10</span>, d - <span class="hljs-number">1</span>))) % <span class="hljs-number">10</span>);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201207172931.png" srcset="/img/loading.gif" alt="基数排序解析"></p>
 <p>准备count数组为10长度，下标0 - 9</p>
@@ -2338,11 +2338,11 @@ s6.age = <span class="hljs-number">84</span>;
 <blockquote>
 <p>总结</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs mathematica"><span class="hljs-number">1</span>）不基于比较的排序，对样本数据有严格要求，不易改写
+<pre><code class="hljs mathematica"><span class="hljs-number">1</span>）不基于比较的排序，对样本数据有严格要求，不易改写
 <span class="hljs-number">2</span>）基于比较的排序，只要规定好两个样本怎么比大小就可以直接复用
 <span class="hljs-number">3</span>）基于比较的排序，时间复杂度的极限是<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span>
 <span class="hljs-number">4</span>）时间复杂度<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-operator">*</span><span class="hljs-variable">logN</span><span class="hljs-punctuation">)</span>、额外空间复杂度低于<span class="hljs-built_in">O</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">N</span><span class="hljs-punctuation">)</span>、且稳定的基于比较的排序是不存在的。
-<span class="hljs-number">5</span>）为了绝对的速度选快排（常数时间最少）、为了省空间选堆排、为了稳定性选归并</code></pre></div>
+<span class="hljs-number">5</span>）为了绝对的速度选快排（常数时间最少）、为了省空间选堆排、为了稳定性选归并</code></pre>
 
 
 
@@ -2367,7 +2367,7 @@ s6.age = <span class="hljs-number">84</span>;
 <p>2）快慢指针 </p>
 <h2 id="快慢指针"><a href="#快慢指针" class="headerlink" title="快慢指针"></a>快慢指针</h2><p>1）输入链表头节点，奇数长度返回中点，偶数长度返回上中点</p>
 <p>1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt;5 找到3, 1 -&gt; 2 -&gt; 3 -&gt; 4  找到2</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">midOrUpMidNode</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">midOrUpMidNode</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span> || head.next == <span class="hljs-keyword">null</span> || head.next.next == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> head;
    &#125;
@@ -2379,7 +2379,7 @@ s6.age = <span class="hljs-number">84</span>;
       fast = fast.next.next;
    &#125;
    <span class="hljs-keyword">return</span> slow;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>2）输入链表头节点，奇数长度返回中点，偶数长度返回下中点</p>
 <p>1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt;5 找到3,  1 -&gt; 2 -&gt; 3 -&gt; 4  找到3</p>
@@ -2391,7 +2391,7 @@ s6.age = <span class="hljs-number">84</span>;
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208150841.png" srcset="/img/loading.gif" alt="栈"></p>
 <p>把链表value全放栈中，再弹出一个一个对比。</p>
 <p>Code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// need n extra space</span>
+<pre><code class="hljs java"><span class="hljs-comment">// need n extra space</span>
 <span class="hljs-comment">// stack</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isPalindrome1</span><span class="hljs-params">(Node head)</span> </span>&#123;
    Stack&lt;Node&gt; stack = <span class="hljs-keyword">new</span> Stack&lt;Node&gt;();
@@ -2407,12 +2407,12 @@ s6.age = <span class="hljs-number">84</span>;
       head = head.next;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p><strong>栈实现2</strong></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208151246.png" srcset="/img/loading.gif" alt="快慢指针定位"></p>
 <p>快慢指针定位到中点的位置, 奇数唯一中点偶数上中点, 把右半部分加到栈中, 弹出与head一一对比</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// need n/2 extra space</span>
+<pre><code class="hljs java"><span class="hljs-comment">// need n/2 extra space</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isPalindrome2</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span> || head.next == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
@@ -2435,7 +2435,7 @@ s6.age = <span class="hljs-number">84</span>;
       head = head.next;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2448,7 +2448,7 @@ s6.age = <span class="hljs-number">84</span>;
 <p>再L与R对比, 直到比到S, 最后再变回链表位置即可。</p>
 <p>这样的 <strong>额外空间复杂度为 O(1);</strong></p>
 <p>code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// need O(1) extra space</span>
+<pre><code class="hljs java"><span class="hljs-comment">// need O(1) extra space</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isPalindrome3</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span> || head.next == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
@@ -2488,12 +2488,12 @@ s6.age = <span class="hljs-number">84</span>;
       n1 = n2;
    &#125;
    <span class="hljs-keyword">return</span> res;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <h3 id="将单向链表按某值划分成左边小、中间相等、右边大的形式"><a href="#将单向链表按某值划分成左边小、中间相等、右边大的形式" class="headerlink" title="将单向链表按某值划分成左边小、中间相等、右边大的形式"></a>将单向链表按某值划分成左边小、中间相等、右边大的形式</h3><p>1）把链表放入数组里，在数组上做partition（笔试用）( <strong>不稳定</strong> )</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">listPartition1</span><span class="hljs-params">(Node head, <span class="hljs-keyword">int</span> pivot)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">listPartition1</span><span class="hljs-params">(Node head, <span class="hljs-keyword">int</span> pivot)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> head;
    &#125;
@@ -2531,7 +2531,7 @@ s6.age = <span class="hljs-number">84</span>;
          swap(nodeArr, --big, index);
       &#125;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2545,7 +2545,7 @@ s6.age = <span class="hljs-number">84</span>;
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201208162652.png" srcset="/img/loading.gif" alt="流程2"></p>
 <p>每一步O(1),整体O(N); 且是 <strong>稳定的</strong></p>
 <p>code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">listPartition2</span><span class="hljs-params">(Node head, <span class="hljs-keyword">int</span> pivot)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">listPartition2</span><span class="hljs-params">(Node head, <span class="hljs-keyword">int</span> pivot)</span> </span>&#123;
    Node sH = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// small head</span>
    Node sT = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// small tail</span>
    Node eH = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// equal head</span>
@@ -2596,24 +2596,24 @@ s6.age = <span class="hljs-number">84</span>;
       eT.next = mH;
    &#125;
    <span class="hljs-keyword">return</span> sH != <span class="hljs-keyword">null</span> ? sH : (eH != <span class="hljs-keyword">null</span> ? eH : mH);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <h3 id="一种特殊的单链表节点类-random"><a href="#一种特殊的单链表节点类-random" class="headerlink" title="一种特殊的单链表节点类 random"></a>一种特殊的单链表节点类 random</h3><blockquote>
 <p> 一种特殊的单链表节点类描述如下</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123; 
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123; 
 <span class="hljs-keyword">int</span> value; 
 Node next; 
 Node rand; 
 Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125; 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>rand指针是单链表节点结构中新增的指针，rand可能指向链表中的任意一个节点，也可能指向null。<br>给定一个由Node节点类型组成的无环单链表的头节点 head，请实现一个函数完成这个链表的复制，并返回复制的新链表的头节点。<br> <strong>【要求】</strong><br> **时间复杂度O(N)，额外空间复杂度O(1) **</p>
 <ul>
 <li><p>哈希表</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">copyListWithRand1</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">copyListWithRand1</span><span class="hljs-params">(Node head)</span> </span>&#123;
    HashMap&lt;Node, Node&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;Node, Node&gt;();
    Node cur = head;
    <span class="hljs-keyword">while</span> (cur != <span class="hljs-keyword">null</span>) &#123;
@@ -2629,7 +2629,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       cur = cur.next;
    &#125;
    <span class="hljs-keyword">return</span> map.get(head);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2648,7 +2648,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p>  我们通过1找到1的random 3，又因为3’就在3后面，所以可以直接3.next找到并与1’连接</p>
 <p>  最后分离</p>
 <p>  code:</p>
-  <div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">copyListWithRand2</span><span class="hljs-params">(Node head)</span> </span>&#123;
+  <pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">copyListWithRand2</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
    &#125;
@@ -2689,7 +2689,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       cur = next;
    &#125;
    <span class="hljs-keyword">return</span> res;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>  不能边设置边断链： <strong>如果后面指向前面，前面已经和自己的 ‘ 断连了，.next已经没有用</strong></p>
 <h3 id="与约瑟夫环问题相同的噩梦（相交）"><a href="#与约瑟夫环问题相同的噩梦（相交）" class="headerlink" title="与约瑟夫环问题相同的噩梦（相交）"></a>与约瑟夫环问题相同的噩梦（相交）</h3><p>给定两个可能有环也可能无环的单链表，头节点head1和head2。请实现一个函数，如果两个链表相交，请返回相交的 第一个节点。如果不相交，返回null </p>
@@ -2713,7 +2713,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p>slow不变位置，fast回到开头，fast变成一次走一步，slow也继续一次走一步，</p>
 <p>当slow和fast再次相交时，这个点就是 <strong>第一个入环点</strong>。</p>
 <p>code：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 找到链表第一个入环节点，如果无环，返回null</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 找到链表第一个入环节点，如果无环，返回null</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getLoopNode</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span> || head.next == <span class="hljs-keyword">null</span> || head.next.next == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
@@ -2734,7 +2734,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       n2 = n2.next;
    &#125;
    <span class="hljs-keyword">return</span> n1;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2757,7 +2757,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <li>如果 end1 等于 end2， 链表1走（100-80）= 20步，从这里开始链表二也开始走，两个链表肯定会走到第一个相遇的地方。</li>
 </ul>
 <p>Code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 如果两个链表都无环，返回第一个相交节点，如果不想交，返回null</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 如果两个链表都无环，返回第一个相交节点，如果不想交，返回null</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">noLoop</span><span class="hljs-params">(Node head1, Node head2)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head1 == <span class="hljs-keyword">null</span> || head2 == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
@@ -2792,7 +2792,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       cur2 = cur2.next;
    &#125;
    <span class="hljs-keyword">return</span> cur1;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2821,7 +2821,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <li>如果 <strong>一个有环一个无环</strong>， <strong>不可能相交</strong>。</li>
 </ol>
 <p>​ 因为是单链表。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 两个有环链表，返回第一个相交节点，如果不想交返回null</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 两个有环链表，返回第一个相交节点，如果不想交返回null</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">bothLoop</span><span class="hljs-params">(Node head1, Node loop1, Node head2, Node loop2)</span> </span>&#123;
    Node cur1 = <span class="hljs-keyword">null</span>;
    Node cur2 = <span class="hljs-keyword">null</span>;
@@ -2860,10 +2860,10 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>最后总结：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getIntersectNode</span><span class="hljs-params">(Node head1, Node head2)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getIntersectNode</span><span class="hljs-params">(Node head1, Node head2)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head1 == <span class="hljs-keyword">null</span> || head2 == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
    &#125;
@@ -2876,7 +2876,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       <span class="hljs-keyword">return</span> bothLoop(head1, loop1, head2, loop2);
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2893,13 +2893,13 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <h1 id="二叉树的基本算法"><a href="#二叉树的基本算法" class="headerlink" title="二叉树的基本算法"></a>二叉树的基本算法</h1><blockquote>
 <p>结构描述：</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
   V value;
   Node left;
   Node right;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
    <span class="hljs-keyword">public</span> Node left;
    <span class="hljs-keyword">public</span> Node right;
@@ -2907,14 +2907,14 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Node</span><span class="hljs-params">(<span class="hljs-keyword">int</span> v)</span> </span>&#123;
       value = v;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <h2 id="二叉树的先序、中序、后序遍历"><a href="#二叉树的先序、中序、后序遍历" class="headerlink" title="二叉树的先序、中序、后序遍历"></a>二叉树的先序、中序、后序遍历</h2><p>​ <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209164047.png" srcset="/img/loading.gif" alt="如图"></p>
 <ul>
 <li><p>先序：任何子树的处理顺序都是，先头节点、再左子树、然后右子树</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 先序打印所有结点</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 先序打印所有结点</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pre</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span>;
@@ -2922,19 +2922,19 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
    System.out.println(head.value);
    pre(head.left);
    pre(head.right);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>​ </p>
 </li>
 <li><p>中序：任何子树的处理顺序都是，先左子树、再头节点、然后右子树</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">in</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">in</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
    in(head.left);
    System.out.println(head.value);
    in(head.right);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -2942,21 +2942,21 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 </ul>
 <ul>
 <li><p>后序：任何子树的处理顺序都是，先左子树、再右子树、然后头节点</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pos</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pos</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
    pos(head.left);
    pos(head.right);
    System.out.println(head.value);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 </li>
 </ul>
 <h3 id="递归的本质是-递归序"><a href="#递归的本质是-递归序" class="headerlink" title="递归的本质是  递归序"></a>递归的本质是  <strong>递归序</strong></h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209170646.png" srcset="/img/loading.gif" alt="流程"></p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">f</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">f</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
@@ -2965,7 +2965,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
    <span class="hljs-comment">// 中序</span>
    f(head.right);
    <span class="hljs-comment">// 后序</span>
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>对于这样的代码，一定会 <strong>访问(返回)</strong> 三次：</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201209170852.png" srcset="/img/loading.gif" alt="每一个结点都会到达三次"></p>
@@ -2983,7 +2983,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <li><p>任何递归函数都可以改成非递归</p>
 </li>
 <li><p>非递归实现先序遍历</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 先序遍历</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 先序遍历</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pre</span><span class="hljs-params">(Node head)</span> </span>&#123;
    System.out.print(<span class="hljs-string">&quot;pre-order: &quot;</span>);
    <span class="hljs-keyword">if</span> (head != <span class="hljs-keyword">null</span>) &#123;
@@ -3001,7 +3001,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    System.out.println();
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <ul>
 <li><p>先放头结点，弹出就打印</p>
@@ -3024,7 +3024,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 </li>
 </ul>
 <p>Code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pos1</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pos1</span><span class="hljs-params">(Node head)</span> </span>&#123;
    System.out.print(<span class="hljs-string">&quot;pos-order: &quot;</span>);
    <span class="hljs-keyword">if</span> (head != <span class="hljs-keyword">null</span>) &#123;
       Stack&lt;Node&gt; s1 = <span class="hljs-keyword">new</span> Stack&lt;Node&gt;();
@@ -3047,7 +3047,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    System.out.println();
-&#125;</code></pre></div>
+&#125;</code></pre>
 </li>
 <li><p>非递归实现后序遍历（方法二）</p>
 <ul>
@@ -3058,7 +3058,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 </ul>
 </li>
 </ul>
-  <div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pos2</span><span class="hljs-params">(Node h)</span> </span>&#123;
+  <pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pos2</span><span class="hljs-params">(Node h)</span> </span>&#123;
    System.out.print(<span class="hljs-string">&quot;pos-order: &quot;</span>);
    <span class="hljs-keyword">if</span> (h != <span class="hljs-keyword">null</span>) &#123;
       Stack&lt;Node&gt; stack = <span class="hljs-keyword">new</span> Stack&lt;Node&gt;();
@@ -3081,7 +3081,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    System.out.println();
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -3093,7 +3093,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <li><p>第一条逻辑无法再命中，就弹出结点并打印，然后来到弹出结点的右树上继续执行条件一</p>
 </li>
 <li><p>如上面的树，左边界全入栈，栈顶 - &gt; 栈底以此为 4,2,1，不能再命中了，弹出4，来到4的右孩子且为Null，弹出2，来到2的右孩子且为5，压入5，弹出5，来到5的右孩子且为Null，弹出1，来到1的右孩子3，3、6依此入栈，弹出6，来到6的右孩子且为Null，弹出3，来到3的右孩子且为7，弹出7。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 左头无限分解</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 左头无限分解</span>
 <span class="hljs-comment">// 左边左头分解，右边也左头分解</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">in</span><span class="hljs-params">(Node head)</span> </span>&#123;
     System.out.print(<span class="hljs-string">&quot;in-order: &quot;</span>);
@@ -3112,7 +3112,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
     &#125;
     System.out.println();
-  &#125;</code></pre></div>
+  &#125;</code></pre>
 
 
 
@@ -3122,7 +3122,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 </ul>
 <h2 id="实现二叉树的按层遍历"><a href="#实现二叉树的按层遍历" class="headerlink" title="实现二叉树的按层遍历"></a>实现二叉树的按层遍历</h2><ul>
 <li><p>其实就是 <strong>宽度优先遍历</strong> ，用 <strong>队列</strong></p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">level</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">level</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
@@ -3138,7 +3138,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
          queue.add(cur.right);
       &#125;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <ul>
 <li><p>先把头结点加入</p>
@@ -3153,7 +3153,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <h3 id="二叉树最大宽度"><a href="#二叉树最大宽度" class="headerlink" title="二叉树最大宽度"></a>二叉树最大宽度</h3><ul>
 <li><p>可以通过设置 <strong>flag变量</strong> 的方式，来发现某一层的 <strong>结束</strong>（看题目）</p>
 <p>如：找到二叉树最宽的一层，建议一个发现机制就行，发现结束就意味着开始。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 寻找到二叉树最大宽度</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 寻找到二叉树最大宽度</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxWidthUseMap</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -3191,7 +3191,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
    <span class="hljs-comment">// 最后一层没有出发max机制</span>
    max = Math.max(max, curLevelNodes);
    <span class="hljs-keyword">return</span> max;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>用map记录结点位置（每一个新层到来结算上一层的老层）</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201210083532.png" srcset="/img/loading.gif" alt="流程"></p>
@@ -3199,7 +3199,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 </ul>
 <ul>
 <li><p>不用map寻找最大宽度机制：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxWidthNoMap</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxWidthNoMap</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
    &#125;
@@ -3228,14 +3228,14 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
          curLevelNodes = <span class="hljs-number">0</span>;
          curEnd = nextEnd;
       &#125;
-   &#125;</code></pre></div>
+   &#125;</code></pre>
 
 
 
 </li>
 </ul>
 <h2 id="二叉树的序列化和反序列化"><a href="#二叉树的序列化和反序列化" class="headerlink" title="二叉树的序列化和反序列化"></a>二叉树的序列化和反序列化</h2><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201210085559.png" srcset="/img/loading.gif" alt="序列化"></p>
-<h3 id="先序序列化"><a href="#先序序列化" class="headerlink" title="先序序列化"></a>先序序列化</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Queue&lt;String&gt; <span class="hljs-title">preSerial</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<h3 id="先序序列化"><a href="#先序序列化" class="headerlink" title="先序序列化"></a>先序序列化</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Queue&lt;String&gt; <span class="hljs-title">preSerial</span><span class="hljs-params">(Node head)</span> </span>&#123;
    Queue&lt;String&gt; ans = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
    pres(head, ans);
    <span class="hljs-keyword">return</span> ans;
@@ -3249,11 +3249,11 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       pres(head.left, ans);
       pres(head.right, ans);
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
-<h3 id="已知序列化好的队列，还原树"><a href="#已知序列化好的队列，还原树" class="headerlink" title="已知序列化好的队列，还原树"></a>已知序列化好的队列，还原树</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">buildByPreQueue</span><span class="hljs-params">(Queue&lt;String&gt; prelist)</span> </span>&#123;
+<h3 id="已知序列化好的队列，还原树"><a href="#已知序列化好的队列，还原树" class="headerlink" title="已知序列化好的队列，还原树"></a>已知序列化好的队列，还原树</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">buildByPreQueue</span><span class="hljs-params">(Queue&lt;String&gt; prelist)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (prelist == <span class="hljs-keyword">null</span> || prelist.size() == <span class="hljs-number">0</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
    &#125;
@@ -3269,13 +3269,13 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
    head.left = preb(prelist);
    head.right = preb(prelist);
    <span class="hljs-keyword">return</span> head;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <blockquote>
 <p>中序、后序只需要改一下顺序就可以了</p>
 </blockquote>
 <h3 id="按层序列化"><a href="#按层序列化" class="headerlink" title="按层序列化"></a>按层序列化</h3><p>整体上就是 <strong>宽度优先遍历</strong></p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Queue&lt;String&gt; <span class="hljs-title">levelSerial</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Queue&lt;String&gt; <span class="hljs-title">levelSerial</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-comment">// 序列化结果</span>
    Queue&lt;String&gt; ans = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
@@ -3303,10 +3303,10 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> ans;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>其实就是多了一个ans队列，把空补齐。层序遍历的时候只有一个queue，queue里面放的一定不为null，再弹出判断。序列化只是ans可以放null，自己另外准备的queue不放null进行层序遍历而已。</p>
-<h3 id="按层反序列化"><a href="#按层反序列化" class="headerlink" title="按层反序列化"></a>按层反序列化</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">buildByLevelQueue</span><span class="hljs-params">(Queue&lt;String&gt; levelList)</span> </span>&#123;
+<h3 id="按层反序列化"><a href="#按层反序列化" class="headerlink" title="按层反序列化"></a>按层反序列化</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">buildByLevelQueue</span><span class="hljs-params">(Queue&lt;String&gt; levelList)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (levelList == <span class="hljs-keyword">null</span> || levelList.size() == <span class="hljs-number">0</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
    &#125;
@@ -3335,7 +3335,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Node(Integer.valueOf(val));
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -3344,7 +3344,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 </blockquote>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211094340.png" srcset="/img/loading.gif" alt="打印出来的效果"></p>
 <p>Code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">printTree</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">printTree</span><span class="hljs-params">(Node head)</span> </span>&#123;
    System.out.println(<span class="hljs-string">&quot;Binary Tree:&quot;</span>);
    printInOrder(head, <span class="hljs-number">0</span>, <span class="hljs-string">&quot;H&quot;</span>, <span class="hljs-number">17</span>);
    System.out.println();
@@ -3371,7 +3371,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       buf.append(space);
    &#125;
    <span class="hljs-keyword">return</span> buf.toString();
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>思路：</p>
 <p>要打印上面的树，实际上就是按照 <strong>右头左</strong> 的顺序打印。</p>
@@ -3380,12 +3380,12 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201211095016.png" srcset="/img/loading.gif" alt="例子"></p>
 <p>前面的空格数由层数决定，每个数字占17位，前后补气空格</p>
 <h2 id="特殊二叉树返回该节点的后继节点"><a href="#特殊二叉树返回该节点的后继节点" class="headerlink" title="特殊二叉树返回该节点的后继节点"></a>特殊二叉树返回该节点的后继节点</h2><p>二叉树结构如下定义：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
   V value;
   Node left;
   Node right;
   Node parent;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <blockquote>
 <p>后继结点定义</p>
@@ -3415,7 +3415,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 </li>
 </ul>
 <p>code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getSuccessorNode</span><span class="hljs-params">(Node node)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getSuccessorNode</span><span class="hljs-params">(Node node)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (node == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> node;
    &#125;
@@ -3440,7 +3440,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       node = node.left;
    &#125;
    <span class="hljs-keyword">return</span> node;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 </li>
 </ul>
@@ -3458,7 +3458,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <li>如果用数组实现，N次折产生2的n次方-1个折痕，浪费空间。</li>
 <li>新code:</li>
 </ul>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">printAllFolds</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">printAllFolds</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N)</span> </span>&#123;
    printProcess(<span class="hljs-number">1</span>, N, <span class="hljs-keyword">true</span>);
 &#125;
 
@@ -3471,7 +3471,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
    printProcess(i + <span class="hljs-number">1</span>, N, <span class="hljs-keyword">true</span>);
    System.out.println(down ? <span class="hljs-string">&quot;凹 &quot;</span> : <span class="hljs-string">&quot;凸 &quot;</span>);
    printProcess(i + <span class="hljs-number">1</span>, N, <span class="hljs-keyword">false</span>);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <ul>
 <li>空间复杂度 O(N) 创建了N个i</li>
@@ -3497,7 +3497,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p>在能确定获取子树信息情况下列出可能性：要的信息： <strong>是否平衡， 高度多少</strong></p>
 <p>求解过程就变成如何返回信息的过程：</p>
 <p>平衡树info：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 左树和右树要求一样的</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 左树和右树要求一样的</span>
 <span class="hljs-comment">// 信息返回的结构体</span>
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> isBalaced;
@@ -3507,10 +3507,10 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       isBalaced = b;
       height = h;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isBalanced2</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isBalanced2</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">return</span> process2(head).isBalaced;
 &#125;
 
@@ -3538,7 +3538,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       isBalanced = <span class="hljs-keyword">false</span>;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(isBalanced, height);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -3556,7 +3556,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <blockquote>
 <p>所以info就需要包含 <strong>最大距离 和 高度</strong></p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> maxDistance;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> height;
 
@@ -3564,9 +3564,9 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       maxDistance = dis;
       height = h;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Info <span class="hljs-title">process</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Info <span class="hljs-title">process</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
    &#125;
@@ -3578,7 +3578,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
    <span class="hljs-keyword">int</span> maxDistance = Math.max(Math.max(leftInfo.maxDistance, rightInfo.maxDistance),
          leftInfo.height + rightInfo.height + <span class="hljs-number">1</span>);
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(maxDistance, height);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -3609,7 +3609,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <blockquote>
 <p>就要用到合并左右树信息</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 对于任何子树都返回四个信息</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 对于任何子树都返回四个信息</span>
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> isBST;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> maxSubBSTSize;
@@ -3622,10 +3622,10 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       min = mi;
       max = ma;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>算法code：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Info <span class="hljs-title">process</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Info <span class="hljs-title">process</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
    &#125;
@@ -3655,15 +3655,15 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
             + (rightInfo == <span class="hljs-keyword">null</span> ? <span class="hljs-number">0</span> : rightInfo.maxSubBSTSize) + <span class="hljs-number">1</span>;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(isBST, maxSubBSTSize, min, max);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>代码等价：</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201213132931.png" srcset="/img/loading.gif" alt="code"></p>
 <h2 id="派对的最大快乐值"><a href="#派对的最大快乐值" class="headerlink" title="派对的最大快乐值"></a>派对的最大快乐值</h2><p>员工信息的定义如下:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Employee</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Employee</span> </span>&#123;
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> happy; <span class="hljs-comment">// 这名员工可以带来的快乐值</span>
     List&lt;Employee&gt; subordinates; <span class="hljs-comment">// 这名员工有哪些直接下级</span>
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>多叉树！</p>
 <p>​   公司的每个员工都符合 Employee 类的描述。整个公司的人员结构可以看作是一棵标准的、 没有环的多叉树。树的头节点是公司唯一的老板。除老板之外的每个员工都有唯一的直接上级。 叶节点是没有任何下属的基层员工(subordinates列表为空)，除基层员工外，每个员工都有一个或多个直接下级。</p>
@@ -3682,7 +3682,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201213134923.png" srcset="/img/loading.gif" alt="x不来情况"></p>
 </li>
 <li><p>比较第一种和第二种情况</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> yes; <span class="hljs-comment">// 头结点来情况下整棵树最大值</span>
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> no; <span class="hljs-comment">// 头结点不来情况下整棵树最大值</span>
 
@@ -3707,7 +3707,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       no += Math.max(nextInfo.yes, nextInfo.no);
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(yes, no);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -3717,7 +3717,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p>2^L - 1 = N</p>
 </blockquote>
 <p>找出一棵树的高度和结点个数，组成info。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> height; <span class="hljs-comment">// L</span>
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> nodes; <span class="hljs-comment">// N</span>
 
@@ -3736,19 +3736,19 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
    <span class="hljs-keyword">int</span> height = Math.max(leftInfo.height, rightInfo.height) + <span class="hljs-number">1</span>;
    <span class="hljs-keyword">int</span> nodes = leftInfo.nodes + rightInfo.nodes + <span class="hljs-number">1</span>;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(height, nodes);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isFull2</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isFull2</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
    &#125;
    Info all = process(head);
    <span class="hljs-keyword">return</span> (<span class="hljs-number">1</span> &lt;&lt; all.height) - <span class="hljs-number">1</span> == all.nodes;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
-<h2 id="给定一棵二叉树的头节点head，返回这颗二叉树是不是搜索二叉树"><a href="#给定一棵二叉树的头节点head，返回这颗二叉树是不是搜索二叉树" class="headerlink" title="给定一棵二叉树的头节点head，返回这颗二叉树是不是搜索二叉树"></a>给定一棵二叉树的头节点head，返回这颗二叉树是不是搜索二叉树</h2><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+<h2 id="给定一棵二叉树的头节点head，返回这颗二叉树是不是搜索二叉树"><a href="#给定一棵二叉树的头节点head，返回这颗二叉树是不是搜索二叉树" class="headerlink" title="给定一棵二叉树的头节点head，返回这颗二叉树是不是搜索二叉树"></a>给定一棵二叉树的头节点head，返回这颗二叉树是不是搜索二叉树</h2><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
    <span class="hljs-keyword">boolean</span> isBST;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> min;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> max;
@@ -3785,11 +3785,11 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       isBST = <span class="hljs-keyword">true</span>;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(isBST, min, max);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
-<h2 id="给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的头节点"><a href="#给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的头节点" class="headerlink" title="给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的头节点"></a>给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的头节点</h2><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+<h2 id="给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的头节点"><a href="#给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的头节点" class="headerlink" title="给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的头节点"></a>给定一棵二叉树的头节点head，返回这颗二叉树中最大的二叉搜索子树的头节点</h2><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
   <span class="hljs-comment">// 最大二叉搜索子树的头结点</span>
    <span class="hljs-keyword">public</span> Node maxSubBSTHead;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> maxSubBSTSize;
@@ -3802,9 +3802,9 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       min = mi;
       max = ma;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Info <span class="hljs-title">process</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Info <span class="hljs-title">process</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
    &#125;
@@ -3835,14 +3835,14 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
             + (rightInfo == <span class="hljs-keyword">null</span> ? <span class="hljs-number">0</span> : rightInfo.maxSubBSTSize) + <span class="hljs-number">1</span>;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(maxSubBSTHead, maxSubBSTSize, min, max);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <h2 id="给定一棵二叉树的头节点head，返回这颗二叉树中是不是完全二叉树"><a href="#给定一棵二叉树的头节点head，返回这颗二叉树中是不是完全二叉树" class="headerlink" title="给定一棵二叉树的头节点head，返回这颗二叉树中是不是完全二叉树"></a>给定一棵二叉树的头节点head，返回这颗二叉树中是不是完全二叉树</h2><p>要么满，要么从左到右依次变慢。</p>
 <p>基本解法：宽度优先遍历</p>
 <p>Code1:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isCBT1</span><span class="hljs-params">(Node head)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isCBT1</span><span class="hljs-params">(Node head)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
    &#125;
@@ -3872,7 +3872,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -3896,7 +3896,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <li><p>有缺口，左树填满，右树最后左边有，（左树满，右树完全二叉， 左树高度 = 右树高度）</p>
 </li>
 </ol>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> isFull;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> isCBT;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> height;
@@ -3933,13 +3933,13 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(isFull, isCBT, height);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <h2 id="给定一棵二叉树的头节点head，和另外两个节点a和b。返回a和b的最低公共祖先"><a href="#给定一棵二叉树的头节点head，和另外两个节点a和b。返回a和b的最低公共祖先" class="headerlink" title="给定一棵二叉树的头节点head，和另外两个节点a和b。返回a和b的最低公共祖先"></a>给定一棵二叉树的头节点head，和另外两个节点a和b。返回a和b的最低公共祖先</h2><p>不用套路：整棵树遍历过程中 <strong>生成一张表</strong>，记录父节点。</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201213171301.png" srcset="/img/loading.gif" alt="让Y往上找"></p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">lowestAncestor1</span><span class="hljs-params">(Node head, Node o1, Node o2)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">lowestAncestor1</span><span class="hljs-params">(Node head, Node o1, Node o2)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (head == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
    &#125;
@@ -3969,7 +3969,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       parentMap.put(head.right, head);
       fillParentMap(head.right, parentMap);
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201213171603.png" srcset="/img/loading.gif" alt="流程" style="zoom:50%;" />
 
@@ -3985,7 +3985,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <li><p>01, 02有一个为x</p>
 </li>
 </ol>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Info</span> </span>&#123;
    <span class="hljs-comment">// o1,o2最初交汇点</span>
    <span class="hljs-keyword">public</span> Node ans;
    <span class="hljs-comment">// 有无发现过o1</span>
@@ -4026,7 +4026,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Info(ans, findO1, findO2);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4078,7 +4078,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201214083535.png" srcset="/img/loading.gif" alt="结果"></p>
 <p>所以这个排序策略是有传递性的。</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201214084002.png" srcset="/img/loading.gif" alt="数学归纳法"></p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComparator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Comparator</span>&lt;<span class="hljs-title">String</span>&gt; </span>&#123;
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyComparator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Comparator</span>&lt;<span class="hljs-title">String</span>&gt; </span>&#123;
    <span class="hljs-meta">@Override</span>
    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compare</span><span class="hljs-params">(String a, String b)</span> </span>&#123;
       <span class="hljs-keyword">return</span> (a + b).compareTo(b + a);
@@ -4095,7 +4095,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       res += strs[i];
    &#125;
    <span class="hljs-keyword">return</span> res;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4109,7 +4109,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p>4， **不要去纠结贪心策略的证明 **</p>
 <h2 id="贪心算法的解题套路实战"><a href="#贪心算法的解题套路实战" class="headerlink" title="贪心算法的解题套路实战"></a>贪心算法的解题套路实战</h2><h3 id="会议室题"><a href="#会议室题" class="headerlink" title="会议室题"></a>会议室题</h3><p>一些项目要占用一个会议室宣讲，会议室不能同时容纳两个项目的宣讲。<br>给你每一个项目 <strong>开始的时间和结束的时间</strong><br>你来安排宣讲的日程，要求会议室进行的宣讲的场次最多。<br>返回最多的宣讲场次。 </p>
 <p> <strong>按会议结束时间早来贪，安排一个，把不能安排的打X，安排其他的</strong></p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">bestArrange2</span><span class="hljs-params">(Program[] programs)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">bestArrange2</span><span class="hljs-params">(Program[] programs)</span> </span>&#123;
    Arrays.sort(programs, <span class="hljs-keyword">new</span> ProgramComparator());
    <span class="hljs-keyword">int</span> timeLine = <span class="hljs-number">0</span>;
    <span class="hljs-keyword">int</span> result = <span class="hljs-number">0</span>;
@@ -4129,7 +4129,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       <span class="hljs-keyword">return</span> o1.end - o2.end;
    &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4145,7 +4145,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 </li>
 </ul>
 <p>总是在当前步做 <strong>最优决定</strong>。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">minLight2</span><span class="hljs-params">(String road)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">minLight2</span><span class="hljs-params">(String road)</span> </span>&#123;
    <span class="hljs-keyword">char</span>[] str = road.toCharArray();
    <span class="hljs-keyword">int</span> index = <span class="hljs-number">0</span>;
    <span class="hljs-keyword">int</span> light = <span class="hljs-number">0</span>;
@@ -4166,7 +4166,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> light;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4179,7 +4179,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p>堆和排序是贪心最常用手段</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201214145441.png" srcset="/img/loading.gif" alt="堆 哈夫曼树"></p>
 <p>合成哈夫曼树就是从小根堆里面取两个合并再加入小根堆再合并….</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">lessMoney2</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">lessMoney2</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    PriorityQueue&lt;Integer&gt; pQ = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;();
    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; arr.length; i++) &#123;
       pQ.add(arr[i]);
@@ -4192,7 +4192,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       pQ.add(cur);
    &#125;
    <span class="hljs-keyword">return</span> sum;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4205,7 +4205,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <li>设置一个大根堆，按照利润排序，称为此事 <strong>被解锁的项目</strong></li>
 <li>从小根堆里 <strong>弹出所有能被初始资金满足</strong> 的项目到大根堆，因为按照利润组织，挑选大根堆堆顶做。初始资金变为4。拿初始资金继续寻找小根堆里能满足的放入大根堆，挑选大根堆堆顶，改变资金…. </li>
 </ul>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findMaximizedCapital</span><span class="hljs-params">(<span class="hljs-keyword">int</span> K, <span class="hljs-keyword">int</span> W, <span class="hljs-keyword">int</span>[] Profits, <span class="hljs-keyword">int</span>[] Capital)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findMaximizedCapital</span><span class="hljs-params">(<span class="hljs-keyword">int</span> K, <span class="hljs-keyword">int</span> W, <span class="hljs-keyword">int</span>[] Profits, <span class="hljs-keyword">int</span>[] Capital)</span> </span>&#123;
    PriorityQueue&lt;Program&gt; minCostQ = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(<span class="hljs-keyword">new</span> MinCostComparator());
    PriorityQueue&lt;Program&gt; maxProfitQ = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(<span class="hljs-keyword">new</span> MaxProfitComparator());
    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; Profits.length; i++) &#123;
@@ -4249,15 +4249,15 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       <span class="hljs-keyword">return</span> o2.p - o1.p;
    &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <p> <strong>暴力解贪心真的很折磨</strong> </p>
 <h1 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h1><h2 id="并查集code"><a href="#并查集code" class="headerlink" title="并查集code"></a>并查集code</h2><ol>
 <li>有若干个样本a、b、c、d…类型假设是V</li>
-<li>在并查集中一开始认为每个样本都在 <strong>单独的集合</strong> 里用户可以在任何时候调用如下两个方法：<div class="hljs"><pre><code>    **boolean isSameSet(V x, V y)** : 查询样本x和样本y是否属于一个集合
-    **void union(V x, V y)** : 把x和y各自所在集合的所有样本合并成一个集合</code></pre></div>
+<li>在并查集中一开始认为每个样本都在 <strong>单独的集合</strong> 里用户可以在任何时候调用如下两个方法：<pre><code>    **boolean isSameSet(V x, V y)** : 查询样本x和样本y是否属于一个集合
+    **void union(V x, V y)** : 把x和y各自所在集合的所有样本合并成一个集合</code></pre>
 </li>
 <li> isSameSet和union方法的代价越低越好, 最好O(1)</li>
 </ol>
@@ -4269,7 +4269,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201214154455.png" srcset="/img/loading.gif" alt="union操作完毕"></p>
 <p>1）每个节点都有一条往上指的指针<br>2）节点a往上找到的头节点，叫做a所在集合的代表节点<br>3）查询x和y是否属于同一个集合，就是看看找到的代表节点是不是一个<br>4）把x和y各自所在集合的所有点合并成一个集合，只需要小集合的代表点挂在大集合的代表点的下方即可</p>
 <p>code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span>&lt;<span class="hljs-title">V</span>&gt; </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span>&lt;<span class="hljs-title">V</span>&gt; </span>&#123;
    V value;
 
    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Node</span><span class="hljs-params">(V v)</span> </span>&#123;
@@ -4336,7 +4336,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
          &#125;
       &#125;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4379,7 +4379,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p>1）先用 <strong>自己最熟练的方式</strong> ，实现图结构的表达</p>
 <p>2）在自己熟悉的结构上， <strong>实现所有常用的图算法作为模板</strong></p>
 <p>3）把面试题 <strong>提供的图结构转化为自己熟悉的图结构</strong> ，再调用模板或改写即可</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 点结构描述</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 点结构描述</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
    <span class="hljs-comment">// 编号</span>
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> value;
@@ -4399,9 +4399,9 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       nexts = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
       edges = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 边描述 无向图只是from to相同</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 边描述 无向图只是from to相同</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Edge</span> </span>&#123;
    <span class="hljs-comment">// 权重</span>
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> weight;
@@ -4414,10 +4414,10 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       <span class="hljs-keyword">this</span>.to = to;
    &#125;
 
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>图结构就出来了：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Graph</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Graph</span> </span>&#123;
    <span class="hljs-comment">// Integer表示Node里面的value编号</span>
    <span class="hljs-keyword">public</span> HashMap&lt;Integer, Node&gt; nodes;
    <span class="hljs-keyword">public</span> HashSet&lt;Edge&gt; edges;
@@ -4426,14 +4426,14 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       nodes = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
       edges = <span class="hljs-keyword">new</span> HashSet&lt;&gt;();
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <blockquote>
 <p>结构转化为上述第三图中矩阵N*3的图结构</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// matrix 所有的边</span>
+<pre><code class="hljs java"><span class="hljs-comment">// matrix 所有的边</span>
 <span class="hljs-comment">// N*3 的矩阵</span>
 <span class="hljs-comment">// [weight, from节点上面的值，to节点上面的值]</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Graph <span class="hljs-title">createGraph</span><span class="hljs-params">(Integer[][] matrix)</span> </span>&#123;
@@ -4458,12 +4458,12 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       graph.edges.add(newEdge);
    &#125;
    <span class="hljs-keyword">return</span> graph;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <h2 id="图的宽度优先-amp-深度优先遍历"><a href="#图的宽度优先-amp-深度优先遍历" class="headerlink" title="图的宽度优先&amp;深度优先遍历"></a>图的宽度优先&amp;深度优先遍历</h2><p>宽度优先遍历 (同一层内部的顺序可以无所谓)<br>1，利用 <strong>队列</strong> 实现<br>2，从源节点开始依次按照宽度进队列，然后弹出<br>3，每弹出一个点，把该节点 <strong>所有没有进过队列的邻接点放入队列</strong><br>4，直到队列变空</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 从node出发，进行宽度优先遍历</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 从node出发，进行宽度优先遍历</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">bfs</span><span class="hljs-params">(Node node)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (node == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span>;
@@ -4484,12 +4484,12 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
          &#125;
       &#125;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <p>深度优先遍历<br>1，利用 <strong>栈</strong> 实现<br>2，从源节点开始把节点按照深度放入栈，然后弹出<br>3，每弹出一个点，把该节点 <strong>下一个没有进过栈的邻接点放入栈</strong><br>4，直到栈变空 </p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(Node node)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(Node node)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (node == <span class="hljs-keyword">null</span>) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
@@ -4513,7 +4513,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
          &#125;
       &#125;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4524,7 +4524,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215104648.png" srcset="/img/loading.gif" alt="循环依赖与图关系"></p>
 <p>ABC各有各自的config，最终会变成有向无环图，如果有环，就形成了循环依赖。</p>
 <p>拓扑排序从最底层包往上编译，最终编译出来。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// directed graph and no loop</span>
+<pre><code class="hljs java"><span class="hljs-comment">// directed graph and no loop</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;Node&gt; <span class="hljs-title">sortedTopology</span><span class="hljs-params">(Graph graph)</span> </span>&#123;
    <span class="hljs-comment">// key：某一个node</span>
    <span class="hljs-comment">// value：剩余的入度</span>
@@ -4551,7 +4551,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> result;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4560,7 +4560,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p>流程：</p>
 <p>所有的 <strong>边</strong> 根据 <strong>权值由小到大排序</strong> ，对边遍历，如果左右两头没有在同一个集合，union，如果在一个集合，淘汰。</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215110718.png" srcset="/img/loading.gif" alt="流程"></p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Set&lt;Edge&gt; <span class="hljs-title">kruskalMST</span><span class="hljs-params">(Graph graph)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Set&lt;Edge&gt; <span class="hljs-title">kruskalMST</span><span class="hljs-params">(Graph graph)</span> </span>&#123;
    UnionFind unionFind = <span class="hljs-keyword">new</span> UnionFind();
    unionFind.makeSets(graph.nodes.values());
    PriorityQueue&lt;Edge&gt; priorityQueue = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(<span class="hljs-keyword">new</span> EdgeComparator());
@@ -4576,7 +4576,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> result;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>有向图有效，如果是 <strong>无向图，会少一半边</strong> ：</p>
 <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215111956.png" srcset="/img/loading.gif" alt="少一半边" style="zoom:50%;" />
@@ -4588,7 +4588,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p>a点被解锁，直接边被解锁，在可以被看到的边里选一个最小的边，看看边两侧有没有新结点，解锁，没有新结点抛弃。c被解锁，已经选过的边不被重复解锁，b被解锁，边被解锁，找到所有解锁的边最小继续解锁…一直到所有点被解锁</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201215113614.png" srcset="/img/loading.gif" alt="结果"></p>
 <p>总是一个一个点进，而不是一大片结合，所以一个set即可。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Set&lt;Edge&gt; <span class="hljs-title">primMST</span><span class="hljs-params">(Graph graph)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Set&lt;Edge&gt; <span class="hljs-title">primMST</span><span class="hljs-params">(Graph graph)</span> </span>&#123;
    <span class="hljs-comment">// 解锁的边进入小根堆</span>
    PriorityQueue&lt;Edge&gt; priorityQueue = <span class="hljs-keyword">new</span> PriorityQueue&lt;&gt;(
          <span class="hljs-keyword">new</span> EdgeComparator());
@@ -4631,7 +4631,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       <span class="hljs-comment">//break;</span>
    &#125;
    <span class="hljs-keyword">return</span> result;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4643,7 +4643,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <p>4）源点到所有的点记录如果都被拿过一遍，过程停止，最小距离表得到了</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216085032.png" srcset="/img/loading.gif" alt="最小距离表"></p>
 <p> <strong>权值为正数，如果出现负数，环问题可能没有解</strong></p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> HashMap&lt;Node, Integer&gt; <span class="hljs-title">dijkstra1</span><span class="hljs-params">(Node from)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> HashMap&lt;Node, Integer&gt; <span class="hljs-title">dijkstra1</span><span class="hljs-params">(Node from)</span> </span>&#123;
    <span class="hljs-comment">// 从from出发到所有点的最小距离</span>
    <span class="hljs-comment">// key : 从head出发到达key</span>
    <span class="hljs-comment">// value : 从head出发到达key的最小距离</span>
@@ -4686,13 +4686,13 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> minNode;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <h3 id="小根堆优化"><a href="#小根堆优化" class="headerlink" title="小根堆优化"></a>小根堆优化</h3><p>上述的算法中，for (Entry&lt;Node, Integer&gt; entry : distanceMap.entrySet())这段代码需要对当前取出的结点的下面所有点进行 <strong>遍历</strong>，可以使用一个小根堆，每次取出的就是最小。</p>
 <p>原来是遍历哈希表 O(N) 现在是小根堆 O(logN)</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NodeRecord</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NodeRecord</span> </span>&#123;
    <span class="hljs-keyword">public</span> Node node;
    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> distance;
 
@@ -4803,7 +4803,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       result.put(cur, distance);
    &#125;
    <span class="hljs-keyword">return</span> result;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4820,7 +4820,7 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
 <blockquote>
 <p>细化递归过程的代码:</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">hanoi1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">hanoi1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
    leftToRight(n);
 &#125;
 
@@ -4886,13 +4886,13 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
    rightToMid(n - <span class="hljs-number">1</span>);
    System.out.println(<span class="hljs-string">&quot;Move &quot;</span> + n + <span class="hljs-string">&quot; from right to left&quot;</span>);
    midToLeft(n - <span class="hljs-number">1</span>);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>为每个移动过程都描述过程。</p>
 <blockquote>
 <p>如果忽略左中右，直接from to other代替全部</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">hanoi2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">hanoi2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (n &gt; <span class="hljs-number">0</span>) &#123;
       func(n, <span class="hljs-string">&quot;left&quot;</span>, <span class="hljs-string">&quot;right&quot;</span>, <span class="hljs-string">&quot;mid&quot;</span>);
    &#125;
@@ -4907,17 +4907,17 @@ Node(<span class="hljs-keyword">int</span> val) &#123; value = val; &#125;
       System.out.println(<span class="hljs-string">&quot;Move &quot;</span> + N + <span class="hljs-string">&quot; from &quot;</span> + from + <span class="hljs-string">&quot; to &quot;</span> + to);
       func(N - <span class="hljs-number">1</span>, other, to, from);
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216111446.png" srcset="/img/loading.gif" alt="过程"></p>
-<div class="hljs"><pre><code class="hljs livecodeserver">打印过程：
+<pre><code class="hljs livecodeserver">打印过程：
 Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> left <span class="hljs-built_in">to</span> <span class="hljs-literal">right</span>
 Move <span class="hljs-number">2</span> <span class="hljs-built_in">from</span> left <span class="hljs-built_in">to</span> <span class="hljs-keyword">mid</span>
 Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> <span class="hljs-literal">right</span> <span class="hljs-built_in">to</span> <span class="hljs-keyword">mid</span>
 Move <span class="hljs-number">3</span> <span class="hljs-built_in">from</span> left <span class="hljs-built_in">to</span> <span class="hljs-literal">right</span>
 Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> <span class="hljs-keyword">mid</span> <span class="hljs-built_in">to</span> left
 Move <span class="hljs-number">2</span> <span class="hljs-built_in">from</span> <span class="hljs-keyword">mid</span> <span class="hljs-built_in">to</span> <span class="hljs-literal">right</span>
-Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> left <span class="hljs-built_in">to</span> <span class="hljs-literal">right</span></code></pre></div>
+Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> left <span class="hljs-built_in">to</span> <span class="hljs-literal">right</span></code></pre>
 
 
 <ul>
@@ -4927,7 +4927,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 </li>
 </ul>
 <p>  <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201217083652.png" srcset="/img/loading.gif" alt="子序列每个都可以选择要或不要"></p>
-  <div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;String&gt; <span class="hljs-title">subs</span><span class="hljs-params">(String s)</span> </span>&#123;
+  <pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;String&gt; <span class="hljs-title">subs</span><span class="hljs-params">(String s)</span> </span>&#123;
    <span class="hljs-keyword">char</span>[] str = s.toCharArray();
    String path = <span class="hljs-string">&quot;&quot;</span>;
    List&lt;String&gt; ans = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
@@ -4948,13 +4948,13 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
    process1(str, index + <span class="hljs-number">1</span>, ans, no);
    String yes = path + String.valueOf(str[index]);
    process1(str, index + <span class="hljs-number">1</span>, ans, yes);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <ul>
 <li><p>打印一个字符串的全部子序列，要求不要出现重复字面值的子序列</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">process2</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[] str, <span class="hljs-keyword">int</span> index, HashSet&lt;String&gt; set, String path)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">process2</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[] str, <span class="hljs-keyword">int</span> index, HashSet&lt;String&gt; set, String path)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (index == str.length) &#123;
       set.add(path);
       <span class="hljs-keyword">return</span>;
@@ -4963,7 +4963,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
    process2(str, index + <span class="hljs-number">1</span>, set, no);
    String yes = path + String.valueOf(str[index]);
    process2(str, index + <span class="hljs-number">1</span>, set, yes);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -4973,7 +4973,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <li><p>打印一个字符串的全部排列</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201217085722.png" srcset="/img/loading.gif" alt="不用额外空间尝试"></p>
 <p>只需要一个数组，让index所到位置后面所有字符都到该位置一次</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ArrayList&lt;String&gt; <span class="hljs-title">permutation</span><span class="hljs-params">(String str)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ArrayList&lt;String&gt; <span class="hljs-title">permutation</span><span class="hljs-params">(String str)</span> </span>&#123;
    ArrayList&lt;String&gt; res = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
    <span class="hljs-keyword">if</span> (str == <span class="hljs-keyword">null</span> || str.length() == <span class="hljs-number">0</span>) &#123;
       <span class="hljs-keyword">return</span> res;
@@ -4997,7 +4997,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
      <span class="hljs-comment">// 恢复现场</span>
       swap(str, i, j);
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -5007,7 +5007,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <li><p>打印一个字符串的全部排列，要求不要出现重复的排列</p>
 <p>直接在上面代码改为set，是暴力递归 ➕ 过滤</p>
 <p>但如果使用分支限界方法不一样，在执行过程前杀死支路。</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 分支限界方法</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 分支限界方法</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ArrayList&lt;String&gt; <span class="hljs-title">permutationNoRepeat</span><span class="hljs-params">(String str)</span> </span>&#123;
    ArrayList&lt;String&gt; res = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
    <span class="hljs-keyword">if</span> (str == <span class="hljs-keyword">null</span> || str.length() == <span class="hljs-number">0</span>) &#123;
@@ -5033,7 +5033,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
          swap(str, i, j);
       &#125;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 </li>
 </ul>
@@ -5041,7 +5041,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <p>f函数功能: 把栈底元素抽离</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216114416.png" srcset="/img/loading.gif" alt="流程"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201216114856.png" srcset="/img/loading.gif" alt="reverse流程"></p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">reverse</span><span class="hljs-params">(Stack&lt;Integer&gt; stack)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">reverse</span><span class="hljs-params">(Stack&lt;Integer&gt; stack)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (stack.isEmpty()) &#123;
       <span class="hljs-keyword">return</span>;
    &#125;
@@ -5060,7 +5060,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
       stack.push(result);
       <span class="hljs-keyword">return</span> last;
    &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -5087,7 +5087,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <p> <strong>每行放一个，不会存在行上攻击问题</strong> ，</p>
 <p> <strong>判断下一行与其它行斜线是否合法</strong>： 如果点分别为(a, b) (c, d) 判断 <strong>|a-c| == |b-d|</strong> </p>
 <p>Code1:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">num1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">num1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (n &lt; <span class="hljs-number">1</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
    &#125;
@@ -5131,7 +5131,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -5153,7 +5153,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <p>下次皇后位置，就为三个limit或起来：</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218135851.png" srcset="/img/loading.gif" alt="下次可放位置"></p>
 <p>Code2:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 请不要超过32皇后问题</span>
+<pre><code class="hljs java"><span class="hljs-comment">// 请不要超过32皇后问题</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">num2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> n)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (n &lt; <span class="hljs-number">1</span> || n &gt; <span class="hljs-number">32</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -5198,11 +5198,11 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
             (rightDiaLim | mostRightOne) &gt;&gt;&gt; <span class="hljs-number">1</span>);
    &#125;
    <span class="hljs-keyword">return</span> res;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>![如何找到能放皇后的位置，且代表1] (<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201218140919.png" srcset="/img/loading.gif" alt="image-20201218140916545">)</p>
 <h3 id="如果要输出怎么办？"><a href="#如果要输出怎么办？" class="headerlink" title="如果要输出怎么办？"></a>如果要输出怎么办？</h3><p>leetcode原题：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> </span>&#123;
 
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;List&lt;String&gt;&gt; solveNQueens(<span class="hljs-keyword">int</span> n) &#123;
         <span class="hljs-keyword">char</span>[][] chess = <span class="hljs-keyword">new</span> <span class="hljs-keyword">char</span>[n][n];
@@ -5263,7 +5263,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
         &#125;
         <span class="hljs-keyword">return</span> path;
     &#125;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -5275,7 +5275,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <blockquote>
 <p>暴力代码</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">ways1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> M, <span class="hljs-keyword">int</span> K, <span class="hljs-keyword">int</span> P)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">ways1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> M, <span class="hljs-keyword">int</span> K, <span class="hljs-keyword">int</span> P)</span> </span>&#123;
    <span class="hljs-comment">// 参数无效直接返回0</span>
    <span class="hljs-keyword">if</span> (N &lt; <span class="hljs-number">2</span> || K &lt; <span class="hljs-number">1</span> || M &lt; <span class="hljs-number">1</span> || M &gt; N || P &lt; <span class="hljs-number">1</span> || P &gt; N) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -5311,13 +5311,13 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
    <span class="hljs-comment">// 走向右之后，后续的过程就是，来到cur+1位置上，还剩rest-1步要走</span>
    <span class="hljs-comment">// 走向左、走向右是截然不同的方法，所以总方法数要都算上</span>
    <span class="hljs-keyword">return</span> walk(N, cur + <span class="hljs-number">1</span>, rest - <span class="hljs-number">1</span>, P) + walk(N, cur - <span class="hljs-number">1</span>, rest - <span class="hljs-number">1</span>, P);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201219150216.png" srcset="/img/loading.gif" alt="有重复过程"></p>
 <blockquote>
 <p>缓存式(记忆化搜索) 动态规划代码</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">waysCache</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> M, <span class="hljs-keyword">int</span> K, <span class="hljs-keyword">int</span> P)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">waysCache</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> M, <span class="hljs-keyword">int</span> K, <span class="hljs-keyword">int</span> P)</span> </span>&#123;
 
    <span class="hljs-keyword">if</span> (N &lt; <span class="hljs-number">2</span> || K &lt; <span class="hljs-number">1</span> || M &lt; <span class="hljs-number">1</span> || M &gt; N || P &lt; <span class="hljs-number">1</span> || P &gt; N) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -5351,7 +5351,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
    &#125;
    dp[cur][rest] =  walkCache(N, cur + <span class="hljs-number">1</span>, rest - <span class="hljs-number">1</span>, P, dp) + walkCache(N, cur - <span class="hljs-number">1</span>, rest - <span class="hljs-number">1</span>, P, dp);
    <span class="hljs-keyword">return</span> dp[cur][rest];
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <blockquote>
 <p>依赖关系猜想</p>
@@ -5398,7 +5398,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <p>由暴力递归得 rest&lt;0,无效；index == w.len, 为0</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220143712.png" srcset="/img/loading.gif" alt="更改过程"></p>
 <p>code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">dpWay</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] w, <span class="hljs-keyword">int</span>[] v, <span class="hljs-keyword">int</span> bag)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">dpWay</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] w, <span class="hljs-keyword">int</span>[] v, <span class="hljs-keyword">int</span> bag)</span> </span>&#123;
    <span class="hljs-keyword">int</span> N = w.length;
    <span class="hljs-keyword">int</span>[][] dp = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[N + <span class="hljs-number">1</span>][bag + <span class="hljs-number">1</span>];
    <span class="hljs-comment">// dp[N][...] = 0,本来初始化就为0</span>
@@ -5411,7 +5411,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> dp[<span class="hljs-number">0</span>][bag];
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -5421,7 +5421,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220145223.png" srcset="/img/loading.gif" alt="return"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220145438.png" srcset="/img/loading.gif" alt="填"></p>
 <p>code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">dpWays</span><span class="hljs-params">(String s)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">dpWays</span><span class="hljs-params">(String s)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (s == <span class="hljs-keyword">null</span> || s.length() == <span class="hljs-number">0</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
    &#125;
@@ -5447,7 +5447,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> dp[<span class="hljs-number">0</span>];
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -5457,7 +5457,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220152133.png" srcset="/img/loading.gif" alt="由暴力递归得到关系图"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220152246.png" srcset="/img/loading.gif" alt="依赖推出"></p>
 <p>code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">windp</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">windp</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length == <span class="hljs-number">0</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
    &#125;
@@ -5483,7 +5483,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> Math.max(f[<span class="hljs-number">0</span>][N - <span class="hljs-number">1</span>], s[<span class="hljs-number">0</span>][N - <span class="hljs-number">1</span>]);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220153643.png" srcset="/img/loading.gif" alt="动态规划"></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220154023.png" srcset="/img/loading.gif" alt="动态规划时间复杂度"></p>
@@ -5495,7 +5495,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <h2 id="货币数组问题"><a href="#货币数组问题" class="headerlink" title="货币数组问题"></a>货币数组问题</h2><p>一个arr中都是正数，无重复值，arr中对应货币面值，给你一个num，用arr中组成num的方法数。</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201220154742.png" srcset="/img/loading.gif" alt="问题"></p>
 <p>递归定义：f(i, rest) 表示arr[i]之后的面值随意使用，搞定rest</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// arr中都是正数且无重复值，返回组成aim的方法数</span>
+<pre><code class="hljs java"><span class="hljs-comment">// arr中都是正数且无重复值，返回组成aim的方法数</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">ways</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> aim)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length == <span class="hljs-number">0</span> || aim &lt; <span class="hljs-number">0</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -5520,7 +5520,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
       ways += process(arr, index + <span class="hljs-number">1</span>, rest - zhang * arr[index]);
    &#125;
    <span class="hljs-keyword">return</span> ways;
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -5541,7 +5541,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <p>问号值依赖a、b、c…..</p>
 <p>但求问好值，要先求星号值，优化后就是当前 = 左边 加 下面</p>
 <p>优化的dp：</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">waysdp</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> aim)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">waysdp</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> aim)</span> </span>&#123;
    <span class="hljs-keyword">if</span> (arr == <span class="hljs-keyword">null</span> || arr.length == <span class="hljs-number">0</span> || aim &lt; <span class="hljs-number">0</span>) &#123;
       <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
    &#125;
@@ -5558,7 +5558,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> dp[<span class="hljs-number">0</span>][aim];
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -5574,7 +5574,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221090644.png" srcset="/img/loading.gif" alt="存储格式"></p>
 <p>“baabk”代表第一个贴纸，则arr[0]表示完整字符串，index0表示a出现的次数。</p>
 <p>Code1:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">minStickers1</span><span class="hljs-params">(String[] stickers, String target)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">minStickers1</span><span class="hljs-params">(String[] stickers, String target)</span> </span>&#123;
    <span class="hljs-keyword">int</span> n = stickers.length;
    <span class="hljs-keyword">int</span>[][] map = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[n][<span class="hljs-number">26</span>];
 
@@ -5635,7 +5635,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
    &#125;
    dp.put(rest, ans == Integer.MAX_VALUE ? -<span class="hljs-number">1</span> : ans);
    <span class="hljs-keyword">return</span> dp.get(rest);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
@@ -5682,7 +5682,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221125724.png" srcset="/img/loading.gif" alt="结果"></p>
 <p> <strong>1 + dp[i - 1] [j - 1]</strong></p>
 <p>code:</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">lcse</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[] str1, <span class="hljs-keyword">char</span>[] str2)</span> </span>&#123;
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">lcse</span><span class="hljs-params">(<span class="hljs-keyword">char</span>[] str1, <span class="hljs-keyword">char</span>[] str2)</span> </span>&#123;
    <span class="hljs-keyword">int</span>[][] dp = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[str1.length][str2.length];
 
    <span class="hljs-comment">// 第一个字符是否相等</span>
@@ -5710,14 +5710,14 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
       &#125;
    &#125;
    <span class="hljs-keyword">return</span> dp[str1.length - <span class="hljs-number">1</span>][str2.length - <span class="hljs-number">1</span>];
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201221130629.png" srcset="/img/loading.gif" alt="结果"></p>
 <p>可能性2一定比1大，所以else是可以取出的</p>
 <h2 id="咖啡刷杯子问题（第四种模型）"><a href="#咖啡刷杯子问题（第四种模型）" class="headerlink" title="咖啡刷杯子问题（第四种模型）"></a>咖啡刷杯子问题（第四种模型）</h2><p>给定一个数组，代表每个人喝完咖啡准备刷杯子的时间<br>只有一台咖啡机，一次只能洗一个杯子，时间耗费a，洗完才能洗下一杯<br>每个咖啡杯也可以自己挥发干净，时间耗费b，咖啡杯可以并行挥发<br>返回让所有咖啡杯变干净的最早完成时间<br>三个参数：int[] arr、int a、int b</p>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// a 洗咖啡机所需时间</span>
+<pre><code class="hljs java"><span class="hljs-comment">// a 洗咖啡机所需时间</span>
 <span class="hljs-comment">// b 自然挥发时间</span>
 <span class="hljs-comment">// drinks每一个员工喝完咖啡时间</span>
 <span class="hljs-comment">// drinks[0...index - 1] 已经洗完</span>
@@ -5746,7 +5746,7 @@ Move <span class="hljs-number">1</span> <span class="hljs-built_in">from</span> 
 
 
    <span class="hljs-keyword">return</span> Math.min(p1, p2);
-&#125;</code></pre></div>
+&#125;</code></pre>
 
 <p>改为动态规划：</p>
 <p>int washLine寻求最夸张的值（全洗）</p>
