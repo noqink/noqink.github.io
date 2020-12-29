@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      619 字
+      2.2k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      10
+      30
        分钟
     </span>
   
@@ -227,15 +227,37 @@
             <h1 style="display: none">leetcode</h1>
             
             <div class="markdown-body">
-              <p>刷，就嗯刷！</p>
-<blockquote>
-<p>测试用例 后续更新</p>
-</blockquote>
-<h1 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h1><h2 id="188-买卖股票-IV"><a href="#188-买卖股票-IV" class="headerlink" title="188. 买卖股票 IV"></a>188. 买卖股票 IV</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/">188. 买卖股票的最佳时机 IV</a></p>
+              <h1 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h1><h2 id="188-买卖股票-IV"><a href="#188-买卖股票-IV" class="headerlink" title="188. 买卖股票 IV"></a>188. 买卖股票 IV</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/">188. 买卖股票的最佳时机 IV</a></p>
 <p class="note note-primary">买卖股票有六种题型，后续更新</p>
 
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201228180405.png" srcset="/img/loading.gif" alt="question"></p>
-<h3 id="暴力递归出发分析动态规划"><a href="#暴力递归出发分析动态规划" class="headerlink" title="暴力递归出发分析动态规划"></a>暴力递归出发分析动态规划</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxProfit1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k, <span class="hljs-keyword">int</span>[] prices)</span> </span>&#123;
+<p>状态图：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201229091140.png" srcset="/img/loading.gif" alt="状态图"></p>
+<p>由题意分析，不难得出：</p>
+<ul>
+<li><p>如果状态是是 <strong>买入</strong> :</p>
+<ul>
+<li>那么可以 <strong>保持不动</strong></li>
+<li>或者马上 <strong>卖掉</strong></li>
+</ul>
+</li>
+<li><p>如果状态是 <strong>卖出</strong>:</p>
+<ul>
+<li>可以 <strong>保持不动</strong> (等待更好的股价出现，暂时不买)</li>
+<li>或者 <strong>立马再买一股</strong></li>
+<li>同时将count数+1，表示交易过一次了</li>
+</ul>
+</li>
+</ul>
+<h3 id="暴力递归思考问题"><a href="#暴力递归思考问题" class="headerlink" title="暴力递归思考问题"></a>暴力递归思考问题</h3><p>我们可以用 <strong>三个变量</strong> 来表示买卖k次的交易状态</p>
+<ul>
+<li>index，用来表示 <strong>当前是哪一天</strong></li>
+<li>status，用来表示 <strong>当前是买入、还是卖出</strong> </li>
+<li>count，用来表示 <strong>交易了几次</strong></li>
+</ul>
+<p>暴力法中我们尝试所有的解决策略：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201229091330.png" srcset="/img/loading.gif" alt="递归树"></p>
+<div class="hljs"><pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxProfit1</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k, <span class="hljs-keyword">int</span>[] prices)</span> </span>&#123;
     <span class="hljs-comment">// 暴力</span>
     <span class="hljs-keyword">if</span>(prices.length== <span class="hljs-number">0</span> || prices == <span class="hljs-keyword">null</span>)&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -265,7 +287,47 @@
 <h3 id="动态规划-1"><a href="#动态规划-1" class="headerlink" title="动态规划"></a>动态规划</h3><blockquote>
 <p>三个参数三维表，但有一维为01，转为两个二维表</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 动态规划</span>
+<p>我们再次回顾一下状态转化：</p>
+<p>每次到达i位置时：</p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201229091455.png" srcset="/img/loading.gif" alt="i位置" style="zoom:50%;" />
+
+<p>如果三维表最后一位 0表示卖出，1表示买入：</p>
+<div class="hljs"><pre><code class="hljs js">第一次买入：从初始状态转换而来，或者第一次买入后保持不动
+#dp[i][<span class="hljs-number">0</span>][<span class="hljs-number">1</span>] = max(dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">0</span>][<span class="hljs-number">1</span>],dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]-prices[i])
+
+第一次卖出：从第一次买入转换而来，或者第一次卖出后保持不动
+#dp[i][<span class="hljs-number">1</span>][<span class="hljs-number">0</span>] = max(dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">1</span>][<span class="hljs-number">0</span>],dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]+prices[i])
+
+第二次买入：从第一次卖出转换而来，或者第二次买入后保持不动
+dp[i][<span class="hljs-number">1</span>][<span class="hljs-number">1</span>] = max(dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">1</span>][<span class="hljs-number">1</span>],dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">1</span>][<span class="hljs-number">0</span>]-prices[i])
+
+第二次卖出：从第二次买入转换而来，或者第二次卖出后保持不动
+dp[i][<span class="hljs-number">2</span>][<span class="hljs-number">0</span>] = max(dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">2</span>][<span class="hljs-number">0</span>],dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">1</span>][<span class="hljs-number">1</span>]+prices[i])
+
+第三次买入：
+dp[i][<span class="hljs-number">2</span>][<span class="hljs-number">1</span>] = max(dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">2</span>][<span class="hljs-number">1</span>],dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">2</span>][<span class="hljs-number">0</span>]-prices[i])
+
+第三次卖出：   
+dp[i][<span class="hljs-number">3</span>][<span class="hljs-number">0</span>] = max(dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">3</span>][<span class="hljs-number">0</span>],dp[i-<span class="hljs-number">1</span>][<span class="hljs-number">2</span>][<span class="hljs-number">1</span>]+prices[i])
+</code></pre></div>
+
+<p>扩展至j次交易的话：</p>
+<div class="hljs"><pre><code class="hljs js">第k次买入： 从第k-<span class="hljs-number">1</span>次卖出转换而来，或者第k次买入后保持不动
+dp[i][j-<span class="hljs-number">1</span>][<span class="hljs-number">1</span>] = max(dp[i-<span class="hljs-number">1</span>][j-<span class="hljs-number">1</span>][<span class="hljs-number">1</span>],dp[i-<span class="hljs-number">1</span>][j-<span class="hljs-number">1</span>][<span class="hljs-number">0</span>]-prices[i])
+
+第k次卖出： 从第k次买入后转换而来，或者是第k次卖出后保持不动
+dp[i][j][<span class="hljs-number">0</span>] = max(dp[i-<span class="hljs-number">1</span>][j][<span class="hljs-number">0</span>],dp[i-<span class="hljs-number">1</span>][j-<span class="hljs-number">1</span>][<span class="hljs-number">1</span>]+prices[i])
+
+第k+<span class="hljs-number">1</span>次买入：
+dp[i][j][<span class="hljs-number">1</span>] = max(dp[i-<span class="hljs-number">1</span>][j][<span class="hljs-number">1</span>],dp[i-<span class="hljs-number">1</span>][j][<span class="hljs-number">0</span>]-prices[i])</code></pre></div>
+
+
+
+<p>因此我们设置 <strong>两张表</strong>：</p>
+<p>buy和sell，都为二维表，这样就可以忽略三维表第三位：</p>
+<p>我们的规则如下：</p>
+<p> buy[i] [j]表示到达索引i时候，达成j次交易买入获得最大收益<br> sell[i] [j]表示到达索引i时候，达成j次交易卖出获得最大收益<br> buy[i] [j] = Math.max( buy[i - 1] [j], sell[i - 1] [j] - price[i])<br> sell[i] [j] = Math.max( sell[i - 1] [j], buy[i - 1] [j - 1] + price[i])</p>
+<div class="hljs"><pre><code class="hljs java">    <span class="hljs-comment">// 动态规划</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxProfit2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k, <span class="hljs-keyword">int</span>[] prices)</span> </span>&#123;
     <span class="hljs-keyword">if</span>(prices.length== <span class="hljs-number">0</span> || prices == <span class="hljs-keyword">null</span>)&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -301,9 +363,16 @@
 
 
 <h3 id="动态规划优化"><a href="#动态规划优化" class="headerlink" title="动态规划优化"></a>动态规划优化</h3><blockquote>
-<p>不难看出上述二维表中的i并没有被实际用到</p>
+<p>空间优化</p>
 </blockquote>
-<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxProfit</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k, <span class="hljs-keyword">int</span>[] prices)</span> </span>&#123;
+<p>上述中：</p>
+<ul>
+<li>外层的循环是n，即遍历数组</li>
+<li>内层的循环是k，遍历k次交易</li>
+</ul>
+<p>不难看出上述二维表中的i并没有被实际用到</p>
+<p>又或者说：状态转移方程中，<strong>buy[i] [j] 和 sell[i] [j] 都从 buy[i−1] [..] 以及 sell[i−1] [..] 转移而来</strong></p>
+<div class="hljs"><pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">maxProfit</span><span class="hljs-params">(<span class="hljs-keyword">int</span> k, <span class="hljs-keyword">int</span>[] prices)</span> </span>&#123;
     <span class="hljs-comment">// 动态规划空间优化</span>
     <span class="hljs-keyword">if</span>(prices.length== <span class="hljs-number">0</span> || prices == <span class="hljs-keyword">null</span>)&#123;
         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
@@ -332,6 +401,67 @@
     <span class="hljs-keyword">return</span> Arrays.stream(sell).max().getAsInt();
 &#125;</code></pre></div>
 
+
+
+<p class="note note-danger">buy[0][i] 和 sell[0][i] 是没有意义的,必须值为负最小</p>
+
+
+
+<h1 id="贪心算法"><a href="#贪心算法" class="headerlink" title="贪心算法"></a>贪心算法</h1><h2 id="330-按要求补齐数组"><a href="#330-按要求补齐数组" class="headerlink" title="330. 按要求补齐数组"></a>330. 按要求补齐数组</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/patching-array/">330. 按要求补齐数组</a></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201229084726.png" srcset="/img/loading.gif" alt="question"></p>
+<h3 id="贪心策略"><a href="#贪心策略" class="headerlink" title="贪心策略"></a>贪心策略</h3><p>每次找到未被 <strong>数组nums</strong> 覆盖的 <strong>最小的整数x</strong>，在数组中 <strong>补充x</strong>，然后寻找下一个 <strong>未被覆盖的最小的整数</strong> ，重复上述步骤直到区间 [1,n] 中的所有数字都被覆盖。</p>
+<p class="note note-primary">贪心原理及证明</p>
+
+<p>对于正整数 x，如果区间 <strong>[1,x-1]</strong> 内的所有数字都已经被覆盖，且 x 在数组中，则区间 <strong>[1,2x-1]</strong> 内的所有数字也都被覆盖。证明如下。</p>
+<p>对于任意  1≤y&lt;x，y 已经被覆盖，x 在数组中，因此 y+x 也被覆盖，区间 [x+1,2x-1]（即区间 [1,x-1] 内的每个数字加上 x 之后得到的区间）内的所有数字也被覆盖，由此可得区间 [1,2x-1] 内的所有数字都被覆盖。</p>
+<p>直接看证明可能有点 <strong>晦涩难懂</strong> ，我们看一下 <strong>例子</strong> ：</p>
+<p>对于数组[1, 5, 10] 要求加x个数字能够覆盖20，即[1, 20]。</p>
+<p>我们设 <strong>初始能够覆盖的边界</strong> 为boundary = 1，即当前我们还没开始遍历数组，我们的 <strong>初始覆盖范围为[1, 1)</strong></p>
+<p>现在我们开始遍历数组，从第一位开始，遍历到 1，当前数组自身第一个数就能够覆盖的范围为 [1, 1]，1&lt;= </p>
+<p>boundary，所以我们加上boundary，覆盖范围变成 <strong>[1, 1 + boundary)</strong> ，即[1, 2)，注意右边为 <strong>开区间</strong> ，你可以把</p>
+<p>boundary想象成 <strong>闭区间且初始没有覆盖为0</strong> ；</p>
+<p>我们再遍历下一位，来到5，此时我们发现 <strong>[1, 2) 无法遍历到 5</strong>，于是我们加入 <strong>最小的整数x</strong> ，寻找新覆盖范围，</p>
+<p>能否覆盖到5，我们加入的数正根据上述的 <strong>贪心原理及证明</strong> 规则中加入， 边界[1, 2)我们加入2，所以新的覆盖范围</p>
+<p>为[1, 4)，加入数加一，我们再次来到5，发现还是无法遍历到5，我们再加入最小整数x，新的覆盖范围为[1, 8)，加</p>
+<p>入数加一。</p>
+<p>我们又一次来到5，发现可以覆盖到5了，但数组中的5改怎么办呢？</p>
+<p>即因为数组中5存在，所以我们需要扩大我们的覆盖范围，实际上就是覆盖范围加上5，变为 <strong>[1, 8 + 5)</strong> ，证明上述</p>
+<p>已经证明，下一次来到10，发现可以覆盖10，又因为数组中有10，所以我们再次更新覆盖范围 <strong>[1, 8 + 5 + 10)</strong> ，最</p>
+<p>后覆盖范围能够越过20.</p>
+<h3 id="code"><a href="#code" class="headerlink" title="code"></a>code</h3><div class="hljs"><pre><code class="hljs java">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">minPatches</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] nums, <span class="hljs-keyword">int</span> n)</span> </span>&#123;
+
+    <span class="hljs-keyword">int</span> len = nums.length;
+
+    <span class="hljs-comment">// 从1开始验证覆盖范围， 此时可覆盖的范围是[1,1)</span>
+    <span class="hljs-comment">// boundary表示连续覆盖范围的右边界</span>
+    <span class="hljs-keyword">long</span> boundary = <span class="hljs-number">1</span>; 
+
+    <span class="hljs-comment">// count 表示 添加了几个数字</span>
+    <span class="hljs-comment">// i表示目前遍历到的nums中的index</span>
+    <span class="hljs-keyword">int</span> index = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>; 
+
+    <span class="hljs-comment">// 若目前还没连续覆盖到n，则继续循环</span>
+    <span class="hljs-keyword">while</span> (boundary &lt;= n)&#123;
+        <span class="hljs-comment">// 原本覆盖范围为[1,add)，如果当前加入nums[i]到[i,boundary)中</span>
+        <span class="hljs-comment">// 那么此时可构成的连续覆盖范围就是[1,boundary + nums[i])</span>
+        <span class="hljs-keyword">if</span> ( (index &lt; len ) &amp;&amp; ( nums[index] &lt;= boundary ))&#123;
+            boundary += nums[index];
+            index++;
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            <span class="hljs-comment">// 否则，那么目前由数组中原本的数字没法继续扩大为下一级别的连续范围，</span>
+            <span class="hljs-comment">// 则向数组中加入此时的右边界add，可覆盖[1,2boundary)范围  </span>
+            boundary = boundary &lt;&lt; <span class="hljs-number">1</span>;
+            count++;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">return</span> count;
+
+&#125;</code></pre></div>
+
+
+
+<p class="note note-danger">boundary应该小于等于n，该程序中边界为开区间 </p>
             </div>
             <hr>
             <div>
@@ -354,18 +484,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/12/25/%E5%89%91%E6%8C%87offer/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">剑指offer</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/12/14/Nowcoder%20Community%20Code%20Review/">
-                        <span class="hidden-mobile">Nowcoder Community Code Review</span>
+                      <a href="/2020/12/25/%E5%89%91%E6%8C%87offer/">
+                        <span class="hidden-mobile">剑指offer</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
