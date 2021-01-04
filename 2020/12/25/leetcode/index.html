@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.4k 字
+      3.3k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      33
+      45
        分钟
     </span>
   
@@ -456,8 +456,79 @@ dp[i][j][<span class="hljs-number">1</span>] = max(dp[i-<span class="hljs-number
 
 <p class="note note-danger">boundary应该小于等于n，该程序中边界为开区间 </p>
 
+<h2 id="435-无重叠区间"><a href="#435-无重叠区间" class="headerlink" title="435. 无重叠区间"></a>435. 无重叠区间</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/non-overlapping-intervals/">435. 无重叠区间</a></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210104083302.png" srcset="/img/loading.gif" alt="question"></p>
+<img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210104084026.png" srcset="/img/loading.gif" alt="绿色为不相交" style="zoom:50%;" />
+
+<p>绿色区间就为不相交，我们需要先算出不相交的个数。</p>
+<p>解题思路：</p>
+<p>按照尾端排序（nlogn），排好序后对区间遍历，如果下一个start大于当前end，加一，求出不相交个数</p>
+<p>总个数 - 不相交个数 就为需要 <strong>移除</strong> 的结果。</p>
+<p>注意：初始一定会有一个区间不相交，初始count为1。</p>
+<p>Code:</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">eraseOverlapIntervals</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[][] intervals)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> intervals.length - findMaxIntervals(intervals);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findMaxIntervals</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[][] intervals)</span></span>&#123;
+        <span class="hljs-keyword">if</span> (intervals.length == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        <span class="hljs-comment">// 按 end 升序排序</span>
+        Arrays.sort(intervals, <span class="hljs-keyword">new</span> Comparator&lt;<span class="hljs-keyword">int</span>[]&gt;() &#123;
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compare</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] a, <span class="hljs-keyword">int</span>[] b)</span> </span>&#123;
+                <span class="hljs-keyword">return</span> a[<span class="hljs-number">1</span>] - b[<span class="hljs-number">1</span>];
+            &#125;
+        &#125;);
+        
+        <span class="hljs-comment">// 找不相交的最大区间数目</span>
+        <span class="hljs-comment">// 一开始定在第一个 ，如果下一个的左区间大于等于第一个的右区间</span>
+        <span class="hljs-comment">// 就不会相交</span>
+        <span class="hljs-keyword">int</span> count = <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">int</span> end = intervals[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span>[] interval : intervals)&#123;
+            <span class="hljs-keyword">int</span> start = interval[<span class="hljs-number">0</span>];
+            <span class="hljs-keyword">if</span> (start &gt;= end)&#123;
+                count ++;
+                end = interval[<span class="hljs-number">1</span>];
+            &#125;
+        &#125;
+        <span class="hljs-keyword">return</span> count;
+    &#125;</code></pre></div>
+
+<p class="note note-primary">下题为上题同一个模板的延展题</p>
 
 
+
+<h2 id="452-用最少数量的箭引爆气球"><a href="#452-用最少数量的箭引爆气球" class="headerlink" title="452. 用最少数量的箭引爆气球"></a>452. 用最少数量的箭引爆气球</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/minimum-number-of-arrows-to-burst-balloons/">452. 用最少数量的箭引爆气球</a></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210104085016.png" srcset="/img/loading.gif" alt="question"></p>
+<p>同一个模板套入：</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findMinArrowShots</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[][] points)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> findMaxIntervals(points);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">findMaxIntervals</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[][] intervals)</span></span>&#123;
+        <span class="hljs-keyword">if</span> (intervals.length == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        <span class="hljs-comment">// 按 end 升序排序</span>
+        Arrays.sort(intervals, (p1, p2) -&gt; p1[<span class="hljs-number">1</span>] &lt; p2[<span class="hljs-number">1</span>] ? -<span class="hljs-number">1</span> : <span class="hljs-number">1</span>);
+
+        <span class="hljs-comment">// 找不相交的最大区间数目</span>
+        <span class="hljs-comment">// 一开始定在第一个 ，如果下一个的左区间大于等于第一个的右区间</span>
+        <span class="hljs-comment">// 就不会相交</span>
+        <span class="hljs-keyword">int</span> count = <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">int</span> end = intervals[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span>[] interval : intervals)&#123;
+            <span class="hljs-keyword">int</span> start = interval[<span class="hljs-number">0</span>];
+            <span class="hljs-keyword">if</span> (start &gt; end)&#123;
+                count ++;
+                end = interval[<span class="hljs-number">1</span>];
+            &#125;
+        &#125;
+        <span class="hljs-keyword">return</span> count;
+    &#125;</code></pre></div>
+
+<p class="note note-danger">比较器必须写全</p>
+
+<p>或者：</p>
+<p>最近新增了Test Case， <code>[[-2147483646,-2147483645],[2147483646,2147483647]]</code> 就过不了了，这是因为差值过大而产生溢出。sort的时候不要用<code>a-b</code>来比较，要用<code>Integer.compare(a, b)</code>!!!</p>
 <h1 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h1><h2 id="1046-最后一块石头的重量"><a href="#1046-最后一块石头的重量" class="headerlink" title="1046. 最后一块石头的重量"></a>1046. 最后一块石头的重量</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/last-stone-weight/">1046. 最后一块石头的重量</a></p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20201230114619.png" srcset="/img/loading.gif" alt="question"></p>
 <p>方法很简单，只需要创建一个大根堆，每次取出两个数a，b，第一次取出的a一定大于等于b</p>
@@ -481,6 +552,67 @@ dp[i][j][<span class="hljs-number">1</span>] = max(dp[i-<span class="hljs-number
         <span class="hljs-keyword">return</span> pq.isEmpty() ? <span class="hljs-number">0</span> : pq.poll();
     &#125;
 &#125;</code></pre></div>
+
+
+<h1 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h1><h2 id="316-去除重复字母"><a href="#316-去除重复字母" class="headerlink" title="316. 去除重复字母"></a>316. 去除重复字母</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/remove-duplicate-letters/">316. 去除重复字母</a></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210104080806.png" srcset="/img/loading.gif" alt="question"></p>
+<h3 id="栈解决思路"><a href="#栈解决思路" class="headerlink" title="栈解决思路"></a>栈解决思路</h3><p>例子：bcabc，预期结果为abc</p>
+<p>我们准备一个数组，记录每个字符 <strong>最后一次</strong> 出现的位置，准备一个 <strong>栈</strong>， 准备一个数组 <strong>记录栈中是否存在该字符</strong> </p>
+<p>每次都放入栈，放入前对栈遍历，记录当前来到字符为cur，如果栈中peek大于cur并且peek值 <strong>后续还会出现</strong> </p>
+<p>那就弹出。</p>
+<p>1⃣️ 来到b，加入栈，栈为b。</p>
+<p>2⃣️ 来到c，b小于c，加入栈，栈为bc。</p>
+<p>3⃣️ 来到a，c大于a，后续还有c，弹出，栈为b，继续到b，b大于a，后续还有b，弹出，把a压入栈，栈为a。</p>
+<p>4⃣️ 来到b、c，压入栈，全部弹出逆序。</p>
+<p>Code:</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">removeDuplicateLetters</span><span class="hljs-params">(String s)</span></span>&#123;
+        <span class="hljs-keyword">int</span> len = s.length();
+        <span class="hljs-keyword">if</span> (len &lt; <span class="hljs-number">2</span>)&#123;
+            <span class="hljs-keyword">return</span> s;
+        &#125;
+
+        <span class="hljs-comment">// abca</span>
+        <span class="hljs-keyword">char</span>[] chars = s.toCharArray();
+        <span class="hljs-keyword">int</span>[] place = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[<span class="hljs-number">26</span>]; <span class="hljs-comment">// 记录chars中字符出现的最后一次位置</span>
+        <span class="hljs-keyword">boolean</span>[] visited = <span class="hljs-keyword">new</span> <span class="hljs-keyword">boolean</span>[<span class="hljs-number">26</span>]; <span class="hljs-comment">// 记录chars中字符是否保存在栈中</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; len; i++)&#123;
+            <span class="hljs-comment">// place[ a - a] = 0;</span>
+            place[chars[i] - <span class="hljs-string">&#x27;a&#x27;</span>] = i;
+            <span class="hljs-comment">// ....</span>
+            <span class="hljs-comment">// place [ a - a] = 4</span>
+        &#125;
+
+        Stack stack = <span class="hljs-keyword">new</span> Stack();
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; len; i++)&#123;
+
+            <span class="hljs-keyword">char</span> currentChar = chars[i];
+            <span class="hljs-keyword">if</span> (visited[currentChar - <span class="hljs-string">&#x27;a&#x27;</span>])&#123;
+                <span class="hljs-keyword">continue</span>;
+            &#125;
+            <span class="hljs-comment">// 弹出条件:</span>
+            <span class="hljs-comment">// 1.栈不为空</span>
+            <span class="hljs-comment">// 2.栈顶元素字典序 大于 当前元素</span>
+            <span class="hljs-comment">// 3.栈顶元素 在后序会再次出现</span>
+            <span class="hljs-keyword">while</span> (!stack.isEmpty() &amp;&amp; (<span class="hljs-keyword">char</span>)stack.peek() &gt; currentChar &amp;&amp; place[(<span class="hljs-keyword">char</span>)stack.peek()  - <span class="hljs-string">&#x27;a&#x27;</span>] &gt; i)&#123;
+                visited[(<span class="hljs-keyword">char</span>)stack.pop() - <span class="hljs-string">&#x27;a&#x27;</span>] = <span class="hljs-keyword">false</span>;
+            &#125;
+            stack.push(currentChar);
+            visited[currentChar - <span class="hljs-string">&#x27;a&#x27;</span>] = <span class="hljs-keyword">true</span>;
+
+        &#125;
+        StringBuilder sb = <span class="hljs-keyword">new</span> StringBuilder();
+        <span class="hljs-keyword">int</span> size = stack.size();
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; size; i++) &#123;
+            sb.append(stack.pop());
+        &#125;
+        <span class="hljs-keyword">return</span> sb.reverse().toString();
+    &#125;</code></pre></div>
+
+
+
+
+
+
             </div>
             <hr>
             <div>
@@ -503,12 +635,18 @@ dp[i][j][<span class="hljs-number">1</span>] = max(dp[i-<span class="hljs-number
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2020/12/25/%E5%89%91%E6%8C%87offer/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">剑指offer</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/12/25/%E5%89%91%E6%8C%87offer/">
-                        <span class="hidden-mobile">剑指offer</span>
+                      <a href="/2020/12/14/Nowcoder%20Community%20Code%20Review/">
+                        <span class="hidden-mobile">Nowcoder Community Code Review</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
