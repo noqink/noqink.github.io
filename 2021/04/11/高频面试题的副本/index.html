@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      9.4k 字
+      14.1k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      112
+      170
        分钟
     </span>
   
@@ -1102,6 +1102,535 @@ Object[] newElements = Arrays.copyOf(elements, len + <span class="hljs-number">1
 <span class="hljs-comment">*/</span>
 Lock lock = <span class="hljs-keyword">new</span> ReentrantLock(<span class="hljs-keyword">true</span>);</code></pre></div>
 
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210412192606.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210412192713.png" srcset="/img/loading.gif"></p>
+<h3 id="两者区别"><a href="#两者区别" class="headerlink" title="两者区别"></a>两者区别</h3><p><strong>公平锁</strong>：就是很公平，在并发环境中，每个线程在获取锁时会先查看此锁维护的等待队列，如果为空，或者当前线程是等待队列中的第一个，就占用锁，否者就会加入到等待队列中，以后按照 <strong>FIFO</strong> 的规则从队列中取到自己</p>
+<p><strong>非公平锁：</strong> 非公平锁比较粗鲁，上来就直接尝试占有锁，如果尝试失败，就 <strong>再采用类似公平锁</strong> 那种方式。</p>
+<h3 id="题外"><a href="#题外" class="headerlink" title="题外"></a>题外</h3><p>Java ReenttrantLock通过构造函数指定该锁是否公平，默认是非公平锁，因为非公平锁的优点在于 <strong>吞吐量</strong> 比公平锁大；</p>
+<p><code>对于synchronized而言，也是一种非公平锁</code></p>
+<h2 id="可重入锁-递归锁"><a href="#可重入锁-递归锁" class="headerlink" title="可重入锁(递归锁)"></a>可重入锁(递归锁)</h2><h3 id="概念-2"><a href="#概念-2" class="headerlink" title="概念"></a>概念</h3><p>可重入锁就是 <strong>递归锁</strong> </p>
+<p>指的是同一线程外层函数获得锁之后，内层递归函数仍然能获取到该锁的代码，在同一线程在外层方法获取锁的时候，在进入内层方法会自动获取锁</p>
+<p>也就是说：<code>线程可以进入任何一个它已经拥有的锁所同步的代码块</code></p>
+<p> <strong>ReentrantLock / Synchronized</strong> 就是一个典型的可重入锁</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>可重入锁就是，在一个method1方法中加入一把锁，方法2也加锁了，那么他们拥有的是 <strong>同一把锁</strong> </p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">method1</span><span class="hljs-params">()</span> </span>&#123; <span class="hljs-comment">// 大门锁</span>
+  method2();<span class="hljs-comment">// 大门锁和小门锁变成一把锁</span>
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">method2</span><span class="hljs-params">()</span> </span>&#123;<span class="hljs-comment">// 小门锁</span>
+  
+&#125;</code></pre></div>
+
+<p>也就是说我们只需要进入method1后，那么它也能直接进入method2方法，因为他们所拥有的锁，是同一把。</p>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>可重入锁的最大作用就是 <strong>避免死锁</strong> </p>
+<h3 id="可重入锁验证"><a href="#可重入锁验证" class="headerlink" title="可重入锁验证"></a>可重入锁验证</h3><h4 id="证明Synchronized"><a href="#证明Synchronized" class="headerlink" title="证明Synchronized"></a>证明Synchronized</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 资源类</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Phone</span> </span>&#123;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 发送短信</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> Exception</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sendSMS</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception</span>&#123;
+        System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t invoked sendSMS()&quot;</span>);
+
+        <span class="hljs-comment">// 在同步方法中，调用另外一个同步方法</span>
+        sendEmail();
+    &#125;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 发邮件</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> Exception</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sendEmail</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception</span>&#123;
+        System.out.println(Thread.currentThread().getId() + <span class="hljs-string">&quot;\t invoked sendEmail()&quot;</span>);
+    &#125;
+&#125;
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReenterLockDemo</span> </span>&#123;
+
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        Phone phone = <span class="hljs-keyword">new</span> Phone();
+
+        <span class="hljs-comment">// 两个线程操作资源列</span>
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            <span class="hljs-keyword">try</span> &#123;
+                phone.sendSMS();
+            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;, <span class="hljs-string">&quot;t1&quot;</span>).start();
+
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            <span class="hljs-keyword">try</span> &#123;
+                phone.sendSMS();
+            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;, <span class="hljs-string">&quot;t2&quot;</span>).start();
+    &#125;
+&#125;</code></pre></div>
+
+<p>在这里，我们编写了一个资源类phone，拥有两个加了synchronized的同步方法，分别是sendSMS 和 sendEmail，我们在sendSMS方法中，调用sendEmail。最后在主线程同时开启了两个线程进行测试，最后得到的结果为：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210413105219.png" srcset="/img/loading.gif"></p>
+<p>这就说明当 t1 线程进入sendSMS的时候，拥有了一把锁，同时t2线程无法进入，直到t1线程拿着锁，执行了sendEmail 方法后，才释放锁，这样t2才能够进入</p>
+<div class="hljs"><pre><code class="hljs javascript">t1   invoked sendSMS()      t1线程在外层方法获取锁的时候
+t1   invoked sendEmail()    t1在进入内层方法会自动获取锁
+
+t2   invoked sendSMS()      t2线程在外层方法获取锁的时候
+t2   invoked sendEmail()    t2在进入内层方法会自动获取锁</code></pre></div>
+
+
+
+<h4 id="证明ReentrantLock"><a href="#证明ReentrantLock" class="headerlink" title="证明ReentrantLock"></a>证明ReentrantLock</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 资源类</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Phone</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Runnable</span></span>&#123;
+
+    Lock lock = <span class="hljs-keyword">new</span> ReentrantLock();
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * set进去的时候，就加锁，调用set方法的时候，能否访问另外一个加锁的set方法</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">getLock</span><span class="hljs-params">()</span> </span>&#123;
+        lock.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t get Lock&quot;</span>);
+            setLock();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            lock.unlock();
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setLock</span><span class="hljs-params">()</span> </span>&#123;
+        lock.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t set Lock&quot;</span>);
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            lock.unlock();
+        &#125;
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
+        getLock();
+    &#125;
+&#125;
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReenterLockDemo</span> </span>&#123;
+
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        Phone phone = <span class="hljs-keyword">new</span> Phone();
+
+        <span class="hljs-comment">/**</span>
+<span class="hljs-comment">         * 因为Phone实现了Runnable接口</span>
+<span class="hljs-comment">         */</span>
+        Thread t3 = <span class="hljs-keyword">new</span> Thread(phone, <span class="hljs-string">&quot;t3&quot;</span>);
+        Thread t4 = <span class="hljs-keyword">new</span> Thread(phone, <span class="hljs-string">&quot;t4&quot;</span>);
+        t3.start();
+        t4.start();
+    &#125;
+&#125;</code></pre></div>
+
+<p>我们使用ReentrantLock进行验证，首先资源类实现了Runnable接口，重写Run方法，里面调用get方法，get方法在进入的时候，就加了锁</p>
+<p>然后在方法里面，又调用另外一个加了锁的setLock方法</p>
+<p>最后输出结果我们能发现，结果和加synchronized方法是一致的，都是在 <strong>外层的方法获取锁之后，线程能够直接进入里层</strong> </p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210413105930.png" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>如果加两把锁</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414075812.png" srcset="/img/loading.gif"></p>
+<p>Lock, unlock只要配对就行了；</p>
+<p>最后得到的结果也是一样的，因为里面不管有几把锁，其它他们都是同一把锁，也就是说用同一个钥匙都能够打开</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414075933.png" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>如果缺一个unlock</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414080126.png" srcset="/img/loading.gif"></p>
+<p>也就是说程序直接卡死，线程不能出来，也就说明我们申请几把锁，最后需要解除几把锁</p>
+<p> <strong>当我们只加一把锁，但是用两把锁来解锁的时候，又会出现什么情况呢？</strong> </p>
+<p>这个时候，运行程序会直接报错</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414080330.png" srcset="/img/loading.gif"></p>
+<h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p>自旋锁：spinlock，是指尝试获取锁的线程不会立即阻塞，而是采用 <strong>循环</strong> 的方式去尝试 <strong>获取锁</strong> ，这样的好处是 <strong>减少线程上下文切换的消耗</strong> ，缺点是 <strong>循环会消耗CPU</strong> </p>
+<p>原来提到的CAS，底层使用的就是自旋，自旋就是多次尝试，多次访问， <strong>不会阻塞</strong> 的状态就是自旋。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414081207.png" srcset="/img/loading.gif"></p>
+<h3 id="手写自旋锁"><a href="#手写自旋锁" class="headerlink" title="手写自旋锁"></a>手写自旋锁</h3><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Code10_SpinLockDemo</span> </span>&#123;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        SpinLockDemo lock = <span class="hljs-keyword">new</span> SpinLockDemo();
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            lock.myLock();
+            <span class="hljs-comment">// t1等待5s</span>
+            <span class="hljs-keyword">try</span> &#123;
+                TimeUnit.SECONDS.sleep(<span class="hljs-number">5</span>);
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+            lock.unLock();
+        &#125;, <span class="hljs-string">&quot;t1&quot;</span>).start();
+
+        <span class="hljs-keyword">try</span> &#123;
+            TimeUnit.SECONDS.sleep(<span class="hljs-number">1</span>);
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            lock.myLock();
+            lock.unLock();
+        &#125;, <span class="hljs-string">&quot;t2&quot;</span>).start();
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SpinLockDemo</span></span>&#123;
+
+    <span class="hljs-comment">// 持有锁的线程，null表示锁未被线程持有</span>
+
+    AtomicReference&lt;Thread&gt; atomicReference = <span class="hljs-keyword">new</span> AtomicReference&lt;&gt;();
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">myLock</span><span class="hljs-params">()</span></span>&#123;
+        Thread thread = Thread.currentThread();
+        System.out.println(thread.getName() + <span class="hljs-string">&quot;: come in!&quot;</span>);
+        <span class="hljs-keyword">while</span> (!atomicReference.compareAndSet(<span class="hljs-keyword">null</span>, thread))&#123;
+            <span class="hljs-comment">//当atomicReference为null的时候compareAndSet返回true，反之为false</span>
+            <span class="hljs-comment">//通过循环不断的自旋判断锁是否被其他线程持有</span>
+            System.out.println(thread.getName() + <span class="hljs-string">&quot; 自旋....&quot;</span>);
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">unLock</span><span class="hljs-params">()</span></span>&#123;
+        Thread thread = Thread.currentThread();
+        <span class="hljs-comment">// 解锁可以追加判断是否为当前线程 单CAS可以预判断期待值</span>
+        atomicReference.compareAndSet(thread, <span class="hljs-keyword">null</span>);
+        System.out.println(thread.getName() + <span class="hljs-string">&quot;: destory!&quot;</span>);
+    &#125;
+&#125;</code></pre></div>
+
+<p>输出结果：</p>
+<p>一开始：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414084139.png" srcset="/img/loading.gif"></p>
+<p>t1进去占用线程，t2也进去，但循环判断，开始自旋</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414084243.png" srcset="/img/loading.gif"></p>
+<p>然后1秒后，t2线程启动，发现锁被t1占有，所有不断的执行 compareAndSet方法，来进行比较，直到t1释放锁后，也就是5秒后，t2成功获取到锁，然后释放</p>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><p>优点：循环比较获取直到成功为止， <strong>没有</strong> 类似于wait的 <strong>阻塞</strong> </p>
+<p>缺点：当不断自旋的线程越来越多的时候，会因为执行while循环不断的消耗CPU资源</p>
+<h2 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h2><h3 id="概念-3"><a href="#概念-3" class="headerlink" title="概念"></a>概念</h3><p> <strong>独占锁</strong> ：指该锁一次只能被 <strong>一个线程</strong> 所持有。对ReentrantLock和Synchronized而言都是独占锁</p>
+<p> <strong>共享锁</strong> ：指该锁可以被 <strong>多个线程锁持有</strong> </p>
+<p>对ReentrantReadWriteLock其 <strong>读锁</strong> 是共享，其 <strong>写锁</strong> 是独占</p>
+<p>写的时候只能一个人写，但是读的时候，可以多个人同时读</p>
+<h3 id="为什么会有写锁和读锁"><a href="#为什么会有写锁和读锁" class="headerlink" title="为什么会有写锁和读锁"></a>为什么会有写锁和读锁</h3><p>原来我们使用ReentrantLock创建锁的时候，是独占锁，也就是说一次只能一个线程访问，但是有一个读写分离场景，读的时候想同时进行，因此原来独占锁的并发性就没这么好了，因为 <strong>读锁并不会造成数据不一致</strong> 的问题，因此可以多个人 <strong>共享读</strong> </p>
+<div class="hljs"><pre><code class="hljs plain">多个线程 同时读一个资源类没有任何问题，所以为了满足并发量，读取共享资源应该可以同时进行，但是如果一个线程想去写共享资源，就不应该再有其它线程可以对该资源进行读或写</code></pre></div>
+
+<p>读-读：能共存</p>
+<p>读-写：不能共存</p>
+<p>写-写：不能共存</p>
+<h3 id="手写代码"><a href="#手写代码" class="headerlink" title="手写代码"></a>手写代码</h3><p>实现一个 <strong>读写缓存的操作</strong> ，假设开始 <strong>没有加锁</strong> 的时候，会出现什么情况</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 读写锁</span>
+<span class="hljs-comment"> * 多个线程 同时读一个资源类没有任何问题，所以为了满足并发量，读取共享资源应该可以同时进行</span>
+<span class="hljs-comment"> * 但是，如果一个线程想去写共享资源，就不应该再有其它线程可以对该资源进行读或写</span>
+<span class="hljs-comment"> *</span>
+<span class="hljs-comment"> */</span>
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 资源类</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyCache</span> </span>&#123;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+    <span class="hljs-comment">// private Lock lock = null;</span>
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 定义写操作</span>
+<span class="hljs-comment">     * 满足：原子 + 独占</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">put</span><span class="hljs-params">(String key, Object value)</span> </span>&#123;
+        System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 正在写入：&quot;</span> + key);
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-comment">// 模拟网络拥堵，延迟0.3秒</span>
+            TimeUnit.MILLISECONDS.sleep(<span class="hljs-number">300</span>);
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+        map.put(key, value);
+        System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 写入完成&quot;</span>);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">get</span><span class="hljs-params">(String key)</span> </span>&#123;
+        System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 正在读取:&quot;</span>);
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-comment">// 模拟网络拥堵，延迟0.3秒</span>
+            TimeUnit.MILLISECONDS.sleep(<span class="hljs-number">300</span>);
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+        Object value = map.get(key);
+        System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 读取完成：&quot;</span> + value);
+    &#125;
+
+
+&#125;
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Code11_ReadWriteLockDemo</span> </span>&#123;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+
+        MyCache myCache = <span class="hljs-keyword">new</span> MyCache();
+        <span class="hljs-comment">// 线程操作资源类，5个线程写</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
+            <span class="hljs-comment">// lambda表达式内部必须是final</span>
+            <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> tempInt = i;
+            <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+                myCache.put(tempInt + <span class="hljs-string">&quot;&quot;</span>, tempInt +  <span class="hljs-string">&quot;&quot;</span>);
+            &#125;, String.valueOf(i)).start();
+        &#125;
+        <span class="hljs-comment">// 线程操作资源类， 5个线程读</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
+            <span class="hljs-comment">// lambda表达式内部必须是final</span>
+            <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> tempInt = i;
+            <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+                myCache.get(tempInt + <span class="hljs-string">&quot;&quot;</span>);
+            &#125;, String.valueOf(i)).start();
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+<p>没有加锁的情况下：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414160436.png" srcset="/img/loading.gif"></p>
+<p>在写入的时候，写操作都没完成，其它线程就打断了，这就造成了，还没写完，其它线程又开始读，这样就造成数据不一致</p>
+<h3 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h3><p>上面的代码是 <strong>没有加锁</strong> 的，这样就会造成线程在进行写入操作的时候，被其它线程频繁打断，从而不具备原子性，这个时候，我们就需要用到 <strong>读写锁</strong> 来解决了</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 资源类</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyNewCache</span> </span>&#123;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 缓存中的东西，必须保持可见性，因此使用volatile修饰</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 创建一个读写锁</span>
+<span class="hljs-comment">     * 它是一个读写融为一体的锁，在使用的时候，需要转换</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-keyword">private</span> ReentrantReadWriteLock rwLock = <span class="hljs-keyword">new</span> ReentrantReadWriteLock();
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 定义写操作</span>
+<span class="hljs-comment">     * 满足：原子 + 独占</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@param</span> key</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@param</span> value</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">put</span><span class="hljs-params">(String key, Object value)</span> </span>&#123;
+
+        <span class="hljs-comment">// 创建一个写锁</span>
+        rwLock.writeLock().lock();
+
+        <span class="hljs-keyword">try</span> &#123;
+
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 正在写入：&quot;</span> + key);
+
+            <span class="hljs-keyword">try</span> &#123;
+                <span class="hljs-comment">// 模拟网络拥堵，延迟0.3秒</span>
+                TimeUnit.MILLISECONDS.sleep(<span class="hljs-number">300</span>);
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+
+            map.put(key, value);
+
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 写入完成&quot;</span>);
+
+        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            <span class="hljs-comment">// 写锁 释放</span>
+            rwLock.writeLock().unlock();
+        &#125;
+    &#125;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 获取</span>
+<span class="hljs-comment">     * <span class="hljs-doctag">@param</span> key</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">get</span><span class="hljs-params">(String key)</span> </span>&#123;
+
+        <span class="hljs-comment">// 读锁</span>
+        rwLock.readLock().lock();
+        <span class="hljs-keyword">try</span> &#123;
+
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 正在读取:&quot;</span>);
+
+            <span class="hljs-keyword">try</span> &#123;
+                <span class="hljs-comment">// 模拟网络拥堵，延迟0.3秒</span>
+                TimeUnit.MILLISECONDS.sleep(<span class="hljs-number">300</span>);
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+
+            Object value = map.get(key);
+
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 读取完成：&quot;</span> + value);
+
+        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            <span class="hljs-comment">// 读锁释放</span>
+            rwLock.readLock().unlock();
+        &#125;
+    &#125;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 清空缓存</span>
+<span class="hljs-comment">     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">clean</span><span class="hljs-params">()</span> </span>&#123;
+        map.clear();
+    &#125;
+    
+&#125;</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414160844.png" srcset="/img/loading.gif"></p>
+<p>从运行结果我们可以看出，写入操作是 <strong>一个一个线程</strong> 进行执行的，并且中间不会被打断，而读操作的时候，是 <strong>同时5个线程进入</strong> ，然后 <strong>并发读</strong> 取操作</p>
+<h1 id="JUC一些包"><a href="#JUC一些包" class="headerlink" title="JUC一些包"></a>JUC一些包</h1><h2 id="CountDownLatch"><a href="#CountDownLatch" class="headerlink" title="CountDownLatch"></a>CountDownLatch</h2><h3 id="概念-4"><a href="#概念-4" class="headerlink" title="概念"></a>概念</h3><p>让一些 <strong>线程阻塞</strong> 直到另一些线程完成一系列操作才被 <strong>唤醒</strong> </p>
+<p>CountDownLatch主要有 <strong>两个方法</strong> ，当一个或多个线程调用await方法时，调用线程就会被阻塞。其它线程调用CountDown方法会将计数器减1（调用CountDown方法的线程不会被阻塞），当计数器的值变成零时，因调用await方法被阻塞的线程会被唤醒，继续执行</p>
+<h3 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h3><p>现在有这样一个场景，假设一个自习室里有7个人，其中有一个是班长，班长的主要职责就是在其它6个同学走了后，关灯，锁教室门，然后走人，因此班长是需要最后一个走的，那么有什么方法能够控制班长这个线程是最后一个执行，而其它线程是随机执行的</p>
+<h3 id="解决方案-2"><a href="#解决方案-2" class="headerlink" title="解决方案"></a>解决方案</h3><p>这个时候就用到了CountDownLatch，计数器了。我们一共创建 <strong>6个线程</strong> ，然后 <strong>计数器</strong> 的值也设置成6</p>
+<p>然后每次学生线程执行完，就让计数器的值减1</p>
+<p>最后我们需要通过CountDownLatch的await方法来控制班长主线程的执行，这里 countDownLatch.await()可以想成是一道墙，只有当计数器的值为0的时候，墙才会消失，主线程才能继续往下执行</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+
+    <span class="hljs-comment">// 计数器</span>
+    CountDownLatch countDownLatch = <span class="hljs-keyword">new</span> CountDownLatch(<span class="hljs-number">6</span>);
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= <span class="hljs-number">6</span>; i++) &#123;
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 上完自习，离开教室&quot;</span>);
+            countDownLatch.countDown();
+        &#125;, String.valueOf(i)).start();
+    &#125;
+
+    countDownLatch.await();
+
+    System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 班长最后关门&quot;</span>);
+&#125;</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414164311.png" srcset="/img/loading.gif"></p>
+<p>引入CountDownLatch后的执行结果，我们能够控制住main方法的执行，这样能够保证前提任务的执行</p>
+<h3 id="枚举优化拓展"><a href="#枚举优化拓展" class="headerlink" title="枚举优化拓展"></a>枚举优化拓展</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414165748.png" srcset="/img/loading.gif"></p>
+<h2 id="CyclicBarrier"><a href="#CyclicBarrier" class="headerlink" title="CyclicBarrier"></a>CyclicBarrier</h2><h3 id="概念-5"><a href="#概念-5" class="headerlink" title="概念"></a>概念</h3><p>和CountDownLatch相反，需要集齐七颗龙珠，召唤神龙。也就是 <strong>做加法</strong> ，开始是0，加到某个值的时候就执行</p>
+<p>CyclicBarrier的字面意思就是可循环（cyclic）使用的屏障（Barrier）。它要求做的事情是，让一组线程到达一个屏障（也可以叫同步点）时被阻塞，直到最后一个线程到达屏障时，屏障才会开门，所有被屏障拦截的线程才会继续干活，线程进入屏障通过CyclicBarrier的await方法</p>
+<h3 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h3><p>集齐7个龙珠，召唤神龙的Demo，我们需要首先创建CyclicBarrier（ <strong>第二个参数为被阻塞的线程</strong> ）</p>
+<p>然后同时编写七个线程，进行龙珠收集，但一个线程收集到了的时候，我们需要让他执行await方法，等待到7个线程全部执行完毕后，我们就执行原来定义好的方法</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 定义一个循环屏障，参数1：需要累加的值，参数2 需要执行的方法</span>
+<span class="hljs-comment">     */</span>
+    CyclicBarrier cyclicBarrier = <span class="hljs-keyword">new</span> CyclicBarrier(<span class="hljs-number">7</span>, () -&gt; &#123;
+        System.out.println(<span class="hljs-string">&quot;召唤神龙&quot;</span>);
+    &#125;);
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">7</span>; i++) &#123;
+        <span class="hljs-keyword">final</span> Integer tempInt = i;
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 收集到 第&quot;</span> + tempInt + <span class="hljs-string">&quot;颗龙珠&quot;</span>);
+
+            <span class="hljs-keyword">try</span> &#123;
+                <span class="hljs-comment">// 先到的被阻塞，等全部线程完成后，才能执行方法</span>
+                cyclicBarrier.await();
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125; <span class="hljs-keyword">catch</span> (BrokenBarrierException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;, String.valueOf(i)).start();
+    &#125;
+&#125;</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414165944.png" srcset="/img/loading.gif"></p>
+<h2 id="Semaphore：信号量"><a href="#Semaphore：信号量" class="headerlink" title="Semaphore：信号量"></a>Semaphore：信号量</h2><h3 id="概念-6"><a href="#概念-6" class="headerlink" title="概念"></a>概念</h3><p>信号量主要用于两个目的</p>
+<ul>
+<li>一个是用于 <strong>共享资源</strong> 的 <strong>互斥</strong> 使用</li>
+<li>另一个用于 <strong>并发线程数</strong> 的控制</li>
+</ul>
+<h3 id="code"><a href="#code" class="headerlink" title="code"></a>code</h3><p>我们模拟一个抢车位的场景，假设一共有 <strong>6个车，3个停车位</strong> </p>
+<p>那么我们首先需要定义信号量为3，也就是3个停车位</p>
+<p>然后我们模拟6辆车同时并发抢占停车位，但第一个车辆抢占到停车位后， <strong>信号量需要减1</strong> </p>
+<p>同时车辆假设需要等待3秒后， <strong>释放信号量</strong> </p>
+<p>最后车辆离开，释放信号量</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+
+    <span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * 初始化一个信号量为3，默认是false 非公平锁， 模拟3个停车位</span>
+<span class="hljs-comment">     */</span>
+    Semaphore semaphore = <span class="hljs-keyword">new</span> Semaphore(<span class="hljs-number">3</span>, <span class="hljs-keyword">false</span>);
+
+    <span class="hljs-comment">// 模拟6部车</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">6</span>; i++) &#123;
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            <span class="hljs-keyword">try</span> &#123;
+                <span class="hljs-comment">// 代表一辆车，已经占用了该车位</span>
+                semaphore.acquire(); <span class="hljs-comment">// 抢占</span>
+
+                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 抢到车位&quot;</span>);
+
+                <span class="hljs-comment">// 每个车停3秒</span>
+                <span class="hljs-keyword">try</span> &#123;
+                    TimeUnit.SECONDS.sleep(<span class="hljs-number">3</span>);
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+
+                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t 离开车位&quot;</span>);
+
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125; <span class="hljs-keyword">finally</span> &#123;
+                <span class="hljs-comment">// 释放停车位</span>
+                semaphore.release();
+            &#125;
+        &#125;, String.valueOf(i)).start();
+    &#125;
+&#125;</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414170931.png" srcset="/img/loading.gif"></p>
+<h1 id="阻塞队列"><a href="#阻塞队列" class="headerlink" title="阻塞队列"></a>阻塞队列</h1><h2 id="概念-7"><a href="#概念-7" class="headerlink" title="概念"></a>概念</h2><h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>队列就可以想成是一个数组，从一头进入，一头出去，排队买饭</p>
+<h3 id="阻塞队列-1"><a href="#阻塞队列-1" class="headerlink" title="阻塞队列"></a>阻塞队列</h3><p>BlockingQueue 阻塞队列，排队拥堵，首先它是一个队列，而一个阻塞队列在数据结构中所起的作用大致如下图所示：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210414171141.png" srcset="/img/loading.gif"></p>
+<p>线程1往阻塞队列中 <strong>添加元素</strong> ，而线程2从阻塞队列中 <strong>移除元素</strong> </p>
+<ul>
+<li><code>当阻塞队列是空时，从队列中获取元素的操作将会被阻塞</code><ul>
+<li>当蛋糕店的柜子空的时候， <strong>无法</strong> 从柜子里面获取蛋糕</li>
+</ul>
+</li>
+<li><code>当阻塞队列是满时，从队列中添加元素的操作将会被阻塞</code><ul>
+<li>当蛋糕店的柜子满的时候， <strong>无法</strong> 继续向柜子里面添加蛋糕了</li>
+</ul>
+</li>
+</ul>
+<p>也就是说 试图从空的阻塞队列中获取元素的线程将会被阻塞，直到其它线程往空的队列插入新的元素</p>
+<p>同理，试图往已经满的阻塞队列中添加新元素的线程，直到其它线程往满的队列中移除一个或多个元素，或者完全清空队列后，使队列重新变得空闲起来，并后续新增</p>
+<h2 id="为什么要用？"><a href="#为什么要用？" class="headerlink" title="为什么要用？"></a>为什么要用？</h2><p>去海底捞吃饭，大厅满了，需要进候厅等待，但是这些等待的客户能够对商家带来利润，因此我们非常欢迎他们阻塞</p>
+<p>在多线程领域：所谓的阻塞，在某些清空下会 <strong>挂起线程（即阻塞）</strong> ，一旦条件满足，被挂起的线程又会 <strong>自动唤醒</strong> </p>
+<h3 id="为什么需要BlockingQueue"><a href="#为什么需要BlockingQueue" class="headerlink" title="为什么需要BlockingQueue"></a>为什么需要BlockingQueue</h3><p>好处是我们 <strong>不需要关心什么时候</strong> 需要阻塞线程，什么时候需要唤醒线程，因为这一切BlockingQueue都帮你一手包办了</p>
+<p>在concurrent包发布以前，在多线程环境下，我们每个程序员都必须自己取控制这些细节，尤其还要兼顾效率和线程安全，而这会给我们的程序带来不小的复杂度。</p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>BlockingQueue阻塞队列是属于一个 <strong>接口</strong> ，底下有 <strong>七个实现类</strong> </p>
+<ul>
+<li> <strong>ArrayBlockQueue</strong> ：由数组结构组成的有界阻塞队列</li>
+<li><strong>LinkedBlockingQueue</strong> ：由链表结构组成的有界（但是默认大小 Integer.MAX_VALUE）的阻塞队列<ul>
+<li>有界，但是界限非常大，相当于无界，可以当成无界</li>
+</ul>
+</li>
+<li>PriorityBlockQueue：支持优先级排序的无界阻塞队列</li>
+<li>DelayQueue：使用优先级队列实现的延迟无界阻塞队列</li>
+<li><strong>SynchronousQueue</strong> ：不存储元素的阻塞队列，也即单个元素的队列<ul>
+<li>生产一个，消费一个，不存储元素，不消费不生产</li>
+</ul>
+</li>
+<li>LinkedTransferQueue：由链表结构组成的无界阻塞队列</li>
+<li>LinkedBlockingDeque：由链表结构组成的双向阻塞队列</li>
+</ul>
+<p>这里需要掌握的是：ArrayBlockQueue、LinkedBlockingQueue、SynchronousQueue</p>
 
             </div>
             <hr>
