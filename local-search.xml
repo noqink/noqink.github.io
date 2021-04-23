@@ -4,6 +4,139 @@
   
   
   <entry>
+    <title>我不会k8s</title>
+    <link href="/2021/04/25/k8s/"/>
+    <url>/2021/04/25/k8s/</url>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>运维</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>docker</title>
+    <link href="/2021/04/25/docker/"/>
+    <url>/2021/04/25/docker/</url>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>运维</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>linux加shell</title>
+    <link href="/2021/04/25/linux%E5%8F%8Ashell/"/>
+    <url>/2021/04/25/linux%E5%8F%8Ashell/</url>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>操作系统</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>消息队列</title>
+    <link href="/2021/04/24/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+    <url>/2021/04/24/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</url>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>中间件</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>面经汇总</title>
+    <link href="/2021/04/23/%E5%85%AB%E8%82%A1%E6%96%87%E6%B1%87%E6%80%BB/"/>
+    <url>/2021/04/23/%E5%85%AB%E8%82%A1%E6%96%87%E6%B1%87%E6%80%BB/</url>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>面试</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>mysql索引</title>
+    <link href="/2021/04/22/mysql/"/>
+    <url>/2021/04/22/mysql/</url>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>数据库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>redis</title>
+    <link href="/2021/04/22/redis/"/>
+    <url>/2021/04/22/redis/</url>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>数据库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>高频面试题</title>
     <link href="/2021/04/11/%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9A%84%E5%89%AF%E6%9C%AC/"/>
     <url>/2021/04/11/%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9A%84%E5%89%AF%E6%9C%AC/</url>
