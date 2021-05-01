@@ -184,7 +184,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      13.2k 字
+      27.7k 字
     </span>
   
 
@@ -194,7 +194,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      173
+      374
        分钟
     </span>
   
@@ -2107,6 +2107,2038 @@ putstatic i <span class="hljs-comment">// 将修改后的值存入静态变量i<
 <p>等于</p>
 <p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210427183002.png" srcset="/img/loading.gif"></p>
 <p>this对象和target不是一个</p>
+<h3 id="3-5-Monitor-概念"><a href="#3-5-Monitor-概念" class="headerlink" title="3.5 Monitor 概念"></a>3.5 Monitor 概念</h3><h4 id="3-5-1-Java对象头"><a href="#3-5-1-Java对象头" class="headerlink" title="3.5.1 Java对象头"></a>3.5.1 Java对象头</h4><p>以 32 位虚拟机为例，普通对象的对象头结构如下，其中的Klass Word为指针，指向对象从属的class（Student or ….），即找到类对象。</p>
+<p>32 位虚拟机中int4个字节，integer 对象头 8 + int 的value 4 = 12字节</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428075640.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428080224.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428080236.png" srcset="/img/loading.gif"></p>
+<p>Biased_lock 偏向锁，01为加锁状态</p>
+<p>所以一个对象的结构：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428080644.png" srcset="/img/loading.gif"></p>
+<h4 id="3-5-2-Monitor-锁"><a href="#3-5-2-Monitor-锁" class="headerlink" title="3.5.2 Monitor(锁)"></a>3.5.2 Monitor(锁)</h4><p>Monitor被翻译为 <code>监视器</code> 或者说 <code>管程</code></p>
+<p>每个java对象都可以关联一个Monitor，如果使用<code>synchronized</code>给对象上锁（重量级），该对象头的 <strong>Mark Word中就被设置为指向Monitor对象的指针</strong> </p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428080900.png" srcset="/img/loading.gif"></p>
+<p>obj是java对象，Monitor的操作系统提供的对象</p>
+<p>obj mark word修改为10</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428081139.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428081235.png" srcset="/img/loading.gif"></p>
+<ul>
+<li>刚开始时Monitor中的Owner为null</li>
+<li>当Thread-2 执行synchronized(obj){}代码时就会将Monitor的所有者Owner 设置为 Thread-2，上锁成功，Monitor中同一时刻只能有一个Owner</li>
+<li>当Thread-2 占据锁时，如果线程Thread-3，Thread-4也来执行synchronized(obj){}代码，就会进入EntryList(等待队列，阻塞队列)中变成BLOCKED状态</li>
+<li>Thread-2 执行完同步代码块的内容，然后唤醒 EntryList 中等待的线程来竞争锁，竞争时是 <strong>非公平的</strong> </li>
+<li>图中 WaitSet 中的 Thread-0，Thread-1 是 <strong>之前获得过锁，但条件不满足进入 WAITING 状态的线程</strong> ，后面讲wait-notify 时会分析</li>
+</ul>
+<blockquote>
+<p>注意：synchronized 必须是进入同一个对象的 monitor 才有上述的效果，不加 synchronized 的对象不会关联监视器，不遵从以上规则</p>
+</blockquote>
+<h5 id="原理之synchronized"><a href="#原理之synchronized" class="headerlink" title="原理之synchronized"></a>原理之synchronized</h5><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object lock=<span class="hljs-keyword">new</span> Object();
+    <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (lock) &#123;
+            counter++;
+        &#125;
+    &#125;</code></pre></div>
+
+<p>反编译后的部分字节码</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428082324.png" srcset="/img/loading.gif"></p>
+<p>下面有检测范围 6 - 16 异常则到19；e为异常对象</p>
+<div class="hljs"><pre><code class="hljs ruby"><span class="hljs-number">0</span> getstatic <span class="hljs-comment">#2 &lt;com/concurrent/test/Test17.lock&gt;</span>
+ <span class="hljs-comment"># 取得lock的引用（synchronized开始了）</span>
+ <span class="hljs-number">3</span> dup    
+ <span class="hljs-comment"># 复制操作数栈栈顶的值放入栈顶，即复制了一份lock的引用</span>
+ <span class="hljs-number">4</span> astore_1
+ <span class="hljs-comment"># 操作数栈栈顶的值弹出，即将lock的引用存到局部变量表中</span>
+ <span class="hljs-number">5</span> monitorenter
+ <span class="hljs-comment"># 将lock对象的Mark Word置为指向Monitor指针</span>
+ <span class="hljs-number">6</span> getstatic <span class="hljs-comment">#3 &lt;com/concurrent/test/Test17.counter&gt;</span>
+ <span class="hljs-number">9</span> iconst_1
+<span class="hljs-number">10</span> iadd
+<span class="hljs-number">11</span> putstatic <span class="hljs-comment">#3 &lt;com/concurrent/test/Test17.counter&gt;</span>
+<span class="hljs-number">14</span> aload_1
+<span class="hljs-comment"># 从局部变量表中取得lock的引用，放入操作数栈栈顶</span>
+<span class="hljs-number">15</span> monitorexit
+<span class="hljs-comment"># 将lock对象的Mark Word重置，唤醒EntryList</span>
+<span class="hljs-number">16</span> goto <span class="hljs-number">24</span> (+<span class="hljs-number">8</span>)
+<span class="hljs-comment"># 下面是异常处理指令，可以看到，如果出现异常，也能自动地释放锁</span>
+<span class="hljs-number">19</span> astore_2
+<span class="hljs-number">20</span> aload_1
+<span class="hljs-number">21</span> monitorexit
+<span class="hljs-number">22</span> aload_2
+<span class="hljs-number">23</span> athrow
+<span class="hljs-number">24</span> <span class="hljs-keyword">return</span></code></pre></div>
+
+<p>注意： <strong>方法级别的 synchronized 不会在字节码指令中有所体现</strong> </p>
+<h5 id="synchronized-原理进阶"><a href="#synchronized-原理进阶" class="headerlink" title="synchronized 原理进阶"></a>synchronized 原理进阶</h5><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428083344.png" srcset="/img/loading.gif"></p>
+<p>​   </p>
+<h5 id="1-轻量级锁"><a href="#1-轻量级锁" class="headerlink" title="1. 轻量级锁"></a>1. 轻量级锁</h5><p>轻量级锁的使用场景是：如果一个对象虽然有多个线程要对它进行加锁，但是加锁的 <strong>时间是错开的</strong> （也就是没有人可以竞争的），那么可以使用轻量级锁来进行优化。</p>
+<p>轻量级锁对使用者是透明的，即语法仍然是<code>synchronized</code></p>
+<p>假设有两个方法同步块，利用同一个对象加锁</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object obj = <span class="hljs-keyword">new</span> Object();
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">method1</span><span class="hljs-params">()</span> </span>&#123;
+     <span class="hljs-keyword">synchronized</span>( obj ) &#123;
+         <span class="hljs-comment">// 同步块 A</span>
+         method2();
+     &#125;
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">method2</span><span class="hljs-params">()</span> </span>&#123;
+     <span class="hljs-keyword">synchronized</span>( obj ) &#123;
+         <span class="hljs-comment">// 同步块 B</span>
+     &#125;
+&#125;</code></pre></div>
+
+
+
+<ul>
+<li><p>每次指向到synchronized代码块时，都会创建 <strong>锁记录（Lock Record）</strong> 对象，每个线程的栈帧都会包含一个 <strong>锁记录的结构</strong> ，内部可以存储锁定对象的 <strong>Mark Word</strong> ，还有一个对象指针 Object reference</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428084101.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>让锁记录中的Object reference指向对象，并且尝试用 <strong>cas(compare and sweep)</strong> 替换Object对象的Mark Word ，将Mark Word 的值存入锁记录中</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428084149.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>如果cas替换成功，那么对象的对象头储存的就是 <code>锁记录的地址和状态00</code> ，表示由线程给对象加锁，如下所示</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428084247.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>如果cas失败，有两种情况</p>
+<ul>
+<li>如果是其它线程已经持有了该Object的轻量级锁（已经替换成了00），那么表示有竞争，将进入 <strong>锁膨胀阶段</strong> </li>
+<li>如果是自己的线程已经执行了synchronized进行加锁，那么那么 <strong>再添加一条 Lock Record 作为重入的计数</strong> </li>
+</ul>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428085820.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>当线程退出synchronized代码块的时候， **如果获取的是取值为 null 的锁记录 ** ，表示有重入，这时重置锁记录，表示重入计数减一</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428090021.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>当线程退出synchronized代码块的时候，如果获取的锁记录取值不为 null，那么使用cas将Mark Word的值恢复给对象</p>
+<ul>
+<li><p>成功则解锁成功</p>
+</li>
+<li><p>失败，则说明轻量级锁进行了 <strong>锁膨胀或已经升级为重量级锁</strong> ， <strong>进入重量级锁解锁流程</strong> </p>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="2-锁膨胀"><a href="#2-锁膨胀" class="headerlink" title="2. 锁膨胀"></a>2. 锁膨胀</h5><p>如果在尝试加轻量级锁的过程中， <strong>CAS 操作无法成功</strong> ，这时一种情况就是有其它线程为此对象加上了轻量级锁（ <code>有竞争</code> ），这时需要进行 <code>锁膨胀</code> ，将轻量级锁变为重量级锁。</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> Object obj = <span class="hljs-keyword">new</span> Object();
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">method1</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">synchronized</span>( obj ) &#123;
+    <span class="hljs-comment">// 同步块</span>
+&#125;</code></pre></div>
+
+<ul>
+<li><p>当 Thread-1 进行轻量级加锁时，Thread-0 已经对该对象加了轻量级锁</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428090410.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>这时 Thread-1 加轻量级锁失败，进入锁膨胀流程</p>
+<ul>
+<li>即为对象申请Monitor锁，让Object指向 <strong>重量级锁地址</strong> ，然后自己进入Monitor 的EntryList 变成BLOCKED状态</li>
+<li><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428090610.png" srcset="/img/loading.gif"><ul>
+<li>当Thread-0 退出synchronized同步块时，使用cas将Mark Word的值恢复给对象头， <code>失败</code> ，那么会进入 <strong>重量级锁的解锁过程</strong> ，即按照Monitor的地址找到Monitor对象，将 <strong>Owner设置为null</strong> ，  <strong>唤醒</strong> EntryList 中的Thread-1线程</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="3-自旋优化"><a href="#3-自旋优化" class="headerlink" title="3. 自旋优化"></a>3. 自旋优化</h5><p>重量级锁竞争的时候，还可以使用 <code>自旋</code> 来进行优化，如果当前线程 <code>自旋成功</code>（即这时候持锁线程已经退出了同步块，释放了锁），这时当前线程就可以避免阻塞。  <code>阻塞</code> 是会发生 <strong>上下文切换的</strong> 。</p>
+<ul>
+<li><p>自旋成功</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428091416.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>自旋失败</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428091529.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>自旋会 <strong>占用 CPU 时间</strong> ，单核 CPU 自旋就是浪费，多核 CPU 自旋才能发挥优势。</p>
+</li>
+<li><p>在 Java 6 之后自旋锁是 <strong>自适应的</strong> ，比如对象刚刚的一次自旋操作成功过，那么认为这次自旋成功的可能性会高，就多自旋几次；反之，就少自旋甚至不自旋，总之，比较智能。</p>
+</li>
+<li><p>Java 7 之后 <strong>不能控制是否开启自旋功能</strong> </p>
+</li>
+</ul>
+<h5 id="4-偏向锁"><a href="#4-偏向锁" class="headerlink" title="4. 偏向锁"></a>4. 偏向锁</h5><p>轻量级锁在没有竞争时（就自己这个线程）， <strong>每次重入仍然需要执行 CAS 操作</strong> 。<br>Java 6 中引入了偏向锁来做进一步优化：只有第一次使用 CAS 将线程 ID 设置到对象的 Mark Word 头，之后 <strong>发现这个线程 ID 是自己的就表示没有竞争</strong> ，不用重新 CAS。以后只要不发生竞争，这个对象就归该线程所有。</p>
+<p>例如：</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object obj = <span class="hljs-keyword">new</span> Object();
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">m1</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">synchronized</span>(obj) &#123;
+        <span class="hljs-comment">// 同步块 A</span>
+        m2();
+    &#125;
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">m2</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">synchronized</span>(obj) &#123;
+        <span class="hljs-comment">// 同步块 B</span>
+        m3();
+    &#125;
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">m3</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">synchronized</span>(obj) &#123;
+        <span class="hljs-comment">// 同步块 C</span>
+    &#125;
+&#125;</code></pre></div>
+
+<p>每次都要CAS；</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428091938.png" srcset="/img/loading.gif"></p>
+<p>偏向锁时：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428092008.png" srcset="/img/loading.gif"></p>
+<h6 id="偏向状态"><a href="#偏向状态" class="headerlink" title="偏向状态"></a>偏向状态</h6><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428093024.png" srcset="/img/loading.gif"></p>
+<p>一个对象创建时：</p>
+<ul>
+<li>如果开启了偏向锁（默认开启），那么对象创建后，markword 值为 0x05 即最后 3 位为  <code>101</code> ，这时它的thread、epoch、age 都为 0</li>
+<li>偏向锁是默认是 <code>延迟的</code> ，不会在程序启动时立即生效，如果想避免延迟，可以加 VM 参数 -<br> <code>-XX:BiasedLockingStartupDelay=0</code>  来禁用延迟</li>
+<li>如果没有开启偏向锁，那么对象创建后，markword 值为 0x01 即最后 3 位为 001，这时它的 hashcode、age 都为 0，第一次用到 hashcode 时才会赋值</li>
+</ul>
+<h6 id="测试偏向锁"><a href="#测试偏向锁" class="headerlink" title="测试偏向锁"></a>测试偏向锁</h6><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 测试偏向锁</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test1</span><span class="hljs-params">()</span> </span>&#123;
+    Dog d = <span class="hljs-keyword">new</span> Dog();
+    log.debug(ClassLayout.parseInstance(d).toPrintable());
+
+    <span class="hljs-keyword">try</span> &#123;
+        Thread.sleep(<span class="hljs-number">4000</span>);
+    &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+        e.printStackTrace();
+    &#125;
+    log.debug(ClassLayout.parseInstance(<span class="hljs-keyword">new</span> Dog()).toPrintable());
+&#125;</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428100027.png" srcset="/img/loading.gif"></p>
+<p>如果加上<code>-XX:BiasedLockingStartupDelay=0</code></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428100232.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428100406.png" srcset="/img/loading.gif"></p>
+<h6 id="测试偏向锁Thread-ID"><a href="#测试偏向锁Thread-ID" class="headerlink" title="测试偏向锁Thread-ID"></a>测试偏向锁Thread-ID</h6><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428100549.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428100642.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428100658.png" srcset="/img/loading.gif"></p>
+<h6 id="测试禁用和hashcode"><a href="#测试禁用和hashcode" class="headerlink" title="测试禁用和hashcode"></a>测试禁用和hashcode</h6><p>如果没有开启偏向锁，那么对象创建后最后三位的值为001，这时候它的hashcode，age都为0，hashcode是第一次用到<code>hashcode</code>时才赋值的。在上面测试代码运行时在添加 VM 参数<code>-XX:-UseBiasedLocking</code>禁用偏向锁（禁用偏向锁则优先使用轻量级锁），退出<code>synchronized</code>状态变回001</p>
+<ol>
+<li>测试代码Test18.java 虚拟机参数<code>-XX:-UseBiasedLocking</code></li>
+<li>输出结果如下，最开始状态为001，然后加轻量级锁变成00，最后恢复成001</li>
+</ol>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test1</span><span class="hljs-params">()</span> </span>&#123;
+    Dog d = <span class="hljs-keyword">new</span> Dog();
+    log.debug(ClassLayout.parseInstance(d).toPrintable());
+
+    <span class="hljs-keyword">synchronized</span> (d)&#123;
+        log.debug(ClassLayout.parseInstance(d).toPrintable());
+    &#125;
+    <span class="hljs-keyword">try</span> &#123;
+        Thread.sleep(<span class="hljs-number">1000</span>);
+    &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+        e.printStackTrace();
+    &#125;
+    log.debug(ClassLayout.parseInstance(<span class="hljs-keyword">new</span> Dog()).toPrintable());
+&#125;</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428101359.png" srcset="/img/loading.gif"></p>
+<p>正常状态对象一开始是没有 hashCode 的，第一次调用才生成</p>
+<p>d.hashcode()会禁用偏向锁</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428101642.png" srcset="/img/loading.gif"></p>
+<p>当一个可偏向的对象，调用hashcode方法会 <code>撤销可偏向状态</code> ，然后把线程id清掉替换成hash码，因为没有地方存储了。</p>
+<h6 id="撤销偏向锁-hashcode方法"><a href="#撤销偏向锁-hashcode方法" class="headerlink" title="撤销偏向锁-hashcode方法"></a>撤销偏向锁-hashcode方法</h6><p>如上，当一个可偏向的对象，调用hashcode方法会 <code>撤销可偏向状态</code> ，然后把线程id清掉替换成hash码，因为没有地方存储了。</p>
+<h6 id="撤销偏向锁-其它线程使用对象"><a href="#撤销偏向锁-其它线程使用对象" class="headerlink" title="撤销偏向锁-其它线程使用对象"></a>撤销偏向锁-其它线程使用对象</h6><p>这里我们演示的是偏向锁撤销变成轻量级锁的过程，那么就得满足轻量级锁的使用条件，就是没有线程对同一个对象进行锁竞争，我们使用<code>wait</code> 和 <code>notify</code> 来辅助实现</p>
+<ol>
+<li>虚拟机参数<code>-XX:BiasedLockingStartupDelay=0</code>确保我们的程序最开始使用了偏向锁</li>
+<li>输出结果，最开始使用的是偏向锁，但是第二个线程尝试获取对象锁时，发现本来对象偏向的是线程一，那么偏向锁就会失效，加的就是轻量级锁</li>
+</ol>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test2</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+
+    Dog d = <span class="hljs-keyword">new</span> Dog();
+    Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        log.debug(ClassLayout.parseInstance(d).toPrintable());
+        <span class="hljs-keyword">synchronized</span> (d) &#123;
+            log.debug(ClassLayout.parseInstance(d).toPrintable());
+        &#125;
+        log.debug(ClassLayout.parseInstance(d).toPrintable());
+        <span class="hljs-keyword">synchronized</span> (TestBiased.class) &#123;
+            TestBiased.class.notify();
+        &#125;
+    &#125;, <span class="hljs-string">&quot;t1&quot;</span>);
+    t1.start();
+
+    <span class="hljs-comment">// 如果不用 wait/notify 使用 join 必须打开下面的注释</span>
+  <span class="hljs-comment">// 因为：t1 线程不能结束，否则底层线程可能被 jvm 重用作为 t2 线程，底层线程 id 是一样的</span>
+  <span class="hljs-comment">/*try &#123;</span>
+<span class="hljs-comment">  System.in.read();</span>
+<span class="hljs-comment">  &#125; catch (IOException e) &#123;</span>
+<span class="hljs-comment">  e.printStackTrace();</span>
+<span class="hljs-comment">  &#125;*/</span>
+    Thread t2 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">synchronized</span> (TestBiased.class) &#123;
+            <span class="hljs-keyword">try</span> &#123;
+                TestBiased.class.wait();
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+        log.debug(ClassLayout.parseInstance(d).toPrintable());
+        <span class="hljs-keyword">synchronized</span> (d) &#123;
+            log.debug(ClassLayout.parseInstance(d).toPrintable());
+        &#125;
+        log.debug(ClassLayout.parseInstance(d).toPrintable());
+    &#125;, <span class="hljs-string">&quot;t2&quot;</span>);
+    t2.start();
+&#125;</code></pre></div>
+
+<p>t1线程：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428102835.png" srcset="/img/loading.gif"></p>
+<p>t2线程：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428102933.png" srcset="/img/loading.gif"></p>
+<h6 id="撤销-调用-wait-notify"><a href="#撤销-调用-wait-notify" class="headerlink" title="撤销 - 调用 wait/notify"></a>撤销 - 调用 wait/notify</h6><p>会使对象的锁变成重量级锁，因为wait/notify方法之后 <code>重量级锁</code> 才支持</p>
+<p>8是xxxxx1000 即后面为00，加的是 <code>轻量级锁</code> </p>
+<h5 id="5-批量重偏向和撤销"><a href="#5-批量重偏向和撤销" class="headerlink" title="5. 批量重偏向和撤销"></a>5. 批量重偏向和撤销</h5><h6 id="批量重偏向"><a href="#批量重偏向" class="headerlink" title="批量重偏向"></a>批量重偏向</h6><p>如果对象虽然被多个线程访问，但没有竞争，这时偏向了线程 T1 的对象仍有机会重新偏向 T2，重偏向会重置对象的 Thread ID<br>当撤销偏向锁阈值超过 20 次后，jvm 会这样觉得，我是不是偏向错了呢，于是会在给这些对象加锁时 <code>重新偏向</code> 至加锁线程</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test3</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+
+    Vector&lt;Dog&gt; list = <span class="hljs-keyword">new</span> Vector&lt;&gt;();
+    Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">30</span>; i++) &#123;
+            Dog d = <span class="hljs-keyword">new</span> Dog();
+            list.add(d);
+            <span class="hljs-keyword">synchronized</span> (d) &#123;
+                log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+            &#125;
+        &#125;
+        <span class="hljs-keyword">synchronized</span> (list) &#123;
+            list.notify();
+        &#125;
+    &#125;, <span class="hljs-string">&quot;t1&quot;</span>);
+    t1.start();
+
+
+    Thread t2 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">synchronized</span> (list) &#123;
+            <span class="hljs-keyword">try</span> &#123;
+                list.wait();
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+        log.debug(<span class="hljs-string">&quot;===============&gt; &quot;</span>);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">30</span>; i++) &#123;
+            Dog d = list.get(i);
+            log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+            <span class="hljs-keyword">synchronized</span> (d) &#123;
+                log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+            &#125;
+            log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+        &#125;
+    &#125;, <span class="hljs-string">&quot;t2&quot;</span>);
+    t2.start();
+&#125;</code></pre></div>
+
+<p>一开始：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428104035.png" srcset="/img/loading.gif"></p>
+<p>t1的thread-id</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428104237.png" srcset="/img/loading.gif"></p>
+<p>运行20次之后：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428104444.png" srcset="/img/loading.gif"></p>
+<h6 id="批量撤销"><a href="#批量撤销" class="headerlink" title="批量撤销"></a>批量撤销</h6><p>当撤销偏向锁阈值超过 <code>40</code>  次后，jvm 会这样觉得，自己确实偏向错了，根本就不该偏向。于是 <strong>整个类的所有对象都会变为不可偏向的</strong> ， <code>新建的对象也是不可偏向的</code> </p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test4</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+    Vector&lt;Dog&gt; list = <span class="hljs-keyword">new</span> Vector&lt;&gt;();
+
+    <span class="hljs-keyword">int</span> loopNumber = <span class="hljs-number">39</span>;
+    t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; loopNumber; i++) &#123;
+            Dog d = <span class="hljs-keyword">new</span> Dog();
+            list.add(d);
+            <span class="hljs-keyword">synchronized</span> (d) &#123;
+                log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+            &#125;
+        &#125;
+        LockSupport.unpark(t2);
+    &#125;, <span class="hljs-string">&quot;t1&quot;</span>);
+    t1.start();
+
+    t2 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        LockSupport.park();
+        log.debug(<span class="hljs-string">&quot;===============&gt; &quot;</span>);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; loopNumber; i++) &#123;
+            Dog d = list.get(i);
+            log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+            <span class="hljs-keyword">synchronized</span> (d) &#123;
+                log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+            &#125;
+            log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+        &#125;
+        LockSupport.unpark(t3);
+    &#125;, <span class="hljs-string">&quot;t2&quot;</span>);
+    t2.start();
+
+    t3 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        LockSupport.park();
+        log.debug(<span class="hljs-string">&quot;===============&gt; &quot;</span>);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; loopNumber; i++) &#123;
+            Dog d = list.get(i);
+            log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+            <span class="hljs-keyword">synchronized</span> (d) &#123;
+                log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+            &#125;
+            log.debug(i + <span class="hljs-string">&quot;\t&quot;</span> + ClassLayout.parseInstance(d).toPrintable());
+        &#125;
+    &#125;, <span class="hljs-string">&quot;t3&quot;</span>);
+    t3.start();
+
+    t3.join();
+    log.debug(ClassLayout.parseInstance(<span class="hljs-keyword">new</span> Dog()).toPrintable());
+&#125;</code></pre></div>
+
+<p>一开始全偏向t1，t2 20次后变成t2，t3 20次后变成t3，当  <code>第40次撤销偏向锁</code> 的时候，对象不会再变为可偏向的。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428110241.png" srcset="/img/loading.gif"></p>
+<p>如果把循环次数变成38次：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428110305.png" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>参考资料<br><a target="_blank" rel="noopener" href="https://github.com/farmerjohngit/myblog/issues/12">https://github.com/farmerjohngit/myblog/issues/12</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/LemonFive/p/11246086.html">https://www.cnblogs.com/LemonFive/p/11246086.html</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/LemonFive/p/11248248.html">https://www.cnblogs.com/LemonFive/p/11248248.html</a><br>偏向锁论文</p>
+</blockquote>
+<h5 id="6-锁消除"><a href="#6-锁消除" class="headerlink" title="6. 锁消除"></a>6. 锁消除</h5><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428110653.png" srcset="/img/loading.gif"></p>
+<p>比较不加锁和加锁性能多少</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428111209.png" srcset="/img/loading.gif"></p>
+<ul>
+<li><p>为什么普通java -jar 显示性能得分相差不大？</p>
+<p>java中有 <code>JIT（即时编译器）</code> ，（反复执行的代码）会对java字节码进一步优化，查看局部变量是否会优化，发现不会逃离范围，不可能会被共享，加锁就没有意义，JIT就直接会优化掉synchronized</p>
+<ul>
+<li>选择 -XX: -EliminateLocks 关掉JIT</li>
+</ul>
+</li>
+</ul>
+<p>锁粗化<br>对相同对象多次加锁，导致线程发生多次重入，可以使用锁粗化方式来优化，这不同于之前讲的细分锁的粒度。</p>
+<h3 id="3-6-wait-notify"><a href="#3-6-wait-notify" class="headerlink" title="3.6 wait notify"></a>3.6 wait notify</h3><h4 id="3-6-1-小故事-为什么需要-wait"><a href="#3-6-1-小故事-为什么需要-wait" class="headerlink" title="3.6.1 小故事 - 为什么需要 wait"></a>3.6.1 小故事 - 为什么需要 wait</h4><p>​   <img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428190523.png" srcset="/img/loading.gif"></p>
+<h4 id="3-6-2-wait-notify-原理"><a href="#3-6-2-wait-notify-原理" class="headerlink" title="3.6.2 wait notify 原理"></a>3.6.2 wait notify 原理</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210428205321.png" srcset="/img/loading.gif"></p>
+<ul>
+<li>Owner 线程发现条件不满足，调用  <code>wait</code>  方法，即可进入 WaitSet 变为 WAITING 状态</li>
+<li>BLOCKED 和 WAITING 的线程都处于 <code>阻塞状态</code> ，不占用 CPU 时间片</li>
+<li>BLOCKED 线程会在 Owner 线程释放锁时唤醒</li>
+<li>WAITING 线程会在 Owner 线程调用 notify 或 notifyAll 时唤醒，但唤醒后并不意味者立刻获得锁， <strong>仍需进入EntryList 重新竞争</strong> </li>
+</ul>
+<h4 id="3-6-3-API介绍"><a href="#3-6-3-API介绍" class="headerlink" title="3.6.3 API介绍"></a>3.6.3 API介绍</h4><ul>
+<li> <code>obj.wait()</code>  让 <strong>进入 object 监视器</strong> 的线程 <code>(称为owner才能wait)</code> 到  <strong>waitSet</strong>  等待</li>
+<li><code>obj.notify()</code> 在 object 上正在 waitSet 等待的线程 <code>(成为owner才能notify) </code>中挑一个唤醒</li>
+<li><code>obj.notifyAll() </code>让 object 上正在 waitSet 等待的线程全部唤醒</li>
+</ul>
+<p>它们都是线程之间进行协作的手段，都属于 Object 对象的方法。必须 <strong>获得此对象的锁</strong> ， <strong>才能调用</strong> 这几个方法</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object lock = <span class="hljs-keyword">new</span> Object();
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+
+    <span class="hljs-keyword">synchronized</span> (lock) &#123;
+        <span class="hljs-keyword">try</span> &#123;
+            lock.wait();
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+
+
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> Object obj = <span class="hljs-keyword">new</span> Object();
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">synchronized</span> (obj) &#123;
+            log.debug(<span class="hljs-string">&quot;执行....&quot;</span>);
+            <span class="hljs-keyword">try</span> &#123;
+                obj.wait(); <span class="hljs-comment">// 让线程在obj上一直等待下去</span>
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+            log.debug(<span class="hljs-string">&quot;其它代码....&quot;</span>);
+        &#125;
+    &#125;,<span class="hljs-string">&quot;t1&quot;</span>).start();
+
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">synchronized</span> (obj) &#123;
+            log.debug(<span class="hljs-string">&quot;执行....&quot;</span>);
+            <span class="hljs-keyword">try</span> &#123;
+                obj.wait(); <span class="hljs-comment">// 让线程在obj上一直等待下去</span>
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+            log.debug(<span class="hljs-string">&quot;其它代码....&quot;</span>);
+        &#125;
+    &#125;,<span class="hljs-string">&quot;t2&quot;</span>).start();
+
+    <span class="hljs-comment">// 主线程两秒后执行</span>
+    TimeUnit.SECONDS.sleep(<span class="hljs-number">1</span>);
+    log.debug(<span class="hljs-string">&quot;唤醒 obj 上其它线程&quot;</span>);
+    <span class="hljs-keyword">synchronized</span> (obj) &#123;
+        obj.notify(); <span class="hljs-comment">// 唤醒obj上一个线程</span>
+        <span class="hljs-comment">//obj.notifyAll(); // 唤醒obj上所有等待线程</span>
+    &#125;
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs js"><span class="hljs-number">21</span>:<span class="hljs-number">03</span>:<span class="hljs-number">02</span> [t1] c.TestWaitNotify - 执行....
+<span class="hljs-number">21</span>:<span class="hljs-number">03</span>:<span class="hljs-number">02</span> [t2] c.TestWaitNotify - 执行....
+<span class="hljs-number">21</span>:<span class="hljs-number">03</span>:<span class="hljs-number">03</span> [main] c.TestWaitNotify - 唤醒 obj 上其它线程
+<span class="hljs-number">21</span>:<span class="hljs-number">03</span>:<span class="hljs-number">03</span> [t1] c.TestWaitNotify - 其它代码....</code></pre></div>
+
+<p>如果是notifyAll：</p>
+<div class="hljs"><pre><code class="hljs js"><span class="hljs-number">21</span>:<span class="hljs-number">03</span>:<span class="hljs-number">47</span> [t1] c.TestWaitNotify - 执行....
+<span class="hljs-number">21</span>:<span class="hljs-number">03</span>:<span class="hljs-number">47</span> [t2] c.TestWaitNotify - 执行....
+<span class="hljs-number">21</span>:<span class="hljs-number">03</span>:<span class="hljs-number">48</span> [main] c.TestWaitNotify - 唤醒 obj 上其它线程
+<span class="hljs-number">21</span>:<span class="hljs-number">03</span>:<span class="hljs-number">48</span> [t2] c.TestWaitNotify - 其它代码....
+<span class="hljs-number">21</span>:<span class="hljs-number">03</span>:<span class="hljs-number">48</span> [t1] c.TestWaitNotify - 其它代码....</code></pre></div>
+
+<p><code>wait() </code>方法会释放对象的锁，进入 WaitSet 等待区，从而让其他线程就机会获取对象的锁。无限制等待，直到notify 为止<br><code>wait(long n) </code> 有时限的等待, 到 n 毫秒后结束等待，或是被 notify</p>
+<h3 id="3-7-wait-notify-正确姿势"><a href="#3-7-wait-notify-正确姿势" class="headerlink" title="3.7 wait notify 正确姿势"></a>3.7 wait notify 正确姿势</h3><p><code>sleep(long n) </code> 和 <code>wait(long n)</code> 的区别</p>
+<ol>
+<li><p>sleep 是 Thread 方法，而 wait 是 Object 的方法 </p>
+</li>
+<li><p>sleep 不需要强制和 synchronized 配合使用，但 wait 需要和 synchronized 一起用 </p>
+</li>
+<li><p>sleep 在睡眠的同时， <strong>不会释放对象锁</strong> 的，但 wait 在等待的时候 **会释放对象锁 ** </p>
+</li>
+<li><p><code>共同点 </code>它们状态 TIMED_WAITING</p>
+</li>
+</ol>
+<h4 id="step-1"><a href="#step-1" class="headerlink" title="step 1"></a>step 1</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object room = <span class="hljs-keyword">new</span> Object();
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> hasCigarette = <span class="hljs-keyword">false</span>; <span class="hljs-comment">// 有没有烟</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> hasTakeout = <span class="hljs-keyword">false</span>;</code></pre></div>
+
+<p>下列是否可行：</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">synchronized</span> (room) &#123;
+            log.debug(<span class="hljs-string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);
+            <span class="hljs-keyword">if</span> (!hasCigarette) &#123;
+                log.debug(<span class="hljs-string">&quot;没烟，先歇会！&quot;</span>);
+                <span class="hljs-keyword">try</span> &#123;
+                    Thread.sleep(<span class="hljs-number">2000</span>);
+                    <span class="hljs-comment">//room.wait();</span>
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+            log.debug(<span class="hljs-string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);
+            <span class="hljs-keyword">if</span> (hasCigarette) &#123;
+                log.debug(<span class="hljs-string">&quot;可以开始干活了&quot;</span>);
+            &#125;
+        &#125;
+    &#125;, <span class="hljs-string">&quot;小南&quot;</span>).start();
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            <span class="hljs-keyword">synchronized</span> (room) &#123;
+                log.debug(<span class="hljs-string">&quot;可以开始干活了&quot;</span>);
+            &#125;
+        &#125;, <span class="hljs-string">&quot;其它人&quot;</span>).start();
+    &#125;
+
+    Thread.sleep(<span class="hljs-number">1000</span>);
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-comment">// 这里能不能加 synchronized (room)？</span>
+        hasCigarette = <span class="hljs-keyword">true</span>;
+        log.debug(<span class="hljs-string">&quot;烟到了噢！&quot;</span>);
+    &#125;, <span class="hljs-string">&quot;送烟的&quot;</span>).start();
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby">09<span class="hljs-symbol">:</span><span class="hljs-number">56</span><span class="hljs-symbol">:</span><span class="hljs-number">16</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="hljs-literal">false</span>]
+09<span class="hljs-symbol">:</span><span class="hljs-number">56</span><span class="hljs-symbol">:</span><span class="hljs-number">16</span> [小南] c.TestCorrectPosture - 没烟，先歇会！
+09<span class="hljs-symbol">:</span><span class="hljs-number">56</span><span class="hljs-symbol">:</span><span class="hljs-number">17</span> [送烟的] c.TestCorrectPosture - 烟到了噢！
+09<span class="hljs-symbol">:</span><span class="hljs-number">56</span><span class="hljs-symbol">:</span><span class="hljs-number">18</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="hljs-literal">true</span>]
+09<span class="hljs-symbol">:</span><span class="hljs-number">56</span><span class="hljs-symbol">:</span><span class="hljs-number">18</span> [小南] c.TestCorrectPosture - 可以开始干活了
+09<span class="hljs-symbol">:</span><span class="hljs-number">56</span><span class="hljs-symbol">:</span><span class="hljs-number">18</span> [其它人] c.TestCorrectPosture - 可以开始干活了
+09<span class="hljs-symbol">:</span><span class="hljs-number">56</span><span class="hljs-symbol">:</span><span class="hljs-number">18</span> [其它人] c.TestCorrectPosture - 可以开始干活了
+09<span class="hljs-symbol">:</span><span class="hljs-number">56</span><span class="hljs-symbol">:</span><span class="hljs-number">18</span> [其它人] c.TestCorrectPosture - 可以开始干活了
+09<span class="hljs-symbol">:</span><span class="hljs-number">56</span><span class="hljs-symbol">:</span><span class="hljs-number">18</span> [其它人] c.TestCorrectPosture - 可以开始干活了
+09<span class="hljs-symbol">:</span><span class="hljs-number">56</span><span class="hljs-symbol">:</span><span class="hljs-number">18</span> [其它人] c.TestCorrectPosture - 可以开始干活了</code></pre></div>
+
+<ul>
+<li>其它干活的线程，都要一直阻塞，效率太低</li>
+<li>小南线程必须睡足 2s 后才能醒来，就算烟提前送到，也无法立刻醒来</li>
+<li>加了 synchronized (room) 后，就好比小南在里面 <code>反锁了门</code> 睡觉，烟根本没法送进门，main 没加<br>synchronized 就好像 main 线程是 <code>翻窗户进来</code> 的</li>
+<li>解决方法，使用 wait - notify 机制</li>
+</ul>
+<h4 id="step-2"><a href="#step-2" class="headerlink" title="step 2"></a>step 2</h4><p>改进：</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+    <span class="hljs-keyword">synchronized</span> (room) &#123;
+        log.debug(<span class="hljs-string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);
+        <span class="hljs-keyword">if</span> (!hasCigarette) &#123;
+            log.debug(<span class="hljs-string">&quot;没烟，先歇会！&quot;</span>);
+            <span class="hljs-keyword">try</span> &#123;
+                <span class="hljs-comment">//Thread.sleep(2000);</span>
+                room.wait(<span class="hljs-number">2000</span>);
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+        log.debug(<span class="hljs-string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);
+        <span class="hljs-keyword">if</span> (hasCigarette) &#123;
+            log.debug(<span class="hljs-string">&quot;可以开始干活了&quot;</span>);
+        &#125;
+    &#125;
+&#125;, <span class="hljs-string">&quot;小南&quot;</span>).start();
+<span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            <span class="hljs-comment">// 这里能不能加 synchronized (room)？</span>
+            <span class="hljs-keyword">synchronized</span> (room) &#123;
+                hasCigarette = <span class="hljs-keyword">true</span>;
+                log.debug(<span class="hljs-string">&quot;烟到了噢！&quot;</span>);
+                room.notify();
+                <span class="hljs-comment">// notify要放在synchronized里面</span>
+            &#125;
+
+&#125;, <span class="hljs-string">&quot;送烟的&quot;</span>).start();</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby"><span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">44</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="hljs-literal">false</span>]
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">44</span> [小南] c.TestCorrectPosture - 没烟，先歇会！
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">44</span> [其它人] c.TestCorrectPosture - 可以开始干活了
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">44</span> [其它人] c.TestCorrectPosture - 可以开始干活了
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">44</span> [其它人] c.TestCorrectPosture - 可以开始干活了
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">44</span> [其它人] c.TestCorrectPosture - 可以开始干活了
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">44</span> [其它人] c.TestCorrectPosture - 可以开始干活了
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">45</span> [送烟的] c.TestCorrectPosture - 烟到了噢！
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">45</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="hljs-literal">true</span>]
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">45</span> [小南] c.TestCorrectPosture - 可以开始干活了</code></pre></div>
+
+<ul>
+<li>解决了其它干活的线程阻塞的问题</li>
+<li>但如果有其它线程也在等待条件呢？</li>
+</ul>
+<h4 id="step-3"><a href="#step-3" class="headerlink" title="step 3"></a>step 3</h4><blockquote>
+<p>虚假唤醒</p>
+</blockquote>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object room = <span class="hljs-keyword">new</span> Object();
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> hasCigarette = <span class="hljs-keyword">false</span>;
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> hasTakeout = <span class="hljs-keyword">false</span>;
+
+<span class="hljs-comment">// 虚假唤醒</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">synchronized</span> (room) &#123;
+            log.debug(<span class="hljs-string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);
+            <span class="hljs-keyword">if</span> (!hasCigarette) &#123;
+                log.debug(<span class="hljs-string">&quot;没烟，先歇会！&quot;</span>);
+                <span class="hljs-keyword">try</span> &#123;
+                    room.wait();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+            log.debug(<span class="hljs-string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);
+            <span class="hljs-keyword">if</span> (hasCigarette) &#123;
+                log.debug(<span class="hljs-string">&quot;可以开始干活了&quot;</span>);
+            &#125; <span class="hljs-keyword">else</span> &#123;
+                log.debug(<span class="hljs-string">&quot;没干成活...&quot;</span>);
+            &#125;
+        &#125;
+    &#125;, <span class="hljs-string">&quot;小南&quot;</span>).start();
+
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">synchronized</span> (room) &#123;
+            Thread thread = Thread.currentThread();
+            log.debug(<span class="hljs-string">&quot;外卖送到没？[&#123;&#125;]&quot;</span>, hasTakeout);
+            <span class="hljs-keyword">if</span> (!hasTakeout) &#123;
+                log.debug(<span class="hljs-string">&quot;没外卖，先歇会！&quot;</span>);
+                <span class="hljs-keyword">try</span> &#123;
+                    room.wait();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+            log.debug(<span class="hljs-string">&quot;外卖送到没？[&#123;&#125;]&quot;</span>, hasTakeout);
+            <span class="hljs-keyword">if</span> (hasTakeout) &#123;
+                log.debug(<span class="hljs-string">&quot;可以开始干活了&quot;</span>);
+            &#125; <span class="hljs-keyword">else</span> &#123;
+                log.debug(<span class="hljs-string">&quot;没干成活...&quot;</span>);
+            &#125;
+        &#125;
+    &#125;, <span class="hljs-string">&quot;小女&quot;</span>).start();
+
+    sleep(<span class="hljs-number">1000</span>);
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">synchronized</span> (room) &#123;
+            hasTakeout = <span class="hljs-keyword">true</span>;
+            log.debug(<span class="hljs-string">&quot;外卖到了噢！&quot;</span>);
+            room.notify();
+        &#125;
+    &#125;, <span class="hljs-string">&quot;送外卖的&quot;</span>).start();
+
+&#125;</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210429100936.png" srcset="/img/loading.gif"></p>
+<p>应该改成</p>
+<div class="hljs"><pre><code class="hljs java">room.notifyAll();</code></pre></div>
+
+<ul>
+<li>notify 只能随机唤醒一个 WaitSet 中的线程，这时如果有其它线程也在等待，那么就可能唤醒不了正确的线程，称之为 <code>虚假唤醒</code></li>
+<li>解决方法，改为 notifyAll</li>
+</ul>
+<ul>
+<li>用 notifyAll 仅解决某个线程的唤醒问题，但使用 if + wait 判断仅有一次机会，一旦条件不成立，就没有重新判断的机会了</li>
+<li>解决方法，用 <code>while + wait</code>，当条件不成立，再次 wait</li>
+</ul>
+<h4 id="step-4"><a href="#step-4" class="headerlink" title="step 4"></a>step 4</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+    <span class="hljs-keyword">synchronized</span> (room) &#123;
+        log.debug(<span class="hljs-string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);
+        <span class="hljs-keyword">while</span> (!hasCigarette) &#123;
+            log.debug(<span class="hljs-string">&quot;没烟，先歇会！&quot;</span>);
+            <span class="hljs-keyword">try</span> &#123;
+                room.wait();
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+        log.debug(<span class="hljs-string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);
+        <span class="hljs-keyword">if</span> (hasCigarette) &#123;
+            log.debug(<span class="hljs-string">&quot;可以开始干活了&quot;</span>);
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            log.debug(<span class="hljs-string">&quot;没干成活...&quot;</span>);
+        &#125;
+    &#125;
+&#125;, <span class="hljs-string">&quot;小南&quot;</span>).start();
+
+<span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+    <span class="hljs-keyword">synchronized</span> (room) &#123;
+        Thread thread = Thread.currentThread();
+        log.debug(<span class="hljs-string">&quot;外卖送到没？[&#123;&#125;]&quot;</span>, hasTakeout);
+        <span class="hljs-keyword">while</span> (!hasTakeout) &#123;
+            log.debug(<span class="hljs-string">&quot;没外卖，先歇会！&quot;</span>);
+            <span class="hljs-keyword">try</span> &#123;
+                room.wait();
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+        log.debug(<span class="hljs-string">&quot;外卖送到没？[&#123;&#125;]&quot;</span>, hasTakeout);
+        <span class="hljs-keyword">if</span> (hasTakeout) &#123;
+            log.debug(<span class="hljs-string">&quot;可以开始干活了&quot;</span>);
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            log.debug(<span class="hljs-string">&quot;没干成活...&quot;</span>);
+        &#125;
+    &#125;
+&#125;, <span class="hljs-string">&quot;小女&quot;</span>).start();
+
+sleep(<span class="hljs-number">1000</span>);
+<span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+    <span class="hljs-keyword">synchronized</span> (room) &#123;
+        hasTakeout = <span class="hljs-keyword">true</span>;
+        log.debug(<span class="hljs-string">&quot;外卖到了噢！&quot;</span>);
+        room.notifyAll();
+    &#125;
+&#125;, <span class="hljs-string">&quot;送外卖的&quot;</span>).start();</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby"><span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span><span class="hljs-symbol">:</span><span class="hljs-number">47</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="hljs-literal">false</span>]
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span><span class="hljs-symbol">:</span><span class="hljs-number">47</span> [小南] c.TestCorrectPosture - 没烟，先歇会！
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span><span class="hljs-symbol">:</span><span class="hljs-number">47</span> [小女] c.TestCorrectPosture - 外卖送到没？[<span class="hljs-literal">false</span>]
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span><span class="hljs-symbol">:</span><span class="hljs-number">47</span> [小女] c.TestCorrectPosture - 没外卖，先歇会！
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span><span class="hljs-symbol">:</span><span class="hljs-number">48</span> [送外卖的] c.TestCorrectPosture - 外卖到了噢！
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span><span class="hljs-symbol">:</span><span class="hljs-number">48</span> [小女] c.TestCorrectPosture - 外卖送到没？[<span class="hljs-literal">true</span>]
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span><span class="hljs-symbol">:</span><span class="hljs-number">48</span> [小女] c.TestCorrectPosture - 可以开始干活了
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span><span class="hljs-symbol">:</span><span class="hljs-number">48</span> [小南] c.TestCorrectPosture - 没烟，先歇会！</code></pre></div>
+
+
+
+<h5 id="step-5"><a href="#step-5" class="headerlink" title="step 5"></a>step 5</h5><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">synchronized</span>(lock) &#123;
+  <span class="hljs-keyword">while</span>(条件不成立) &#123;
+    lock.wait();
+    &#125;
+    <span class="hljs-comment">// 干活</span>
+  &#125;
+<span class="hljs-comment">//另一个线程</span>
+<span class="hljs-keyword">synchronized</span>(lock) &#123;
+  lock.notifyAll();
+&#125;</code></pre></div>
+
+
+
+<h4 id="同步模式之保护性暂停"><a href="#同步模式之保护性暂停" class="headerlink" title="同步模式之保护性暂停"></a>同步模式之保护性暂停</h4><p>即 Guarded Suspension，用在 <strong>一个线程等待另一个线程的执行结果</strong><br>要点</p>
+<ul>
+<li>有一个结果需要从一个线程传递到另一个线程，让他们关联同一个 <code>GuardedObject</code></li>
+<li>如果有结果不断从一个线程到另一个线程那么可以使用消息队列（见生产者/消费者）</li>
+<li>JDK 中，<code>join</code> 的实现、<code>Future</code> 的实现，采用的就是此模式</li>
+<li>因为要等待另一方的结果，因此归类到<code>同步模式</code></li>
+</ul>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210429101955.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210429102727.png" srcset="/img/loading.gif"></p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+    GuardedObject guardedObject = <span class="hljs-keyword">new</span> GuardedObject();
+    <span class="hljs-keyword">new</span> Thread( ()-&gt;&#123;
+        log.info(<span class="hljs-string">&quot;等待结果&quot;</span>);
+        List&lt;String&gt; list = (List&lt;String&gt;)guardedObject.get();
+        System.out.println(list);
+        log.info(<span class="hljs-string">&quot;大小:&#123;&#125;&quot;</span>, list.size());
+    &#125;, <span class="hljs-string">&quot;t1&quot;</span>).start();
+
+    <span class="hljs-keyword">new</span> Thread( ()-&gt;&#123;
+        log.info(<span class="hljs-string">&quot;执行下载&quot;</span>);
+        List&lt;String&gt; list = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">try</span> &#123;
+            list = Downloader.download();
+        &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;
+            e.printStackTrace();
+        &#125;
+        guardedObject.complete(list);
+        log.info(<span class="hljs-string">&quot;下载完毕&quot;</span>);
+    &#125;, <span class="hljs-string">&quot;t2&quot;</span>).start();
+&#125;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GuardedObject</span> </span>&#123;
+    <span class="hljs-keyword">private</span> Object response;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Object lock = <span class="hljs-keyword">new</span> Object();
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">get</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (lock) &#123;
+            <span class="hljs-comment">// 条件不满足则等待</span>
+            <span class="hljs-keyword">while</span> (response == <span class="hljs-keyword">null</span>) &#123;
+                <span class="hljs-keyword">try</span> &#123;
+                    lock.wait();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+            <span class="hljs-keyword">return</span> response;
+        &#125;
+    &#125;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">complete</span><span class="hljs-params">(Object response)</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (lock) &#123;
+            <span class="hljs-comment">// 条件满足，通知等待线程</span>
+            <span class="hljs-keyword">this</span>.response = response;
+            lock.notifyAll();
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210429103640.png" srcset="/img/loading.gif"></p>
+<h5 id="拓展1-保护性暂停增加超时"><a href="#拓展1-保护性暂停增加超时" class="headerlink" title="拓展1 保护性暂停增加超时"></a>拓展1 保护性暂停增加超时</h5><p>如果要控制超时时间呢?</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GuardedObjectV2</span> </span>&#123;
+    <span class="hljs-keyword">private</span> Object response;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Object lock = <span class="hljs-keyword">new</span> Object();
+    Logger log = LoggerFactory.getLogger(<span class="hljs-string">&quot;log&quot;</span>);
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-keyword">long</span> millis)</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (lock) &#123;
+            <span class="hljs-comment">// 1) 记录最初时间</span>
+            <span class="hljs-keyword">long</span> begin = System.currentTimeMillis();
+            <span class="hljs-comment">// 2) 已经经历的时间</span>
+            <span class="hljs-keyword">long</span> timePassed = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">while</span> (response == <span class="hljs-keyword">null</span>) &#123;
+                <span class="hljs-comment">// 还需要wait的时间，防止虚假唤醒</span>
+                <span class="hljs-keyword">long</span> waitTime = millis - timePassed;
+                log.debug(<span class="hljs-string">&quot;还需要wait的时间waitTime: &#123;&#125;&quot;</span>, waitTime);
+                <span class="hljs-keyword">if</span> (waitTime &lt;= <span class="hljs-number">0</span>) &#123;
+                    log.debug(<span class="hljs-string">&quot;break...&quot;</span>);
+                    <span class="hljs-keyword">break</span>;
+                &#125;
+                <span class="hljs-keyword">try</span> &#123;
+                    lock.wait(waitTime);
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+                <span class="hljs-comment">// 3) 如果提前被唤醒，下次进入循环后wait的时间应该是 需要的时间 - 已经wait的时间 = 还需等待的时间</span>
+                timePassed = System.currentTimeMillis() - begin;
+                log.debug(<span class="hljs-string">&quot;timePassed: &#123;&#125;, object is null &#123;&#125;&quot;</span>,
+                        timePassed, response == <span class="hljs-keyword">null</span>);
+            &#125;
+            <span class="hljs-keyword">return</span> response;
+        &#125;
+    &#125;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">complete</span><span class="hljs-params">(Object response)</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (lock) &#123;
+            <span class="hljs-comment">// 条件满足，通知等待线程</span>
+            <span class="hljs-keyword">this</span>.response = response;
+            log.debug(<span class="hljs-string">&quot;notify...&quot;</span>);
+            lock.notifyAll();
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testGuardedV2</span><span class="hljs-params">()</span> </span>&#123;
+    GuardedObjectV2 v2 = <span class="hljs-keyword">new</span> GuardedObjectV2();
+    <span class="hljs-keyword">new</span> Thread( ()-&gt;&#123;
+        log.info(<span class="hljs-string">&quot;开始等待结果&quot;</span>);
+        Object o = v2.get(<span class="hljs-number">2000</span>);
+        log.info(<span class="hljs-string">&quot;等待完毕，结果是:&#123;&#125;&quot;</span>, o);
+    &#125;, <span class="hljs-string">&quot;t1&quot;</span>).start();
+
+    <span class="hljs-keyword">new</span> Thread( ()-&gt;&#123;
+        log.info(<span class="hljs-string">&quot;开始下载&quot;</span>);
+        <span class="hljs-keyword">try</span> &#123;
+            Thread.sleep(<span class="hljs-number">1000</span>);
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125;
+        v2.complete(<span class="hljs-keyword">new</span> Object());
+        log.info(<span class="hljs-string">&quot;下载完成&quot;</span>);
+    &#125;, <span class="hljs-string">&quot;t2&quot;</span>).start();
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby"><span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">24</span> [t2] c.Test20 - 开始下载
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">24</span> [t1] c.Test20 - 开始等待结果
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">25</span> [t2] c.Test20 - 下载完成
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">00</span><span class="hljs-symbol">:</span><span class="hljs-number">25</span> [t1] c.Test20 - 等待完毕，结果是<span class="hljs-symbol">:java</span>.lang.Object<span class="hljs-variable">@76671b</span>2e</code></pre></div>
+
+<p>如果t1的等待时间弄小：</p>
+<div class="hljs"><pre><code class="hljs java">Object o = v2.get(<span class="hljs-number">500</span>);</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby"><span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">01</span><span class="hljs-symbol">:</span><span class="hljs-number">02</span> [t1] c.Test20 - 开始等待结果
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">01</span><span class="hljs-symbol">:</span><span class="hljs-number">02</span> [t2] c.Test20 - 开始下载
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">01</span><span class="hljs-symbol">:</span><span class="hljs-number">02</span> [t1] c.Test20 - 等待完毕，结果是<span class="hljs-symbol">:null</span>
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">01</span><span class="hljs-symbol">:</span><span class="hljs-number">03</span> [t2] c.Test20 - 下载完成</code></pre></div>
+
+<p>如果发生虚假唤醒：</p>
+<div class="hljs"><pre><code class="hljs java">v2.complete(<span class="hljs-keyword">null</span>);<span class="hljs-comment">// response没有值</span></code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby"><span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">01</span><span class="hljs-symbol">:</span><span class="hljs-number">48</span> [t1] c.Test20 - 开始等待结果
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">01</span><span class="hljs-symbol">:</span><span class="hljs-number">48</span> [t2] c.Test20 - 开始下载
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">01</span><span class="hljs-symbol">:</span><span class="hljs-number">49</span> [t2] c.Test20 - 下载完成
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">01</span><span class="hljs-symbol">:</span><span class="hljs-number">50</span> [t1] c.Test20 - 等待完毕，结果是<span class="hljs-symbol">:null</span></code></pre></div>
+
+<p>t1会等足两秒钟！</p>
+<h5 id="拓展2-join原理"><a href="#拓展2-join原理" class="headerlink" title="拓展2 join原理"></a>拓展2 join原理</h5><p>是调用者 <code>轮询检查</code> 线程 alive 状态</p>
+<div class="hljs"><pre><code class="hljs java">t1.join();</code></pre></div>
+
+<p>等价于下面的代码</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">synchronized</span> (t1) &#123;
+  <span class="hljs-comment">// 调用者线程进入 t1 的 waitSet 等待, 直到 t1 运行结束</span>
+  <span class="hljs-keyword">while</span> (t1.isAlive()) &#123;
+    t1.wait(<span class="hljs-number">0</span>);
+  &#125;
+&#125;</code></pre></div>
+
+<blockquote>
+<p>注意<br>join 体现的是【保护性暂停】模式，请参考之</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210429111928.png" srcset="/img/loading.gif"></p>
+<h5 id="拓展3-保护性暂停增加多类使用"><a href="#拓展3-保护性暂停增加多类使用" class="headerlink" title="拓展3 保护性暂停增加多类使用"></a>拓展3 保护性暂停增加多类使用</h5><p>图中 Futures 就好比居民楼一层的信箱（每个信箱有房间编号），左侧的 t0，t2，t4 就好比 <code>等待邮件的居民</code> ，右侧的 t1，t3，t5 就好比 <code>邮递员</code><br>如果需要在多个类之间使用 GuardedObject 对象，作为参数传递不是很方便，因此设计一个用来解耦的中间类，这样不仅能够解耦【结果等待者】和【结果生产者】，还能够同时支持多个任务的管理</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210429113343.png" srcset="/img/loading.gif"></p>
+<p>新增 id 用来标识 Guarded Object</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GuardedObjectV3</span> </span>&#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> id;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getId</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> id;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setId</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.id = id;
+    &#125;
+
+    <span class="hljs-keyword">private</span> Object response;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Object lock = <span class="hljs-keyword">new</span> Object();
+
+    Logger log = LoggerFactory.getLogger(<span class="hljs-string">&quot;log&quot;</span>);
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-keyword">long</span> millis)</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (lock) &#123;
+            <span class="hljs-comment">// 1) 记录最初时间</span>
+            <span class="hljs-keyword">long</span> begin = System.currentTimeMillis();
+            <span class="hljs-comment">// 2) 已经经历的时间</span>
+            <span class="hljs-keyword">long</span> timePassed = <span class="hljs-number">0</span>;
+            <span class="hljs-keyword">while</span> (response == <span class="hljs-keyword">null</span>) &#123;
+                <span class="hljs-comment">// 还需要wait的时间，防止虚假唤醒</span>
+                <span class="hljs-keyword">long</span> waitTime = millis - timePassed;
+                log.debug(<span class="hljs-string">&quot;还需要wait的时间waitTime: &#123;&#125;&quot;</span>, waitTime);
+                <span class="hljs-keyword">if</span> (waitTime &lt;= <span class="hljs-number">0</span>) &#123;
+                    log.debug(<span class="hljs-string">&quot;break...&quot;</span>);
+                    <span class="hljs-keyword">break</span>;
+                &#125;
+                <span class="hljs-keyword">try</span> &#123;
+                    lock.wait(waitTime);
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+                <span class="hljs-comment">// 3) 如果提前被唤醒，下次进入循环后wait的时间应该是 需要的时间 - 已经wait的时间 = 还需等待的时间</span>
+                timePassed = System.currentTimeMillis() - begin;
+                log.debug(<span class="hljs-string">&quot;timePassed: &#123;&#125;, object is null &#123;&#125;&quot;</span>,
+                        timePassed, response == <span class="hljs-keyword">null</span>);
+            &#125;
+            <span class="hljs-keyword">return</span> response;
+        &#125;
+    &#125;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">complete</span><span class="hljs-params">(Object response)</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (lock) &#123;
+            <span class="hljs-comment">// 条件满足，通知等待线程</span>
+            <span class="hljs-keyword">this</span>.response = response;
+            log.debug(<span class="hljs-string">&quot;notify...&quot;</span>);
+            lock.notifyAll();
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+<p>中间解耦类（邮箱box）</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Slf4j(topic = &quot;c.People&quot;)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">People</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Thread</span></span>&#123;
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-comment">// 收信</span>
+        GuardedObjectV3 guardedObject = Mailboxes.createGuardedObject();
+        log.debug(<span class="hljs-string">&quot;开始收信 id:&#123;&#125;&quot;</span>, guardedObject.getId());
+        Object mail = guardedObject.get(<span class="hljs-number">5000</span>);
+        log.debug(<span class="hljs-string">&quot;收到信 id:&#123;&#125;, 内容:&#123;&#125;&quot;</span>, guardedObject.getId(), mail);
+    &#125;
+&#125;
+
+<span class="hljs-meta">@Slf4j(topic = &quot;c.Postman&quot;)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Postman</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Thread</span> </span>&#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> id;
+    <span class="hljs-keyword">private</span> String mail;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Postman</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, String mail)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.id = id;
+        <span class="hljs-keyword">this</span>.mail = mail;
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
+        GuardedObjectV3 guardedObject = Mailboxes.getGuardedObject(id);
+        log.debug(<span class="hljs-string">&quot;送信 id:&#123;&#125;, 内容:&#123;&#125;&quot;</span>, id, mail);
+        guardedObject.complete(mail);
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Mailboxes</span> </span>&#123;
+    <span class="hljs-comment">// 为保证线程安全</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Map&lt;Integer, GuardedObjectV3&gt; boxes = <span class="hljs-keyword">new</span> Hashtable&lt;&gt;();
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> id = <span class="hljs-number">1</span>;
+
+    <span class="hljs-comment">// 产生唯一 id</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">int</span> <span class="hljs-title">generateId</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> id++;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> GuardedObjectV3 <span class="hljs-title">getGuardedObject</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> boxes.remove(id);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> GuardedObjectV3 <span class="hljs-title">createGuardedObject</span><span class="hljs-params">()</span> </span>&#123;
+        GuardedObjectV3 go = <span class="hljs-keyword">new</span> GuardedObjectV3(generateId());
+        boxes.put(go.getId(), go);
+        <span class="hljs-keyword">return</span> go;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Set&lt;Integer&gt; <span class="hljs-title">getIds</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> boxes.keySet();
+    &#125;
+&#125;</code></pre></div>
+
+<p>Main:</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) &#123;
+        <span class="hljs-keyword">new</span> People().start();
+    &#125;
+    Thread.sleep(<span class="hljs-number">1000</span>);
+    <span class="hljs-keyword">for</span> (Integer id : Mailboxes.getIds()) &#123;
+        <span class="hljs-keyword">new</span> Postman(id, <span class="hljs-string">&quot;内容&quot;</span> + id).start();
+    &#125;
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby"><span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">51</span><span class="hljs-symbol">:</span><span class="hljs-number">12</span> [Thread-<span class="hljs-number">0</span>] c.People - 开始收信 <span class="hljs-symbol">id:</span><span class="hljs-number">3</span>
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">51</span><span class="hljs-symbol">:</span><span class="hljs-number">12</span> [Thread-<span class="hljs-number">1</span>] c.People - 开始收信 <span class="hljs-symbol">id:</span><span class="hljs-number">1</span>
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">51</span><span class="hljs-symbol">:</span><span class="hljs-number">12</span> [Thread-<span class="hljs-number">2</span>] c.People - 开始收信 <span class="hljs-symbol">id:</span><span class="hljs-number">2</span>
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">51</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span> [Thread-<span class="hljs-number">3</span>] c.Postman - 送信 <span class="hljs-symbol">id:</span><span class="hljs-number">3</span>, 内容<span class="hljs-symbol">:</span>内容<span class="hljs-number">3</span>
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">51</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span> [Thread-<span class="hljs-number">4</span>] c.Postman - 送信 <span class="hljs-symbol">id:</span><span class="hljs-number">2</span>, 内容<span class="hljs-symbol">:</span>内容<span class="hljs-number">2</span>
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">51</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span> [Thread-<span class="hljs-number">5</span>] c.Postman - 送信 <span class="hljs-symbol">id:</span><span class="hljs-number">1</span>, 内容<span class="hljs-symbol">:</span>内容<span class="hljs-number">1</span>
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">51</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span> [Thread-<span class="hljs-number">0</span>] c.People - 收到信 <span class="hljs-symbol">id:</span><span class="hljs-number">3</span>, 内容<span class="hljs-symbol">:</span>内容<span class="hljs-number">3</span>
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">51</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span> [Thread-<span class="hljs-number">2</span>] c.People - 收到信 <span class="hljs-symbol">id:</span><span class="hljs-number">2</span>, 内容<span class="hljs-symbol">:</span>内容<span class="hljs-number">2</span>
+<span class="hljs-number">11</span><span class="hljs-symbol">:</span><span class="hljs-number">51</span><span class="hljs-symbol">:</span><span class="hljs-number">13</span> [Thread-<span class="hljs-number">1</span>] c.People - 收到信 <span class="hljs-symbol">id:</span><span class="hljs-number">1</span>, 内容<span class="hljs-symbol">:</span>内容<span class="hljs-number">1</span></code></pre></div>
+
+<p>由结果可得到：</p>
+<p>一个邮递员一定对应一个收件人</p>
+<p>一一对应的关系；如果不是一一对应，应该是生产者与消费者模式；</p>
+<h4 id="异步模式之生产者-消费者"><a href="#异步模式之生产者-消费者" class="headerlink" title="异步模式之生产者/消费者"></a>异步模式之生产者/消费者</h4><p>要点</p>
+<ol>
+<li>与前面的保护性暂停中的 GuardObject 不同， <strong>不需要</strong> 产生结果和消费结果的线程 <strong>一一对应</strong> </li>
+<li>消费队列可以用来 <code>平衡生产和消费的线程资源</code></li>
+<li>生产者仅负责产生结果数据，不关心数据该如何处理，而消费者专心处理结果数据</li>
+<li>消息队列是有容量限制的，满时不会再加入数据，空时不会再消耗数据</li>
+<li>JDK 中各种<a target="_blank" rel="noopener" href="https://blog.csdn.net/yanpenglei/article/details/79556591">阻塞队列</a>，采用的就是这种模式</li>
+</ol>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210430085646.png" srcset="/img/loading.gif"></p>
+<p>异步是因为t3生产的要等到t1，而保护性暂停会一一对应立刻消费</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Slf4j(topic = &quot;c.Test21&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test21</span> </span>&#123;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        MessageQueue queue = <span class="hljs-keyword">new</span> MessageQueue(<span class="hljs-number">2</span>);
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) &#123;
+            <span class="hljs-keyword">int</span> id = i;
+            <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+                queue.put(<span class="hljs-keyword">new</span> Message(id , <span class="hljs-string">&quot;值&quot;</span>+id));
+            &#125;, <span class="hljs-string">&quot;生产者&quot;</span> + i).start();
+        &#125;
+
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123;
+                sleep(<span class="hljs-number">1</span>);
+                Message message = queue.take();
+            &#125;
+        &#125;, <span class="hljs-string">&quot;消费者&quot;</span>).start();
+    &#125;
+
+&#125;
+
+<span class="hljs-comment">// 消息队列类 ， java 线程之间通信</span>
+<span class="hljs-meta">@Slf4j(topic = &quot;c.MessageQueue&quot;)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MessageQueue</span> </span>&#123;
+    <span class="hljs-comment">// 消息的队列集合（双向队列）</span>
+    <span class="hljs-keyword">private</span> LinkedList&lt;Message&gt; list = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();
+    <span class="hljs-comment">// 队列容量</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> capcity;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">MessageQueue</span><span class="hljs-params">(<span class="hljs-keyword">int</span> capcity)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.capcity = capcity;
+    &#125;
+
+    <span class="hljs-comment">// 获取消息</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Message <span class="hljs-title">take</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-comment">// 检查队列是否为空</span>
+        <span class="hljs-keyword">synchronized</span> (list) &#123;
+            <span class="hljs-keyword">while</span>(list.isEmpty()) &#123;
+                <span class="hljs-keyword">try</span> &#123;
+                    log.debug(<span class="hljs-string">&quot;队列为空, 消费者线程等待&quot;</span>);
+                    list.wait();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+            <span class="hljs-comment">// 从队列头部获取消息并返回</span>
+            Message message = list.removeFirst();
+            log.debug(<span class="hljs-string">&quot;已消费消息 &#123;&#125;&quot;</span>, message);
+            list.notifyAll();
+            <span class="hljs-keyword">return</span> message;
+        &#125;
+    &#125;
+
+    <span class="hljs-comment">// 存入消息</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">put</span><span class="hljs-params">(Message message)</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (list) &#123;
+            <span class="hljs-comment">// 检查对象是否已满</span>
+            <span class="hljs-keyword">while</span>(list.size() == capcity) &#123;
+                <span class="hljs-keyword">try</span> &#123;
+                    log.debug(<span class="hljs-string">&quot;队列已满, 生产者线程等待&quot;</span>);
+                    list.wait();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+            <span class="hljs-comment">// 将消息加入队列尾部</span>
+            list.addLast(message);
+            log.debug(<span class="hljs-string">&quot;已生产消息 &#123;&#125;&quot;</span>, message);
+            list.notifyAll();
+        &#125;
+    &#125;
+&#125;
+
+<span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Message</span> </span>&#123;
+    <span class="hljs-comment">// final不能有子类，子类不可覆盖，更为保险</span>
+    <span class="hljs-comment">// 没有set 不能修改值，线程安全</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> id;
+    <span class="hljs-keyword">private</span> Object value;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Message</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id, Object value)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.id = id;
+        <span class="hljs-keyword">this</span>.value = value;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getId</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> id;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">getValue</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> value;
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Message&#123;&quot;</span> +
+                <span class="hljs-string">&quot;id=&quot;</span> + id +
+                <span class="hljs-string">&quot;, value=&quot;</span> + value +
+                <span class="hljs-string">&#x27;&#125;&#x27;</span>;
+    &#125;
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby">09<span class="hljs-symbol">:</span>08<span class="hljs-symbol">:</span><span class="hljs-number">14</span> [生产者<span class="hljs-number">0</span>] c.MessageQueue - 已生产消息 Message&#123;id=<span class="hljs-number">0</span>, value=值<span class="hljs-number">0</span>&#125;
+09<span class="hljs-symbol">:</span>08<span class="hljs-symbol">:</span><span class="hljs-number">14</span> [生产者<span class="hljs-number">1</span>] c.MessageQueue - 已生产消息 Message&#123;id=<span class="hljs-number">1</span>, value=值<span class="hljs-number">1</span>&#125;
+09<span class="hljs-symbol">:</span>08<span class="hljs-symbol">:</span><span class="hljs-number">14</span> [生产者<span class="hljs-number">2</span>] c.MessageQueue - 队列已满, 生产者线程等待
+09<span class="hljs-symbol">:</span>08<span class="hljs-symbol">:</span><span class="hljs-number">15</span> [消费者] c.MessageQueue - 已消费消息 Message&#123;id=<span class="hljs-number">0</span>, value=值<span class="hljs-number">0</span>&#125;
+09<span class="hljs-symbol">:</span>08<span class="hljs-symbol">:</span><span class="hljs-number">16</span> [生产者<span class="hljs-number">2</span>] c.MessageQueue - 已生产消息 Message&#123;id=<span class="hljs-number">2</span>, value=值<span class="hljs-number">2</span>&#125;
+09<span class="hljs-symbol">:</span>08<span class="hljs-symbol">:</span><span class="hljs-number">17</span> [消费者] c.MessageQueue - 已消费消息 Message&#123;id=<span class="hljs-number">1</span>, value=值<span class="hljs-number">1</span>&#125;
+09<span class="hljs-symbol">:</span>08<span class="hljs-symbol">:</span><span class="hljs-number">18</span> [消费者] c.MessageQueue - 已消费消息 Message&#123;id=<span class="hljs-number">2</span>, value=值<span class="hljs-number">2</span>&#125;
+09<span class="hljs-symbol">:</span>08<span class="hljs-symbol">:</span><span class="hljs-number">19</span> [消费者] c.MessageQueue - 队列为空, 消费者线程等待</code></pre></div>
+
+
+
+<h3 id="3-8-park-amp-unpark"><a href="#3-8-park-amp-unpark" class="headerlink" title="3.8 park &amp; unpark"></a>3.8 park &amp; unpark</h3><h4 id="3-8-1-基本使用"><a href="#3-8-1-基本使用" class="headerlink" title="3.8.1 基本使用"></a>3.8.1 基本使用</h4><p>它们是 LockSupport 类中的方法</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 暂停当前线程</span>
+LockSupport.park();  <span class="hljs-comment">// WAIT状态</span>
+<span class="hljs-comment">// 恢复某个线程的运行</span>
+LockSupport.unpark(暂停线程对象)</code></pre></div>
+
+<p>先 park 再 unpark</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+    Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        log.debug(<span class="hljs-string">&quot;start...&quot;</span>);
+        sleep(<span class="hljs-number">1</span>);
+        log.debug(<span class="hljs-string">&quot;park...&quot;</span>);
+        LockSupport.park();
+        log.debug(<span class="hljs-string">&quot;resume...&quot;</span>);
+    &#125;, <span class="hljs-string">&quot;t1&quot;</span>);
+    t1.start();
+
+    sleep(<span class="hljs-number">2</span>);
+    log.debug(<span class="hljs-string">&quot;unpark...&quot;</span>);
+    LockSupport.unpark(t1);
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby">09<span class="hljs-symbol">:</span><span class="hljs-number">22</span><span class="hljs-symbol">:</span><span class="hljs-number">35</span> [t1] c.TestParkUnpark - start...
+09<span class="hljs-symbol">:</span><span class="hljs-number">22</span><span class="hljs-symbol">:</span><span class="hljs-number">36</span> [t1] c.TestParkUnpark - park...
+09<span class="hljs-symbol">:</span><span class="hljs-number">22</span><span class="hljs-symbol">:</span><span class="hljs-number">37</span> [main] c.TestParkUnpark - unpark...
+09<span class="hljs-symbol">:</span><span class="hljs-number">22</span><span class="hljs-symbol">:</span><span class="hljs-number">37</span> [t1] c.TestParkUnpark - resume...</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210430092548.png" srcset="/img/loading.gif"></p>
+<p>如果主线程1s后就unpark，t1 2s后才park，t1是否会继续运行？</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210430092720.png" srcset="/img/loading.gif"></p>
+<p><code>unpark既可以在线程暂停前调用，也可以在之后调用</code></p>
+<h4 id="3-8-2-特点"><a href="#3-8-2-特点" class="headerlink" title="3.8.2 特点"></a>3.8.2 特点</h4><p>与 Object 的 wait &amp; notify 相比</p>
+<ul>
+<li><p>wait，notify 和 notifyAll 必须配合 Object Monitor 一起使用，而 park，unpark 不必</p>
+</li>
+<li><p>park &amp; unpark 是以 <code>线程为单位</code> 来【阻塞】和【唤醒】线程，而 notify 只能 <code>随机</code> 唤醒一个等待线程，notifyAll 是唤醒所有等待线程，就不那么【精确】</p>
+</li>
+<li><p>park &amp; unpark  <code>可以先 unpark</code> ，而 wait &amp; notify 不能先 notify</p>
+</li>
+</ul>
+<h4 id="3-8-3-原理"><a href="#3-8-3-原理" class="headerlink" title="3.8.3 原理"></a>3.8.3 原理</h4><p> <strong>每个线程都有自己的一个 Parker 对象</strong> ，由三部分组成  <code>_counter </code> ， <code>_cond</code> 和 <code>_mutex</code> 打个比喻</p>
+<ul>
+<li>线程就像一个旅人，Parker 就像他随身携带的背包，cond 条件变量就好比背包中的帐篷。counter 就好比背包中的备用干粮（0 为耗尽，1 为充足）</li>
+<li>调用 park 就是要看 <strong>需不需要停下来歇息</strong> <ul>
+<li>如果备用干粮耗尽，那么钻进帐篷歇息</li>
+<li>如果备用干粮充足，那么不需停留，继续前进</li>
+</ul>
+</li>
+<li>调用 unpark，就好比 <strong>令干粮充足</strong> <ul>
+<li>如果这时线程还在帐篷，就唤醒让他继续前进</li>
+<li>如果这时线程还在运行，那么 <code>下次他调用 park 时，仅是消耗掉备用干粮</code> ，不需停留继续前进<ul>
+<li>因为背包空间有限，<code>多次调用 unpark 仅会补充一份备用干粮</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="先调用park再调用upark的过程"><a href="#先调用park再调用upark的过程" class="headerlink" title="先调用park再调用upark的过程"></a>先调用park再调用upark的过程</h5><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210430093445.png" srcset="/img/loading.gif"></p>
+<ol>
+<li>当前线程调用 Unsafe.park() 方法</li>
+<li>检查 _counter ，本情况为 0，这时，获得  _mutex 互斥锁 </li>
+<li>线程进入 _cond 条件变量阻塞</li>
+<li>设置 _counter = 0</li>
+</ol>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210430093840.png" srcset="/img/loading.gif"></p>
+<ol>
+<li>调用 Unsafe.unpark(Thread_0) 方法，设置 _counter 为 1</li>
+<li>唤醒 _cond 条件变量中的 Thread_0</li>
+<li>Thread_0 恢复运行</li>
+<li>设置 _counter 为 0</li>
+</ol>
+<h5 id="先调用unpark再调用park的过程"><a href="#先调用unpark再调用park的过程" class="headerlink" title="先调用unpark再调用park的过程"></a>先调用unpark再调用park的过程</h5><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210430093925.png" srcset="/img/loading.gif"></p>
+<ol>
+<li>调用 Unsafe.unpark(Thread_0) 方法，设置 _counter 为 1</li>
+<li>当前线程调用 Unsafe.park() 方法</li>
+<li>检查 _counter ，本情况为 1，这时线程无需阻塞，继续运行</li>
+<li>设置 _counter 为 0</li>
+</ol>
+<h3 id="3-9-重新理解线程状态"><a href="#3-9-重新理解线程状态" class="headerlink" title="3.9 重新理解线程状态"></a>3.9 重新理解线程状态</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210430094221.png" srcset="/img/loading.gif"></p>
+<p>假设有线程 <code>Thread t</code></p>
+<h4 id="情况-1-NEW-–-gt-RUNNABLE"><a href="#情况-1-NEW-–-gt-RUNNABLE" class="headerlink" title="情况 1 NEW –&gt; RUNNABLE"></a>情况 1 NEW –&gt; RUNNABLE</h4><p>当调用 t.start() 方法时，由 NEW –&gt; RUNNABLE</p>
+<h4 id="情况2-RUNNABLE-lt-–-gt-WAITING"><a href="#情况2-RUNNABLE-lt-–-gt-WAITING" class="headerlink" title="情况2 RUNNABLE &lt;–&gt; WAITING"></a>情况2 RUNNABLE &lt;–&gt; WAITING</h4><p> <strong>t 线程</strong> 用 <code>synchronized(obj) </code> 获取了对象锁后</p>
+<ul>
+<li><p>调用 <code>obj.wait() </code>方法时，t 线程从 <code>RUNNABLE --&gt; WAITING</code></p>
+</li>
+<li><p>调用 <code>obj.notify() ， obj.notifyAll() ， t.interrupt()</code> 时</p>
+<ul>
+<li>竞争锁成功，t 线程从<code>WAITING --&gt; RUNNABLE</code></li>
+<li>竞争锁失败，t 线程从<code>WAITING --&gt; BLOCKED</code></li>
+</ul>
+<p>( <code>修正</code> ：线程被notify之后不会直接参与竞争锁，因为唤醒他们的线程正在使用锁，没有竞争锁成功失败之说，所以线程被notify之后直接从waitset进入entrylist，对应的状态就是从WAITING变为BLOCKED,至于锁的竞争成功与失败那是转变为BLOCKED状态之后的事情了)</p>
+</li>
+</ul>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210430100603.png" srcset="/img/loading.gif"></p>
+<p>运行到notifyAll的时候，由于t1和t2都执行了wait，会进入waitset中，处于 <strong>waiting状态</strong> ，之后主线程持有锁，唤醒他们，但执行到下一句 }的时候， <strong>主线程还在持有锁，t1和t2都无法获取锁，所以两个状态都是blocked</strong> （idea显示为monitor）</p>
+<p>主线程释放锁后，竞争才会从blocked变成runnable</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210430101049.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210430101552.png" srcset="/img/loading.gif"></p>
+<h4 id="情况-3-RUNNABLE-lt-–-gt-WAITING"><a href="#情况-3-RUNNABLE-lt-–-gt-WAITING" class="headerlink" title="情况 3 RUNNABLE &lt;–&gt; WAITING"></a>情况 3 RUNNABLE &lt;–&gt; WAITING</h4><ul>
+<li><strong>当前线程</strong> 调用 <code>t.join()</code> 方法时，当前线程从 <code>RUNNABLE --&gt; WAITING</code><ul>
+<li>注意是 <strong>当前线程</strong> 在 <strong>t 线程对象的监视器上等待</strong> </li>
+</ul>
+</li>
+<li> <strong>t 线程运行结束</strong> ，或调用了 <strong>当前线程的 interrupt()</strong>  时， <strong>当前线程</strong> 从 WAITING –&gt; RUNNABLE</li>
+</ul>
+<h4 id="情况-4-RUNNABLE-lt-–-gt-WAITING"><a href="#情况-4-RUNNABLE-lt-–-gt-WAITING" class="headerlink" title="情况 4 RUNNABLE &lt;–&gt; WAITING"></a>情况 4 RUNNABLE &lt;–&gt; WAITING</h4><ul>
+<li>当前线程调用<code> LockSupport.park()</code> 方法会让当前线程从 <code>RUNNABLE --&gt; WAITING</code></li>
+<li>调用 <code>LockSupport.unpark(目标线程)</code> 或调用了线程 的<code>interrupt()</code>，会让目标线程从 WAITING –&gt;<br>RUNNABLE</li>
+</ul>
+<h4 id="情况-5-RUNNABLE-lt-–-gt-TIMED-WAITING"><a href="#情况-5-RUNNABLE-lt-–-gt-TIMED-WAITING" class="headerlink" title="情况 5 RUNNABLE &lt;–&gt; TIMED_WAITING"></a>情况 5 RUNNABLE &lt;–&gt; TIMED_WAITING</h4><p> <strong>t 线程</strong> 用 <code>synchronized(obj)</code> 获取了对象锁后</p>
+<ul>
+<li>调用 <code>obj.wait(long n)</code> 方法时，t 线程从 <code>RUNNABLE --&gt; TIMED_WAITING</code></li>
+<li>t 线程等待时间超过了 n 毫秒，或调用 obj.notify() ， obj.notifyAll() ， t.interrupt() 时<ul>
+<li>竞争锁成功，t 线程从TIMED_WAITING –&gt; RUNNABLE</li>
+<li>竞争锁失败，t 线程从TIMED_WAITING –&gt; BLOCKED</li>
+</ul>
+</li>
+</ul>
+<h4 id="情况-6-RUNNABLE-lt-–-gt-TIMED-WAITING"><a href="#情况-6-RUNNABLE-lt-–-gt-TIMED-WAITING" class="headerlink" title="情况 6 RUNNABLE &lt;–&gt; TIMED_WAITING"></a>情况 6 RUNNABLE &lt;–&gt; TIMED_WAITING</h4><ul>
+<li>当前线程调用 <code>t.join(long n) </code>方法时，当前线程从 RUNNABLE –&gt; TIMED_WAITING<ul>
+<li>注意是 <strong>当前线程</strong> 在 <strong>t 线程对象的监视器上等待</strong> </li>
+</ul>
+</li>
+<li>当前线程等待时间超过了 n 毫秒，或t 线程运行结束，或调用了当前线程的 interrupt() 时，当前线程从<br>TIMED_WAITING –&gt; RUNNABLE</li>
+</ul>
+<h4 id="情况7-RUNNABLE-lt-–-gt-TIMED-WAITING"><a href="#情况7-RUNNABLE-lt-–-gt-TIMED-WAITING" class="headerlink" title="情况7 RUNNABLE &lt;–&gt; TIMED_WAITING"></a>情况7 RUNNABLE &lt;–&gt; TIMED_WAITING</h4><ul>
+<li>当前线程调用 <code>Thread.sleep(long n)</code>  ，当前线程从 RUNNABLE –&gt; TIMED_WAITING</li>
+<li>当前线程等待时间超过了 n 毫秒，当前线程从TIMED_WAITING –&gt; RUNNABLE-</li>
+</ul>
+<h4 id="情况-8-RUNNABLE-lt-–-gt-TIMED-WAITING"><a href="#情况-8-RUNNABLE-lt-–-gt-TIMED-WAITING" class="headerlink" title="情况 8 RUNNABLE &lt;–&gt; TIMED_WAITING"></a>情况 8 RUNNABLE &lt;–&gt; TIMED_WAITING</h4><ul>
+<li>当前线程调用 <code>LockSupport.parkNanos(long nanos) 或 LockSupport.parkUntil(long millis)</code> 时， <strong>当前线程</strong> 从 RUNNABLE –&gt; TIMED_WAITING</li>
+<li>调用 LockSupport.unpark(目标线程) 或调用了线程 的 interrupt() ，或是等待超时，会让目标线程从<br>TIMED_WAITING–&gt; RUNNABLE</li>
+</ul>
+<h4 id="情况-9-RUNNABLE-lt-–-gt-BLOCKED"><a href="#情况-9-RUNNABLE-lt-–-gt-BLOCKED" class="headerlink" title="情况 9 RUNNABLE &lt;–&gt; BLOCKED"></a>情况 9 RUNNABLE &lt;–&gt; BLOCKED</h4><ul>
+<li> <strong>t 线程</strong> 用 **synchronized(obj) ** 获取了对象锁时如果竞争失败，从RUNNABLE –&gt; BLOCKED</li>
+<li>持 obj 锁线程的同步代码块执行完毕，会唤醒该对象上所有 BLOCKED的线程重新竞争，如果其中 t 线程竞争成功，从 BLOCKED –&gt; RUNNABLE ，其它 <strong>失败的线程仍然BLOCKED</strong> </li>
+</ul>
+<h4 id="情况-10-RUNNABLE-lt-–-gt-TERMINATED"><a href="#情况-10-RUNNABLE-lt-–-gt-TERMINATED" class="headerlink" title="情况 10 RUNNABLE &lt;–&gt; TERMINATED"></a>情况 10 RUNNABLE &lt;–&gt; TERMINATED</h4><p>当前线程所有代码运行完毕，进入 <code>TERMINATED</code></p>
+<h3 id="3-10-多把锁"><a href="#3-10-多把锁" class="headerlink" title="3.10 多把锁"></a>3.10 多把锁</h3><h4 id="多把不相干的锁"><a href="#多把不相干的锁" class="headerlink" title="多把不相干的锁"></a>多把不相干的锁</h4><p>一间大屋子有两个功能：睡觉、学习，互不相干。<br>现在小南要学习，小女要睡觉，但如果只用一间屋子（一个对象锁）的话，那么并发度很低解决方法是准备多个房间（多个对象锁）<br>例如</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BigRoom</span> </span>&#123;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sleep</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) &#123;
+            log.debug(<span class="hljs-string">&quot;sleeping 2 小时&quot;</span>);
+            Sleeper.sleep(<span class="hljs-number">2</span>);
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">study</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) &#123;
+            log.debug(<span class="hljs-string">&quot;study 1 小时&quot;</span>);
+            Sleeper.sleep(<span class="hljs-number">1</span>);
+        &#125;
+    &#125;
+
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        BigRoom bigRoom = <span class="hljs-keyword">new</span> BigRoom();
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            bigRoom.study();
+        &#125;,<span class="hljs-string">&quot;小南&quot;</span>).start();
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            bigRoom.sleep();
+        &#125;,<span class="hljs-string">&quot;小女&quot;</span>).start();
+    &#125;</code></pre></div>
+
+<p>并发度低，解决方法：准备多个房间：</p>
+<div class="hljs"><pre><code class="hljs java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Object studyRoom = <span class="hljs-keyword">new</span> Object();
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Object bedRoom = <span class="hljs-keyword">new</span> Object();
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sleep</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (bedRoom) &#123;
+            log.debug(<span class="hljs-string">&quot;sleeping 2 小时&quot;</span>);
+            Sleeper.sleep(<span class="hljs-number">2</span>);
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">study</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">synchronized</span> (studyRoom) &#123;
+            log.debug(<span class="hljs-string">&quot;study 1 小时&quot;</span>);
+            Sleeper.sleep(<span class="hljs-number">1</span>);
+        &#125;
+    &#125;
+
+&#125;</code></pre></div>
+
+<p>利用 <strong>细粒度锁</strong> </p>
+<p>将锁的粒度细分</p>
+<ul>
+<li>好处，是可以增强并发度</li>
+<li>坏处，如果一个线程需要同时获得多把锁，就容易发生 <code>死锁</code></li>
+</ul>
+<h3 id="3-11-活跃性"><a href="#3-11-活跃性" class="headerlink" title="3.11 活跃性"></a>3.11 活跃性</h3><h4 id="3-11-1-死锁"><a href="#3-11-1-死锁" class="headerlink" title="3.11.1 死锁"></a>3.11.1 死锁</h4><p>有这样的情况：一个线程需要 <strong>同时获取多把锁</strong> ，这时就容易发生死锁<br>t1 线程 获得 A对象 锁，接下来想获取 B对象 的锁 t2 线程 获得 B对象 锁，接下来想获取 A对象 的锁 例：</p>
+<div class="hljs"><pre><code class="hljs java">Object A = <span class="hljs-keyword">new</span> Object();
+Object B = <span class="hljs-keyword">new</span> Object();
+Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+    <span class="hljs-keyword">synchronized</span> (A) &#123;
+        log.debug(<span class="hljs-string">&quot;lock A 已经获得&quot;</span>);
+        sleep(<span class="hljs-number">1</span>);
+        <span class="hljs-keyword">synchronized</span> (B) &#123;
+            log.debug(<span class="hljs-string">&quot;尝试获取 lock B&quot;</span>);
+            log.debug(<span class="hljs-string">&quot;操作...&quot;</span>);
+        &#125;
+    &#125;
+&#125;, <span class="hljs-string">&quot;t1&quot;</span>);
+
+Thread t2 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+    <span class="hljs-keyword">synchronized</span> (B) &#123;
+        log.debug(<span class="hljs-string">&quot;lock B 已经获得&quot;</span>);
+        sleep(<span class="hljs-number">0.5</span>);
+        <span class="hljs-keyword">synchronized</span> (A) &#123;
+            log.debug(<span class="hljs-string">&quot;尝试获取 lock A&quot;</span>);
+            log.debug(<span class="hljs-string">&quot;操作...&quot;</span>);
+        &#125;
+    &#125;
+&#125;, <span class="hljs-string">&quot;t2&quot;</span>);
+t1.start();
+t2.start();</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby">08<span class="hljs-symbol">:</span><span class="hljs-number">49</span><span class="hljs-symbol">:</span><span class="hljs-number">17</span> [t1] c.TestDeadLock - lock A 已经获得
+08<span class="hljs-symbol">:</span><span class="hljs-number">49</span><span class="hljs-symbol">:</span><span class="hljs-number">17</span> [t2] c.TestDeadLock - lock B 已经获得</code></pre></div>
+
+
+
+<h4 id="3-11-2-定位死锁"><a href="#3-11-2-定位死锁" class="headerlink" title="3.11.2 定位死锁"></a>3.11.2 定位死锁</h4><ul>
+<li><p>检测死锁可以使用 jconsole工具，或者使用 jps 定位进程 id，再用 jstack 定位死锁：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501085403.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501085527.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>避免死锁要注意加锁顺序</p>
+</li>
+<li><p>另外如果由于某个线程进入了死循环，导致其它线程一直等待，对于这种情况 linux 下可以通过 top 先定位到CPU 占用高的 Java 进程，再利用 top -Hp 进程id 来定位是哪个线程，最后再用 jstack 排</p>
+</li>
+</ul>
+<h4 id="3-11-3-哲学家进餐问题"><a href="#3-11-3-哲学家进餐问题" class="headerlink" title="3.11.3 哲学家进餐问题"></a>3.11.3 哲学家进餐问题</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501085854.png" srcset="/img/loading.gif"></p>
+<p>有五位哲学家，围坐在圆桌旁。</p>
+<ul>
+<li>他们只做两件事，思考和吃饭，思考一会吃口饭，吃完饭后接着思考。</li>
+<li>吃饭时要用两根筷子吃，桌上共有 5 根筷子，每位哲学家左右手边各有一根筷子。</li>
+<li>如果筷子被身边的人拿着，自己就得等待</li>
+</ul>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Philosopher</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Thread</span> </span>&#123;
+    Chopstick left;
+    Chopstick right;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Philosopher</span><span class="hljs-params">(String name, Chopstick left, Chopstick right)</span> </span>&#123;
+        <span class="hljs-keyword">super</span>(name);
+        <span class="hljs-keyword">this</span>.left = left;
+        <span class="hljs-keyword">this</span>.right = right;
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">while</span> (<span class="hljs-keyword">true</span>) &#123;
+            <span class="hljs-comment">//　尝试获得左手筷子</span>
+            <span class="hljs-keyword">synchronized</span> (left) &#123;
+                <span class="hljs-comment">// 尝试获得右手筷子</span>
+                <span class="hljs-keyword">synchronized</span> (right) &#123;
+                    eat();
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+
+    Random random = <span class="hljs-keyword">new</span> Random();
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">eat</span><span class="hljs-params">()</span> </span>&#123;
+        log.debug(<span class="hljs-string">&quot;eating...&quot;</span>);
+        Sleeper.sleep(<span class="hljs-number">0.5</span>);
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Chopstick</span> </span>&#123;
+    String name;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Chopstick</span><span class="hljs-params">(String name)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.name = name;
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toString</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;筷子&#123;&quot;</span> + name + <span class="hljs-string">&#x27;&#125;&#x27;</span>;
+    &#125;
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+    Chopstick c1 = <span class="hljs-keyword">new</span> Chopstick(<span class="hljs-string">&quot;1&quot;</span>);
+    Chopstick c2 = <span class="hljs-keyword">new</span> Chopstick(<span class="hljs-string">&quot;2&quot;</span>);
+    Chopstick c3 = <span class="hljs-keyword">new</span> Chopstick(<span class="hljs-string">&quot;3&quot;</span>);
+    Chopstick c4 = <span class="hljs-keyword">new</span> Chopstick(<span class="hljs-string">&quot;4&quot;</span>);
+    Chopstick c5 = <span class="hljs-keyword">new</span> Chopstick(<span class="hljs-string">&quot;5&quot;</span>);
+    <span class="hljs-keyword">new</span> Philosopher(<span class="hljs-string">&quot;苏格拉底&quot;</span>, c1, c2).start();
+    <span class="hljs-keyword">new</span> Philosopher(<span class="hljs-string">&quot;柏拉图&quot;</span>, c2, c3).start();
+    <span class="hljs-keyword">new</span> Philosopher(<span class="hljs-string">&quot;亚里士多德&quot;</span>, c3, c4).start();
+    <span class="hljs-keyword">new</span> Philosopher(<span class="hljs-string">&quot;赫拉克利特&quot;</span>, c4, c5).start();
+    <span class="hljs-keyword">new</span> Philosopher(<span class="hljs-string">&quot;阿基米德&quot;</span>, c5, c1).start();
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby">09<span class="hljs-symbol">:</span><span class="hljs-number">06</span><span class="hljs-symbol">:</span><span class="hljs-number">43</span> [苏格拉底] c.Philosopher - eating...
+09<span class="hljs-symbol">:</span><span class="hljs-number">06</span><span class="hljs-symbol">:</span><span class="hljs-number">43</span> [亚里士多德] c.Philosopher - eating...
+09<span class="hljs-symbol">:</span><span class="hljs-number">06</span><span class="hljs-symbol">:</span><span class="hljs-number">43</span> [亚里士多德] c.Philosopher - eating...
+09<span class="hljs-symbol">:</span><span class="hljs-number">06</span><span class="hljs-symbol">:</span><span class="hljs-number">43</span> [苏格拉底] c.Philosopher - eating...
+09<span class="hljs-symbol">:</span><span class="hljs-number">06</span><span class="hljs-symbol">:</span><span class="hljs-number">43</span> [亚里士多德] c.Philosopher - eating...
+09<span class="hljs-symbol">:</span><span class="hljs-number">06</span><span class="hljs-symbol">:</span><span class="hljs-number">43</span> [亚里士多德] c.Philosopher - eating...
+09<span class="hljs-symbol">:</span><span class="hljs-number">06</span><span class="hljs-symbol">:</span><span class="hljs-number">43</span> [亚里士多德] c.Philosopher - eating...
+09<span class="hljs-symbol">:</span><span class="hljs-number">06</span><span class="hljs-symbol">:</span><span class="hljs-number">43</span> [亚里士多德] c.Philosopher - eating...
+09<span class="hljs-symbol">:</span><span class="hljs-number">06</span><span class="hljs-symbol">:</span><span class="hljs-number">43</span> [亚里士多德] c.Philosopher - eating...
+09<span class="hljs-symbol">:</span><span class="hljs-number">06</span><span class="hljs-symbol">:</span><span class="hljs-number">43</span> [亚里士多德] c.Philosopher - eating...</code></pre></div>
+
+<p>使用jconsole：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501090759.png" srcset="/img/loading.gif"></p>
+<h4 id="3-11-4-活锁"><a href="#3-11-4-活锁" class="headerlink" title="3.11.4 活锁"></a>3.11.4 活锁</h4><p>活锁出现在 <strong>两个线程互相改变对方的结束条件</strong> ，最后谁也无法结束，例如</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> count = <span class="hljs-number">10</span>;
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object lock = <span class="hljs-keyword">new</span> Object();
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-comment">// 期望减到 0 退出循环</span>
+        <span class="hljs-keyword">while</span> (count &gt; <span class="hljs-number">0</span>) &#123;
+            Sleeper.sleep(<span class="hljs-number">0.2</span>);
+            count--;
+            log.debug(<span class="hljs-string">&quot;count: &#123;&#125;&quot;</span>, count);
+        &#125;
+    &#125;, <span class="hljs-string">&quot;t1&quot;</span>).start();
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-comment">// 期望超过 20 退出循环</span>
+        <span class="hljs-keyword">while</span> (count &lt; <span class="hljs-number">20</span>) &#123;
+            Sleeper.sleep(<span class="hljs-number">0.2</span>);
+            count++;
+            log.debug(<span class="hljs-string">&quot;count: &#123;&#125;&quot;</span>, count);
+        &#125;
+    &#125;, <span class="hljs-string">&quot;t2&quot;</span>).start();
+&#125;</code></pre></div>
+
+<p>解决活锁：睡眠时间随机。</p>
+<h4 id="3-11-5-饥饿"><a href="#3-11-5-饥饿" class="headerlink" title="3.11.5 饥饿"></a>3.11.5 饥饿</h4><p>很多教程中把饥饿定义为， <strong>一个线程由于优先级太低，始终得不到 CPU 调度执行，也不能够结束</strong> ，饥饿的情况不易演示，讲读写锁时会涉及饥饿问题<br>下面我讲一下我遇到的一个线程饥饿的例子，先来看看使用顺序加锁的方式解决之前的死锁问题</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501091458.png" srcset="/img/loading.gif"></p>
+<p>顺序加锁的解决方案</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501091531.png" srcset="/img/loading.gif"></p>
+<p>把哲学家问题最后一个5,1顺序改成1,5</p>
+<p>但是会产生 <code>饥饿</code> 现象</p>
+<h3 id="3-12-ReentrantLock"><a href="#3-12-ReentrantLock" class="headerlink" title="3.12 ReentrantLock"></a>3.12 ReentrantLock</h3><p>ReentrantLock 可重入的</p>
+<p>相对于 synchronized 它具备如下特点</p>
+<ul>
+<li><p>可 <strong>中断</strong> </p>
+</li>
+<li><p>可以设置 <strong>超时时间</strong> </p>
+</li>
+<li><p>可以设置为 <strong>公平锁</strong> </p>
+</li>
+<li><p>支持 <strong>多个条件变量</strong> （支持多个waitset，可以到不同waitset里面等）</p>
+<p>与 synchronized 一样，都支持可重入</p>
+</li>
+</ul>
+<p>基本语法：</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 获取锁</span>
+reentrantLock.lock();
+  <span class="hljs-keyword">try</span> &#123;
+    <span class="hljs-comment">// 临界区</span>
+  &#125; <span class="hljs-keyword">finally</span> &#123;
+    <span class="hljs-comment">// 释放锁</span>
+    reentrantLock.unlock();
+&#125;</code></pre></div>
+
+
+
+<h4 id="3-12-1-可重入"><a href="#3-12-1-可重入" class="headerlink" title="3.12.1 可重入"></a>3.12.1 可重入</h4><p>可重入是指 <strong>同一个线程如果首次获得了这把锁，那么因为它是这把锁的拥有者，因此有权利再次获取这把锁</strong><br>如果是 <strong>不可重入锁，那么第二次获得锁时，自己也会被锁挡住</strong> </p>
+<p>synchronized在关键字级别保护临界区，reentrantlock在对象级别</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testReentrant</span><span class="hljs-params">()</span> </span>&#123;
+    method1();
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">method1</span><span class="hljs-params">()</span> </span>&#123;
+    lock.lock();
+    <span class="hljs-keyword">try</span> &#123;
+        log.debug(<span class="hljs-string">&quot;execute method1&quot;</span>);
+        method2();
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+        lock.unlock();
+    &#125;
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">method2</span><span class="hljs-params">()</span> </span>&#123;
+    lock.lock();
+    <span class="hljs-keyword">try</span> &#123;
+        log.debug(<span class="hljs-string">&quot;execute method2&quot;</span>);
+        method3();
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+        lock.unlock();
+    &#125;
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">method3</span><span class="hljs-params">()</span> </span>&#123;
+    lock.lock();
+    <span class="hljs-keyword">try</span> &#123;
+        log.debug(<span class="hljs-string">&quot;execute method3&quot;</span>);
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+        lock.unlock();
+    &#125;
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby">09<span class="hljs-symbol">:</span><span class="hljs-number">30</span><span class="hljs-symbol">:</span><span class="hljs-number">21</span> [main] c.Test22 - execute method1
+09<span class="hljs-symbol">:</span><span class="hljs-number">30</span><span class="hljs-symbol">:</span><span class="hljs-number">21</span> [main] c.Test22 - execute method2
+09<span class="hljs-symbol">:</span><span class="hljs-number">30</span><span class="hljs-symbol">:</span><span class="hljs-number">21</span> [main] c.Test22 - execute method3</code></pre></div>
+
+
+
+<h4 id="3-12-2-可打断"><a href="#3-12-2-可打断" class="headerlink" title="3.12.2 可打断"></a>3.12.2 可打断</h4><div class="hljs"><pre><code class="hljs java">lock.lockInterruptibly();</code></pre></div>
+
+<ul>
+<li>如果没有竞争那么此方法就会获取lock对象锁</li>
+<li>如果有竞争就进入阻塞队列，可以被其他线程用interrupt打断</li>
+</ul>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501094147.png" srcset="/img/loading.gif"></p>
+<p>如果主线程已经获取锁：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501094242.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501094303.png" srcset="/img/loading.gif"></p>
+<h4 id="3-12-3-锁超时"><a href="#3-12-3-锁超时" class="headerlink" title="3.12.3 锁超时"></a>3.12.3 锁超时</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 锁超时</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testDemo</span><span class="hljs-params">()</span> </span>&#123;
+    Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        log.debug(<span class="hljs-string">&quot;尝试获得锁&quot;</span>);
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-keyword">if</span> (! lock.tryLock(<span class="hljs-number">2</span>, TimeUnit.SECONDS)) &#123;
+                log.debug(<span class="hljs-string">&quot;获取不到锁&quot;</span>);
+                <span class="hljs-keyword">return</span>;
+            &#125;
+        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+            e.printStackTrace();
+            log.debug(<span class="hljs-string">&quot;获取不到锁&quot;</span>);
+            <span class="hljs-keyword">return</span>;
+        &#125;
+        <span class="hljs-keyword">try</span> &#123;
+            log.debug(<span class="hljs-string">&quot;获得到锁&quot;</span>);
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            lock.unlock();
+        &#125;
+    &#125;, <span class="hljs-string">&quot;t1&quot;</span>);
+
+    lock.lock();
+    log.debug(<span class="hljs-string">&quot;获得到锁&quot;</span>);
+    t1.start();
+    Sleeper.sleep(<span class="hljs-number">1</span>);
+    log.debug(<span class="hljs-string">&quot;释放了锁&quot;</span>);
+    lock.unlock();
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby">09<span class="hljs-symbol">:</span><span class="hljs-number">44</span><span class="hljs-symbol">:</span><span class="hljs-number">46</span> [main] c.Test22 - 获得到锁
+09<span class="hljs-symbol">:</span><span class="hljs-number">44</span><span class="hljs-symbol">:</span><span class="hljs-number">46</span> [t1] c.Test22 - 尝试获得锁
+09<span class="hljs-symbol">:</span><span class="hljs-number">44</span><span class="hljs-symbol">:</span><span class="hljs-number">47</span> [main] c.Test22 - 释放了锁
+09<span class="hljs-symbol">:</span><span class="hljs-number">44</span><span class="hljs-symbol">:</span><span class="hljs-number">47</span> [t1] c.Test22 - 获得到锁</code></pre></div>
+
+
+
+<h5 id="使用-tryLock-解决哲学家就餐问题"><a href="#使用-tryLock-解决哲学家就餐问题" class="headerlink" title="使用 tryLock 解决哲学家就餐问题"></a>使用 tryLock 解决哲学家就餐问题</h5><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501095058.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501095132.png" srcset="/img/loading.gif"></p>
+<p>原因：获取第二把筷子失败会释放手里的第一把筷子</p>
+<h4 id="3-12-4-公平锁"><a href="#3-12-4-公平锁" class="headerlink" title="3.12.4 公平锁"></a>3.12.4 公平锁</h4><p>ReentrantLock 默认是不公平的</p>
+<p>ReentrantLock lock = new ReentrantLock(false);</p>
+<p>公平锁一般没有必要，会降低并发度，后面分析原理</p>
+<h4 id="3-12-5-条件变量"><a href="#3-12-5-条件变量" class="headerlink" title="3.12.5 条件变量"></a>3.12.5 条件变量</h4><p>synchronized 中也有<code>条件变量</code>，就是我们讲原理时那个 <code>waitSet 休息室</code>，当条件不满足时进入 waitSet 等待<br>ReentrantLock 的条件变量比 synchronized 强大之处在于，它是支持 <code>多个条件变量的</code> ，这就好比</p>
+<ul>
+<li>synchronized 是那些不满足条件的线程都在一间休息室等消息</li>
+<li>而 ReentrantLock 支持多间休息室，有专门等烟的休息室、专门等早餐的休息室、唤醒时也是按休息室来唤醒</li>
+</ul>
+<p>使用要点：</p>
+<ul>
+<li>await 前需要获得锁</li>
+<li>await 执行后，会释放锁，进入 conditionObject 等待</li>
+<li>await 的线程被唤醒（或打断、或超时）取重新竞争 lock 锁</li>
+<li>竞争 lock 锁成功后，从 await 后继续执行</li>
+</ul>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object room = <span class="hljs-keyword">new</span> Object();
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> hasCigarette = <span class="hljs-keyword">false</span>;
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> hasTakeout = <span class="hljs-keyword">false</span>;
+<span class="hljs-keyword">static</span> ReentrantLock ROOM = <span class="hljs-keyword">new</span> ReentrantLock();
+<span class="hljs-comment">// 等待烟的休息室</span>
+<span class="hljs-keyword">static</span> Condition waitCigaretteSet = ROOM.newCondition();
+<span class="hljs-comment">// 等外卖的休息室</span>
+<span class="hljs-keyword">static</span> Condition waitTakeoutSet = ROOM.newCondition();
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+
+
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        ROOM.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            log.debug(<span class="hljs-string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);
+            <span class="hljs-keyword">while</span> (!hasCigarette) &#123;
+                log.debug(<span class="hljs-string">&quot;没烟，先歇会！&quot;</span>);
+                <span class="hljs-keyword">try</span> &#123;
+                    waitCigaretteSet.await();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+            log.debug(<span class="hljs-string">&quot;可以开始干活了&quot;</span>);
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            ROOM.unlock();
+        &#125;
+    &#125;, <span class="hljs-string">&quot;小南&quot;</span>).start();
+
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        ROOM.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            log.debug(<span class="hljs-string">&quot;外卖送到没？[&#123;&#125;]&quot;</span>, hasTakeout);
+            <span class="hljs-keyword">while</span> (!hasTakeout) &#123;
+                log.debug(<span class="hljs-string">&quot;没外卖，先歇会！&quot;</span>);
+                <span class="hljs-keyword">try</span> &#123;
+                    waitTakeoutSet.await();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+            log.debug(<span class="hljs-string">&quot;可以开始干活了&quot;</span>);
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            ROOM.unlock();
+        &#125;
+    &#125;, <span class="hljs-string">&quot;小女&quot;</span>).start();
+
+    sleep(<span class="hljs-number">1</span>);
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        ROOM.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            hasTakeout = <span class="hljs-keyword">true</span>;
+            waitTakeoutSet.signal();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            ROOM.unlock();
+        &#125;
+    &#125;, <span class="hljs-string">&quot;送外卖的&quot;</span>).start();
+
+    sleep(<span class="hljs-number">1</span>);
+
+    <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        ROOM.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            hasCigarette = <span class="hljs-keyword">true</span>;
+            waitCigaretteSet.signal();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            ROOM.unlock();
+        &#125;
+    &#125;, <span class="hljs-string">&quot;送烟的&quot;</span>).start();
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby"><span class="hljs-number">10</span><span class="hljs-symbol">:</span>09<span class="hljs-symbol">:</span><span class="hljs-number">03</span> [小南] c.Test24 - 有烟没？[<span class="hljs-literal">false</span>]
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span>09<span class="hljs-symbol">:</span><span class="hljs-number">03</span> [小南] c.Test24 - 没烟，先歇会！
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span>09<span class="hljs-symbol">:</span><span class="hljs-number">03</span> [小女] c.Test24 - 外卖送到没？[<span class="hljs-literal">false</span>]
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span>09<span class="hljs-symbol">:</span><span class="hljs-number">03</span> [小女] c.Test24 - 没外卖，先歇会！
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span>09<span class="hljs-symbol">:</span><span class="hljs-number">04</span> [小女] c.Test24 - 可以开始干活了
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span>09<span class="hljs-symbol">:</span><span class="hljs-number">05</span> [小南] c.Test24 - 可以开始干活了</code></pre></div>
+
+
+
+<h3 id="同步模式之顺序控制"><a href="#同步模式之顺序控制" class="headerlink" title="同步模式之顺序控制"></a>同步模式之顺序控制</h3><p>必须先 2 后 1 打印</p>
+<h4 id="1-wait-notify版实现"><a href="#1-wait-notify版实现" class="headerlink" title="1. wait/notify版实现"></a>1. wait/notify版实现</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Object lock = <span class="hljs-keyword">new</span> Object();
+<span class="hljs-comment">// 表示 t2 是否运行过</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> t2runned = <span class="hljs-keyword">false</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+    Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">synchronized</span> (lock) &#123;
+            <span class="hljs-keyword">while</span> (!t2runned) &#123;
+                <span class="hljs-keyword">try</span> &#123;
+                    lock.wait();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+            log.debug(<span class="hljs-string">&quot;1&quot;</span>);
+        &#125;
+    &#125;, <span class="hljs-string">&quot;t1&quot;</span>);
+
+
+    Thread t2 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+        <span class="hljs-keyword">synchronized</span> (lock) &#123;
+            log.debug(<span class="hljs-string">&quot;2&quot;</span>);
+            t2runned = <span class="hljs-keyword">true</span>;
+            lock.notify();
+        &#125;
+    &#125;, <span class="hljs-string">&quot;t2&quot;</span>);
+
+    t1.start();
+    t2.start();
+&#125;</code></pre></div>
+
+<div class="hljs"><pre><code class="hljs ruby"><span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">17</span><span class="hljs-symbol">:</span>08 [t2] c.Test25 - <span class="hljs-number">2</span>
+<span class="hljs-number">10</span><span class="hljs-symbol">:</span><span class="hljs-number">17</span><span class="hljs-symbol">:</span>08 [t1] c.Test25 - <span class="hljs-number">1</span></code></pre></div>
+
+
+
+<h4 id="2-Park-Unpark-版"><a href="#2-Park-Unpark-版" class="headerlink" title="2.Park Unpark 版"></a>2.Park Unpark 版</h4><p>可以看到，实现上很麻烦：</p>
+<ul>
+<li>首先，需要保证先 wait 再 notify，否则 wait 线程永远得不到唤醒。因此使用了 <strong>『运行标记』</strong> 来判断该不该wait</li>
+<li>第二，如果有些干扰线程错误地 notify 了 wait 线程，条件不满足时还要重新等待，使用了 while 循环来解决此问题</li>
+<li>最后，唤醒对象上的 wait 线程需要使用 notifyAll，因为『同步对象』上的等待线程可能不止一个<br>可以使用 LockSupport 类的 park 和 unpark 来简化上面的题目：</li>
+</ul>
+<div class="hljs"><pre><code class="hljs java">Thread t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+    LockSupport.park();
+    log.debug(<span class="hljs-string">&quot;1&quot;</span>);
+&#125;, <span class="hljs-string">&quot;t1&quot;</span>);
+t1.start();
+
+<span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+    log.debug(<span class="hljs-string">&quot;2&quot;</span>);
+    LockSupport.unpark(t1);
+&#125;,<span class="hljs-string">&quot;t2&quot;</span>).start();</code></pre></div>
+
+<p>park 和 unpark 方法比较灵活，他俩谁先调用，谁后调用无所谓。并且是以线程为单位进行『暂停』和『恢复』，不需要『同步对象』和『运行标记』</p>
+<h3 id="同步模式之交替输出"><a href="#同步模式之交替输出" class="headerlink" title="同步模式之交替输出"></a>同步模式之交替输出</h3><p>线程 1 输出 a 5 次，线程 2 输出 b 5 次，线程 3 输出 c 5 次。现在要求输出 abcabcabcabcabc 怎么实现</p>
+<h4 id="1-wait-notify版实现-1"><a href="#1-wait-notify版实现-1" class="headerlink" title="1. wait/notify版实现"></a>1. wait/notify版实现</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Slf4j(topic = &quot;c.Test27&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test27</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        WaitNotify wn = <span class="hljs-keyword">new</span> WaitNotify(<span class="hljs-number">1</span>, <span class="hljs-number">5</span>);
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            wn.print(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>);
+        &#125;).start();
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            wn.print(<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>);
+        &#125;).start();
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            wn.print(<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-number">1</span>);
+        &#125;).start();
+    &#125;
+&#125;
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">输出内容       等待标记     下一个标记</span>
+<span class="hljs-comment">   a           1             2</span>
+<span class="hljs-comment">   b           2             3</span>
+<span class="hljs-comment">   c           3             1</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WaitNotify</span> </span>&#123;
+    <span class="hljs-comment">// 打印               a           1             2</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">(String str, <span class="hljs-keyword">int</span> waitFlag, <span class="hljs-keyword">int</span> nextFlag)</span> </span>&#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; loopNumber; i++) &#123;
+            <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) &#123;
+                <span class="hljs-keyword">while</span>(flag != waitFlag) &#123;
+                    <span class="hljs-keyword">try</span> &#123;
+                        <span class="hljs-keyword">this</span>.wait();
+                    &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                        e.printStackTrace();
+                    &#125;
+                &#125;
+                System.out.print(str);
+                flag = nextFlag;
+                <span class="hljs-keyword">this</span>.notifyAll();
+            &#125;
+        &#125;
+    &#125;
+
+    <span class="hljs-comment">// 等待标记</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> flag; <span class="hljs-comment">// 2</span>
+    <span class="hljs-comment">// 循环次数</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> loopNumber;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">WaitNotify</span><span class="hljs-params">(<span class="hljs-keyword">int</span> flag, <span class="hljs-keyword">int</span> loopNumber)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.flag = flag;
+        <span class="hljs-keyword">this</span>.loopNumber = loopNumber;
+    &#125;
+&#125;</code></pre></div>
+
+
+
+<h4 id="2-Lock-条件变量版"><a href="#2-Lock-条件变量版" class="headerlink" title="2. Lock 条件变量版"></a>2. Lock 条件变量版</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test30</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        AwaitSignal awaitSignal = <span class="hljs-keyword">new</span> AwaitSignal(<span class="hljs-number">5</span>);
+        Condition a = awaitSignal.newCondition();
+        Condition b = awaitSignal.newCondition();
+        Condition c = awaitSignal.newCondition();
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            awaitSignal.print(<span class="hljs-string">&quot;a&quot;</span>, a, b);
+        &#125;).start();
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            awaitSignal.print(<span class="hljs-string">&quot;b&quot;</span>, b, c);
+        &#125;).start();
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            awaitSignal.print(<span class="hljs-string">&quot;c&quot;</span>, c, a);
+        &#125;).start();
+
+        Thread.sleep(<span class="hljs-number">1000</span>);
+        awaitSignal.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            System.out.println(<span class="hljs-string">&quot;开始...&quot;</span>);
+            a.signal();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            awaitSignal.unlock();
+        &#125;
+
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AwaitSignal</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ReentrantLock</span></span>&#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> loopNumber;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">AwaitSignal</span><span class="hljs-params">(<span class="hljs-keyword">int</span> loopNumber)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.loopNumber = loopNumber;
+    &#125;
+    <span class="hljs-comment">//            参数1 打印内容， 参数2 进入哪一间休息室, 参数3 下一间休息室</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">(String str, Condition current, Condition next)</span> </span>&#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; loopNumber; i++) &#123;
+            lock();
+            <span class="hljs-keyword">try</span> &#123;
+                current.await();
+                System.out.print(str);
+                next.signal();
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125; <span class="hljs-keyword">finally</span> &#123;
+                unlock();
+            &#125;
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+<p><code>该实现没有考虑 a，b，c 线程都就绪再开始</code></p>
+<h4 id="3-Park-实现"><a href="#3-Park-实现" class="headerlink" title="3. Park 实现"></a>3. Park 实现</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test31</span> </span>&#123;
+
+    <span class="hljs-keyword">static</span> Thread t1;
+    <span class="hljs-keyword">static</span> Thread t2;
+    <span class="hljs-keyword">static</span> Thread t3;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        ParkUnpark pu = <span class="hljs-keyword">new</span> ParkUnpark(<span class="hljs-number">5</span>);
+        t1 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            pu.print(<span class="hljs-string">&quot;a&quot;</span>, t2);
+        &#125;);
+        t2 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            pu.print(<span class="hljs-string">&quot;b&quot;</span>, t3);
+        &#125;);
+        t3 = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            pu.print(<span class="hljs-string">&quot;c&quot;</span>, t1);
+        &#125;);
+        t1.start();
+        t2.start();
+        t3.start();
+
+        LockSupport.unpark(t1);
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParkUnpark</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">(String str, Thread next)</span> </span>&#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; loopNumber; i++) &#123;
+            LockSupport.park();
+            System.out.print(str);
+            LockSupport.unpark(next);
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> loopNumber;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ParkUnpark</span><span class="hljs-params">(<span class="hljs-keyword">int</span> loopNumber)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.loopNumber = loopNumber;
+    &#125;
+&#125;</code></pre></div>
+
+
+
+<h2 id="4、共享模型之内存"><a href="#4、共享模型之内存" class="headerlink" title="4、共享模型之内存"></a>4、共享模型之内存</h2><p>上一章讲解的 Monitor 主要关注的是访问共享变量时，保证临界区代码的原子性</p>
+<p>这一章我们进一步深入学习 <strong>共享变量</strong> 在多线程间的 <strong>【可见性】</strong> 问题与多条 <strong>指令执行</strong> 时的 <strong>【有序性】</strong> 问题</p>
+<h3 id="4-1-Java-内存模型"><a href="#4-1-Java-内存模型" class="headerlink" title="4.1 Java 内存模型"></a>4.1 Java 内存模型</h3><p>JMM 即 Java Memory Model，它定义了 <strong>主存（所有线程共享数据）、工作内存（线程私有数据）</strong> 抽象概念，底层对应着 CPU 寄存器、缓存、硬件内存、CPU 指令优化等。<br>JMM 体现在以下几个方面</p>
+<ul>
+<li>原子性 - 保证指令不会受到线程上下文切换的影响</li>
+<li>可见性 - 保证指令不会受 cpu 缓存的影响</li>
+<li>有序性 - 保证指令不会受 cpu 指令并行优化的影响</li>
+</ul>
+<h3 id="4-2-可见性"><a href="#4-2-可见性" class="headerlink" title="4.2 可见性"></a>4.2 可见性</h3><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501105649.png" srcset="/img/loading.gif"></p>
+<p>main 线程对 run 变量的修改对于 t 线程不可见，导致了 t 线程无法停止：</p>
+<p>为什么呢？分析一下：</p>
+<ol>
+<li><p>初始状态， t 线程刚开始从 <strong>主内存</strong> 读取了 run 的值到工作内存。</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501105903.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>因为 t 线程要频繁从主内存中读取 run 的值， <strong>JIT 编译器</strong> 会将 run 的值 <strong>缓存</strong> 至自己 <strong>工作内存中的高速缓存中</strong> ，减少对主存中 run 的访问，提高效率</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501105955.png" srcset="/img/loading.gif"></p>
+</li>
+<li><p>1 秒之后，main 线程修改了 run 的值，并同步至主存，而 t 是从自己工作内存中的高速缓存中读取这个变量的值，结果永远是旧值</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501110046.png" srcset="/img/loading.gif"></p>
+</li>
+</ol>
+<h4 id="解决方法-1"><a href="#解决方法-1" class="headerlink" title="解决方法"></a>解决方法</h4><p>volatile（易变关键字）<br>它可以用来修饰成员变量和静态成员变量，他可以 <strong>避免线程从自己的工作缓存中查找变量的值</strong> ，必须到主存中获取它的值，<code>线程操作 volatile 变量都是直接操作主存</code></p>
+<p>或者：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501110854.png" srcset="/img/loading.gif"></p>
+<h4 id="可见性-vs-原子性"><a href="#可见性-vs-原子性" class="headerlink" title="可见性 vs 原子性"></a>可见性 vs 原子性</h4><p>前面例子体现的实际就是可见性，它保证的是在多个线程之间，一个线程对 volatile 变量的修改对另一个线程可见，  <strong>不能保证原子性</strong> ， <strong>仅用在一个写线程，多个读线程</strong> 的情况： 上例从字节码理解是这样的：</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501111259.png" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>注意 </p>
+<p>synchronized 语句块既可以保证代码块的原子性，也同时保证代码块内变量的可见性。但缺点是<br>synchronized 是属于重量级操作，性能相对更低<br>如果在前面示例的死循环中加入 System.out.println() 会发现即使不加 volatile 修饰符，线程 t 也能正确看到对 run 变量的修改了，想一想为什么？</p>
+</blockquote>
+<p>print里面有synchronized修饰</p>
+<h4 id="两阶段终止模式改进"><a href="#两阶段终止模式改进" class="headerlink" title="两阶段终止模式改进"></a>两阶段终止模式改进</h4><div class="hljs"><pre><code class="hljs java"><span class="hljs-meta">@Slf4j(topic = &quot;c.TPTVolatile&quot;)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TPTVolatile</span> </span>&#123;
+    <span class="hljs-keyword">private</span> Thread thread;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> stop = <span class="hljs-keyword">false</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span></span>&#123;
+        thread = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123;
+                Thread current = Thread.currentThread();
+                <span class="hljs-keyword">if</span>(stop) &#123;
+                    log.debug(<span class="hljs-string">&quot;料理后事&quot;</span>);
+                    <span class="hljs-keyword">break</span>;
+                &#125;
+                <span class="hljs-keyword">try</span> &#123;
+                    Thread.sleep(<span class="hljs-number">1000</span>);
+                    log.debug(<span class="hljs-string">&quot;将结果保存&quot;</span>);
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                &#125;
+            &#125;
+        &#125;,<span class="hljs-string">&quot;监控线程&quot;</span>);
+        thread.start();
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">stop</span><span class="hljs-params">()</span> </span>&#123;
+        stop = <span class="hljs-keyword">true</span>;
+        <span class="hljs-comment">// 防止等待完毕再打断，执行立刻打断</span>
+        thread.interrupt();
+    &#125;
+&#125;</code></pre></div>
+
+
+
+<h4 id="Balking（犹豫模式）"><a href="#Balking（犹豫模式）" class="headerlink" title="Balking（犹豫模式）"></a>Balking（犹豫模式）</h4><p>Balking （犹豫）模式用在 <strong>一个线程发现另一个线程或本线程已经做了某一件相同的事</strong> ，那么本线程就无需再做了，直接结束返回；如上面的两端暂停，可以多次start，每次都创建一个监控线程。</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MonitorService</span> </span>&#123;
+  <span class="hljs-comment">// 用来表示是否已经有线程已经在执行启动了</span>
+  <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> starting;
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span> </span>&#123;
+    log.info(<span class="hljs-string">&quot;尝试启动监控线程...&quot;</span>);
+    <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) &#123;
+      <span class="hljs-keyword">if</span> (starting) &#123;
+      <span class="hljs-keyword">return</span>;
+    &#125;
+    starting = <span class="hljs-keyword">true</span>;
+    &#125;
+    <span class="hljs-comment">// 真正启动监控线程...</span>
+  &#125;
+&#125;</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501113402.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501114035.png" srcset="/img/loading.gif"></p>
+<p>懒惰初始化</p>
+<h3 id="4-3-有序性"><a href="#4-3-有序性" class="headerlink" title="4.3 有序性"></a>4.3 有序性</h3><p>JVM 会在不影响正确性的前提下，可以调整语句的执行顺序，思考下面一段代码</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> i;
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> j;
+<span class="hljs-comment">// 在某个线程内执行如下赋值操作</span>
+i = ...; 
+j = ...;</code></pre></div>
+
+<p>可以看到，至于是先执行 i 还是 先执行 j ，对最终的结果不会产生影响。所以，上面代码真正执行时，可以i先也可以j先。</p>
+<p>这种特性称之为『指令重排』，多线程下『指令重排』会影响正确性。为什么要有重排指令这项优化呢？从 CPU执行指令的原理来理解：</p>
+<h4 id="鱼罐头的故事"><a href="#鱼罐头的故事" class="headerlink" title="鱼罐头的故事"></a>鱼罐头的故事</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501114315.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501114334.png" srcset="/img/loading.gif"></p>
+<h4 id="指令重排序优化"><a href="#指令重排序优化" class="headerlink" title="指令重排序优化"></a>指令重排序优化</h4><p>事实上，现代处理器会设计为一个时钟周期完成一条执行时间最长的 CPU 指令。为什么这么做呢？可以想到指令还可以再划分成一个个更小的阶段，例如，每条指令都可以分为： 取指令 - 指令译码 - 执行指令 - 内存访问 - 数据写回 <code>这 5 个阶段</code></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501114735.png" srcset="/img/loading.gif"></p>
+<blockquote>
+<p>术语参考：<br>instruction fetch (IF)<br>instruction decode (ID)<br>execute (EX)<br>memory access (MEM)<br>register write back (WB)</p>
+</blockquote>
+<p>在不改变程序结果的前提下，这些指令的各个阶段可以通过 <code>重排序</code> 和 <code>组合</code> 来实现 <code>指令级并行</code> ，这一技术在 80’s 中叶到 90’s 中叶占据了计算架构的重要地位。</p>
+<blockquote>
+<p>提示：<br>分阶段，分工是提升效率的关键！</p>
+</blockquote>
+<p>指令重排的前提是，重排指令 <code>不能影响结果</code> ，例如</p>
+<div class="hljs"><pre><code class="hljs java"><span class="hljs-comment">// 可以重排的例子</span>
+<span class="hljs-keyword">int</span> a = <span class="hljs-number">10</span>; <span class="hljs-comment">// 指令1</span>
+<span class="hljs-keyword">int</span> b = <span class="hljs-number">20</span>; <span class="hljs-comment">// 指令2</span>
+System.out.println( a + b );
+<span class="hljs-comment">// 不能重排的例子</span>
+<span class="hljs-keyword">int</span> a = <span class="hljs-number">10</span>; <span class="hljs-comment">// 指令1</span>
+<span class="hljs-keyword">int</span> b = a - <span class="hljs-number">5</span>; <span class="hljs-comment">// 指令2</span></code></pre></div>
+
+<blockquote>
+<p>参考： Scoreboarding and the Tomasulo algorithm (which is similar to scoreboarding but makes use of<br>register renaming) are two of the most common techniques for implementing out-of-order execution<br>and instruction-level parallelism.</p>
+</blockquote>
+<h4 id="支持流水线的处理器"><a href="#支持流水线的处理器" class="headerlink" title="支持流水线的处理器"></a>支持流水线的处理器</h4><p>现代 CPU 支持 <code>多级指令流水线</code>，例如支持同时执行 <code>取指令 - 指令译码 - 执行指令 - 内存访问 - 数据写回</code>  的处理器，就可以称之为 <code>五级指令流水线</code>。这时 CPU 可以在一个时钟周期内，同时运行五条指令的不同阶段（相当于一条执行时间最长的复杂指令），IPC = 1，本质上，流水线技术并不能缩短单条指令的执行时间，但它变相地提高了指令地吞吐率。</p>
+<blockquote>
+<p>提示：<br>奔腾四（Pentium 4）支持高达 35 级流水线，但由于功耗太高被废弃</p>
+</blockquote>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501115237.png" srcset="/img/loading.gif"></p>
+<h4 id="诡异结果"><a href="#诡异结果" class="headerlink" title="诡异结果"></a>诡异结果</h4><p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501115510.png" srcset="/img/loading.gif"></p>
+<p>I_Result 是一个对象，有一个属性 r1 用来保存结果，问，可能的结果有几种？</p>
+<p>情况1：线程1 先执行，这时 ready = false，所以进入 else 分支结果为 1</p>
+<p>情况2：线程2 先执行 num = 2，但没来得及执行 ready = true，线程1 执行，还是进入 else 分支，结果为1</p>
+<p>情况3：线程2 执行到 ready = true，线程1 执行，这回进入 if 分支，结果为 4（因为 num 已经执行过了）</p>
+<p>情况4:   线程2 执行 ready = true，切换到线程1，进入 if 分支，相加为 0，再切回线程2 执行 num = 2</p>
+<p>这种现象叫做指令重排，是 JIT 编译器在运行时的一些优化，这个现象需要通过大量测试才能复现：<br>借助 java 并发压测工具 <code> jcstress</code>  <a target="_blank" rel="noopener" href="https://wiki.openjdk.java.net/display/CodeTools/jcstress">https://wiki.openjdk.java.net/display/CodeTools/jcstress</a></p>
+<div class="hljs"><pre><code class="hljs maven">mvn archetype:generate -DinteractiveMode&#x3D;false -DarchetypeGroupId&#x3D;org.openjdk.jcstress -
+DarchetypeArtifactId&#x3D;jcstress-java-test-archetype -DarchetypeVersion&#x3D;0.5 -DgroupId&#x3D;cn.itcast -
+DartifactId&#x3D;ordering -Dversion&#x3D;1.0</code></pre></div>
+
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501120311.png" srcset="/img/loading.gif"></p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501120338.png" srcset="/img/loading.gif"></p>
+<p>解决方法<br>volatile 修饰的变量，可以禁用指令重排</p>
+<p><img src="https://blogimgurl.oss-cn-hangzhou.aliyuncs.com/img20210501120541.png" srcset="/img/loading.gif"></p>
+<p>加在ready上，ready之前的代码有屏障，都会禁止重排序</p>
 
             </div>
             <hr>
