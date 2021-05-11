@@ -23,25 +23,6 @@
   
   
   <entry>
-    <title>linux加shell</title>
-    <link href="/2021/04/25/linux%E5%8F%8Ashell/"/>
-    <url>/2021/04/25/linux%E5%8F%8Ashell/</url>
-    
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
-    
-    
-    
-    <tags>
-      
-      <tag>操作系统</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>我不会k8s</title>
     <link href="/2021/04/25/k8s/"/>
     <url>/2021/04/25/k8s/</url>
@@ -53,6 +34,25 @@
     <tags>
       
       <tag>运维</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>linux加shell</title>
+    <link href="/2021/04/25/linux%E5%8F%8Ashell/"/>
+    <url>/2021/04/25/linux%E5%8F%8Ashell/</url>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>操作系统</tag>
       
     </tags>
     
